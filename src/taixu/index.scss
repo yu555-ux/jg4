@@ -1,0 +1,154 @@
+@import "../../tailwind.css";
+
+html, body {
+    height: var(--taixujie-app-height, 1200px) !important;
+    margin: 0;
+    padding: 0;
+}
+
+#root {
+    height: var(--taixujie-app-height, 1200px) !important;
+    width: min(100vw, var(--taixujie-app-width, 1200px));
+    position: relative;
+    overflow: hidden;
+    margin: 0 auto;
+}
+
+@media (max-width: 768px), (max-height: 520px) and (orientation: landscape) {
+    html, body, #root {
+        height: 100vh !important;
+    }
+    #root {
+        width: min(100vw, var(--taixujie-app-width, 1200px));
+        margin: 0 auto;
+    }
+}
+
+body {
+    font-family: 'Noto Serif SC', serif;
+    background-color: #f8fafc;
+    color: #1e293b;
+}
+
+/* 修复针对 block 元素的 vertical-align 警告 */
+img, svg, video, canvas, audio, iframe, embed, object {
+    vertical-align: unset;
+}
+
+.font-calligraphy {
+    font-family: 'Zhi Mang Xing', cursive;
+}
+
+.font-number {
+    font-family: 'Cinzel', 'Noto Serif SC', serif;
+    font-variant-numeric: lining-nums;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #d1fae5;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #a7f3d0;
+    border: 1px solid transparent;
+    background-clip: content-box;
+}
+
+.jade-gradient {
+    background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+}
+
+.glass-panel {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(167, 243, 208, 0.3);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+    width: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.02);
+    border-radius: 10px;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #10b981;
+    border-radius: 10px;
+    border: 1px solid transparent;
+    background-clip: content-box;
+    opacity: 0.5;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: #059669;
+    border: 0px solid transparent;
+    background-clip: content-box;
+}
+
+/* number inputs: always show spinners */
+input[type="number"].number-spinner::-webkit-outer-spin-button,
+input[type="number"].number-spinner::-webkit-inner-spin-button {
+    opacity: 1;
+}
+input[type="number"].number-spinner {
+    appearance: auto;
+}
+
+/* 玉石呼吸动画 */
+@keyframes breathe {
+    0%, 100% {
+        transform: translateY(0) scale(1);
+        filter: brightness(1);
+    }
+    50% {
+        transform: translateY(-2px) scale(1.005);
+        filter: brightness(1.02);
+    }
+}
+
+/* 选项滑入动画 */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateX(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* 月光流转动画 */
+@keyframes shimmer {
+    0% {
+        background-position: -200% center;
+    }
+    100% {
+        background-position: 200% center;
+    }
+}
+
+/* 为月光效果添加背景尺寸 */
+[class*="animate-[shimmer"] {
+    background-size: 200% auto;
+}
+
+@keyframes subtle-float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-5px); }
+    100% { transform: translateY(0px); }
+}
+
+.animate-float {
+    animation: subtle-float 4s ease-in-out infinite;
+}

@@ -1,0 +1,269 @@
+@use '../../styles/variables.scss' as *;
+
+.mhjg-modal-settings {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: $spacing-xl;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+
+    &.open {
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    .modal-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+
+    .modal-window {
+        position: relative;
+        width: 100%;
+        max-width: 600px;
+        max-height: 90vh;
+        @include glass-panel;
+        border-radius: $radius-xl;
+        border: 1px solid rgba(139, 92, 246, 0.2);
+        box-shadow: 0 0 50px rgba(168, 85, 247, 0.15);
+        display: flex;
+        flex-direction: column;
+        animation: scaleIn 0.3s ease;
+        overflow: hidden;
+    }
+
+    .modal-header {
+        padding: $spacing-lg;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        background: linear-gradient(90deg, rgba(139, 92, 246, 0.1) 0%, transparent 100%);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+
+        .modal-header-left {
+            display: flex;
+            align-items: center;
+            gap: $spacing-md;
+        }
+
+        .modal-icon {
+            padding: $spacing-sm;
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: $radius-lg;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            color: rgba(139, 92, 246, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            svg {
+                width: 24px;
+                height: 24px;
+            }
+        }
+
+        .modal-title-group {
+            .modal-title {
+                font-size: 24px;
+                color: rgba(139, 92, 246, 0.9);
+                font-weight: bold;
+                font-family: $font-fantasy;
+                letter-spacing: 0.05em;
+                margin-bottom: 4px;
+            }
+
+            .modal-subtitle {
+                color: rgba(139, 92, 246, 0.5);
+                font-size: 12px;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+            }
+        }
+
+        .modal-close {
+            color: $color-text-dim;
+            background: transparent;
+            border: 1px solid transparent;
+            padding: $spacing-sm $spacing-md;
+            border-radius: $radius-md;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+
+            &:hover {
+                color: rgba(139, 92, 246, 0.8);
+                border-color: rgba(139, 92, 246, 0.2);
+                text-decoration: underline;
+            }
+        }
+    }
+
+    .modal-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: $spacing-xl;
+        @include scrollbar;
+    }
+
+    .settings-section {
+        .settings-section-title {
+            font-size: 18px;
+            color: rgba(139, 92, 246, 0.9);
+            font-weight: bold;
+            margin-bottom: $spacing-lg;
+            padding-bottom: $spacing-sm;
+            border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+        }
+
+        .setting-item {
+            display: flex;
+            align-items: center;
+            gap: $spacing-md;
+            margin-bottom: $spacing-lg;
+            padding: $spacing-md;
+            background: rgba(15, 23, 42, 0.3);
+            border-radius: $radius-md;
+            border: 1px solid rgba(139, 92, 246, 0.1);
+
+            .setting-label {
+                min-width: 100px;
+                color: hsl(213, 40%, 85%);
+                font-size: 14px;
+                font-weight: 500;
+            }
+
+            .setting-slider {
+                flex: 1;
+                height: 6px;
+                background: rgba(139, 92, 246, 0.2);
+                border-radius: 3px;
+                outline: none;
+                cursor: pointer;
+
+                &::-webkit-slider-thumb {
+                    appearance: none;
+                    width: 18px;
+                    height: 18px;
+                    background: rgba(139, 92, 246, 1);
+                    border-radius: 50%;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+
+                    &:hover {
+                        background: rgba(139, 92, 246, 0.8);
+                        transform: scale(1.2);
+                    }
+                }
+
+                &::-moz-range-thumb {
+                    width: 18px;
+                    height: 18px;
+                    background: rgba(139, 92, 246, 1);
+                    border-radius: 50%;
+                    cursor: pointer;
+                    border: none;
+                    transition: all 0.3s ease;
+
+                    &:hover {
+                        background: rgba(139, 92, 246, 0.8);
+                        transform: scale(1.2);
+                    }
+                }
+            }
+
+            .setting-color {
+                width: 60px;
+                height: 40px;
+                border: 1px solid rgba(139, 92, 246, 0.3);
+                border-radius: $radius-md;
+                cursor: pointer;
+                background: transparent;
+                padding: 0;
+
+                &::-webkit-color-swatch-wrapper {
+                    padding: 0;
+                }
+
+                &::-webkit-color-swatch {
+                    border: none;
+                    border-radius: $radius-md;
+                }
+
+                &::-moz-color-swatch {
+                    border: none;
+                    border-radius: $radius-md;
+                }
+            }
+
+            .setting-select {
+                flex: 1;
+                padding: $spacing-sm $spacing-md;
+                background: rgba(15, 23, 42, 0.5);
+                color: hsl(213, 40%, 85%);
+                border: 1px solid rgba(139, 92, 246, 0.3);
+                border-radius: $radius-md;
+                font-size: 14px;
+                cursor: pointer;
+                transition: all 0.3s ease;
+
+                &:focus {
+                    outline: none;
+                    border-color: rgba(139, 92, 246, 0.6);
+                    box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.3);
+                }
+
+                option {
+                    background: rgba(15, 23, 42, 0.95);
+                    color: hsl(213, 40%, 85%);
+                }
+            }
+
+            .setting-value {
+                min-width: 80px;
+                color: rgba(139, 92, 246, 0.8);
+                font-size: 12px;
+                font-family: monospace;
+                text-align: right;
+            }
+        }
+
+        .setting-preview {
+            margin-top: $spacing-xl;
+            padding: $spacing-lg;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: $radius-lg;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+
+            .setting-label {
+                display: block;
+                color: rgba(139, 92, 246, 0.7);
+                font-size: 12px;
+                margin-bottom: $spacing-md;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+            }
+
+            .preview-text {
+                padding: $spacing-lg;
+                background: rgba(0, 0, 0, 0.3);
+                border-radius: $radius-md;
+                line-height: 1.8;
+                min-height: 80px;
+                display: flex;
+                align-items: center;
+            }
+        }
+    }
+}
+

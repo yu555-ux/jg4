@@ -1,0 +1,20 @@
+<ruleofmap>
+**地图数据整体结构：**
+<map>
+SCENE_CONTEXT_ID: [场景上下文ID]
+MAP_NAME: [地图的描述性名称]
+DIMENSIONS: [列数]x[行数]
+DEFAULT_TILE: [可选：如果此地图的默认地块不是场景上下文中的默认地块，请指定一个字符，例如 '.']
+RAW_MAP_START
+[地图原始字符数组，每行代表地图的一行]
+RAW_MAP_END
+INSTANCE_METADATA_START
+[可选：针对地图上特定位置的实例元数据]
+[格式：列,行|在该位置的符号|实例唯一ID|实例名称|实例描述|JSON交互选项数组|JSON属性对象]
+INSTANCE_METADATA_END
+SYMBOL_DEFINITIONS_START
+[可选：此地图实例特有的符号定义或对场景上下文中符号的覆盖]
+[格式：符号字符: {JSON对象}]
+SYMBOL_DEFINITIONS_END
+</map>
+</ruleofmap>

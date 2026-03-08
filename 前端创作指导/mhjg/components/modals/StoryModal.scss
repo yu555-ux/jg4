@@ -1,0 +1,929 @@
+@use '../../styles/variables.scss' as *;
+
+.mhjg-modal-story {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+  align-items: stretch;
+  justify-content: stretch;
+  padding: 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+
+    &.open {
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    .modal-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+
+    .modal-window {
+        position: relative;
+        width: 100%;
+    height: 100%;
+        @include glass-panel;
+    border-radius: 0;
+        border: 1px solid rgba(139, 92, 246, 0.2);
+        box-shadow: 0 0 50px rgba(168, 85, 247, 0.15);
+        display: flex;
+        flex-direction: column;
+        animation: scaleIn 0.3s ease;
+        overflow: hidden;
+    }
+
+    .modal-header {
+        padding: $spacing-lg;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        background: linear-gradient(90deg, rgba(139, 92, 246, 0.1) 0%, transparent 100%);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        
+        @media (max-width: 768px) {
+            padding: $spacing-md;
+            flex-wrap: wrap;
+            gap: $spacing-sm;
+        }
+        
+        @media (max-width: 480px) {
+            padding: $spacing-sm;
+        }
+
+        // Phone landscape: header should be thinner to maximize reading area
+        @media (max-height: 520px) and (orientation: landscape) {
+            padding: $spacing-sm $spacing-md;
+        }
+
+        .modal-header-left {
+            display: flex;
+            align-items: center;
+            gap: $spacing-md;
+        }
+
+        .modal-icon {
+            padding: $spacing-sm;
+            background: rgba(139, 92, 246, 0.1);
+            border-radius: $radius-lg;
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            color: rgba(139, 92, 246, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            svg {
+                width: 24px;
+                height: 24px;
+            }
+
+            @media (max-height: 520px) and (orientation: landscape) {
+                padding: 6px;
+
+                svg {
+                    width: 18px;
+                    height: 18px;
+                }
+            }
+        }
+
+        .modal-title-group {
+            .modal-title {
+                font-size: 24px;
+                color: rgba(139, 92, 246, 0.9);
+                font-weight: bold;
+                font-family: $font-fantasy;
+                letter-spacing: 0.05em;
+                margin-bottom: 4px;
+
+                @media (max-height: 520px) and (orientation: landscape) {
+                    font-size: 18px;
+                    margin-bottom: 0;
+                }
+            }
+
+            .modal-subtitle {
+                color: rgba(139, 92, 246, 0.5);
+                font-size: 12px;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+
+                @media (max-height: 520px) and (orientation: landscape) {
+                    display: none;
+                }
+            }
+        }
+
+        .modal-header-actions {
+            display: flex;
+            align-items: center;
+            gap: $spacing-sm;
+        }
+
+        .modal-action-btn {
+            display: flex;
+            align-items: center;
+            gap: $spacing-xs;
+            color: $color-text-dim;
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            padding: $spacing-xs $spacing-sm;
+            border-radius: $radius-md;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+
+            svg {
+                width: 16px;
+                height: 16px;
+            }
+
+            span {
+                font-size: 12px;
+            }
+
+            @media (max-height: 520px) and (orientation: landscape) {
+                padding: 4px 6px;
+                font-size: 11px;
+
+                span {
+                    display: none;
+                }
+
+                svg {
+                    width: 16px;
+                    height: 16px;
+                }
+            }
+
+            &:hover {
+                color: rgba(139, 92, 246, 0.9);
+                background: rgba(139, 92, 246, 0.2);
+                border-color: rgba(139, 92, 246, 0.4);
+            }
+        }
+
+        .modal-close {
+            color: $color-text-dim;
+            background: transparent;
+            border: 1px solid transparent;
+            padding: $spacing-sm $spacing-md;
+            border-radius: $radius-md;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+
+            &:hover {
+                color: rgba(139, 92, 246, 0.8);
+                border-color: rgba(139, 92, 246, 0.2);
+                text-decoration: underline;
+            }
+
+            @media (max-height: 520px) and (orientation: landscape) {
+                padding: 6px 10px;
+            }
+        }
+    }
+
+    .modal-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: $spacing-xl;
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-xl;
+        @include scrollbar;
+        position: relative;
+        min-height: 0; // 确保可以收缩
+        
+        @media (max-width: 768px) {
+            padding: $spacing-md;
+            gap: $spacing-lg;
+            // 小屏下给正文更多空间（选项收起时）
+            flex: 1 1 auto;
+        }
+        
+        @media (max-width: 480px) {
+            padding: $spacing-sm;
+            gap: $spacing-md;
+        }
+
+        @media (max-height: 520px) and (orientation: landscape) {
+            padding: $spacing-md;
+            gap: $spacing-md;
+        }
+    }
+
+    .modal-options {
+        @media (max-height: 520px) and (orientation: landscape) {
+            padding: $spacing-sm $spacing-md;
+        }
+    }
+
+    .story-options-container {
+        @media (max-height: 520px) and (orientation: landscape) {
+            gap: $spacing-sm;
+        }
+    }
+
+    .story-option-btn {
+        @media (max-height: 520px) and (orientation: landscape) {
+            padding: $spacing-sm $spacing-md;
+            font-size: 13px;
+        }
+    }
+
+  .generating-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    animation: fadeIn 0.3s ease;
+  }
+
+  .generating-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: $spacing-md;
+    color: rgba(139, 92, 246, 0.9);
+  }
+
+  .generating-spinner {
+    width: 48px;
+    height: 48px;
+    border: 3px solid rgba(139, 92, 246, 0.2);
+    border-top-color: rgba(139, 92, 246, 0.9);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+
+  .generating-text {
+    font-size: 16px;
+    font-weight: 500;
+    color: rgba(139, 92, 246, 0.9);
+    font-family: $font-fantasy;
+    letter-spacing: 0.05em;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+    }
+
+    .message-item {
+        display: flex;
+        gap: $spacing-lg;
+        animation: fadeIn 0.5s ease;
+
+        &.message-user {
+            flex-direction: row-reverse;
+        }
+
+        &.message-loading {
+            .message-avatar {
+                .sparkles-icon {
+                    animation: pulse 2s infinite;
+                }
+            }
+        }
+    }
+
+    .message-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid;
+        box-shadow: $shadow-md;
+        flex-shrink: 0;
+
+        &.avatar-model {
+            background: rgba(30, 23, 50, 1);
+            border-color: rgba(139, 92, 246, 0.7);
+            color: rgba(139, 92, 246, 0.8);
+        }
+
+        &.avatar-user {
+            background: rgba(30, 41, 59, 1);
+            border-color: rgba(30, 41, 59, 1);
+            color: $color-text-main;
+        }
+
+        svg {
+            width: 18px;
+            height: 18px;
+        }
+    }
+
+    .message-content-wrapper {
+        max-width: 75%;
+        position: relative;
+        
+        @media (max-width: 768px) {
+            max-width: 85%;
+        }
+        
+        @media (max-width: 480px) {
+            max-width: 90%;
+        }
+    }
+
+    .message-bubble {
+        padding: $spacing-lg;
+        border-radius: $radius-xl;
+        font-size: 14px;
+        line-height: 1.8;
+        box-shadow: $shadow-xl;
+        border: 1px solid;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        white-space: pre-wrap; // 支持换行
+        word-wrap: break-word;
+
+        &.bubble-model {
+            background: rgba(15, 23, 42, 0.6);
+            color: hsl(213, 40%, 85%); // 柔和的蓝白色，更易读
+            border-color: rgba(139, 92, 246, 0.2);
+            border-top-left-radius: 0;
+        }
+
+        &.bubble-user {
+            background: rgba(30, 41, 59, 0.8);
+            color: hsl(213, 35%, 88%); // 稍亮的蓝白色
+            border-color: rgba(30, 41, 59, 1);
+            border-top-right-radius: 0;
+        }
+
+        // 富文本样式
+        .text-highlight {
+            color: hsl(43, 100%, 65%); // 更亮的金色
+            font-weight: 700;
+            text-shadow: 
+                0 0 10px rgba(251, 191, 36, 0.6),
+                0 0 20px rgba(251, 191, 36, 0.3);
+      background: linear-gradient(135deg, rgba(251, 191, 36, 0.15) 0%, rgba(251, 191, 36, 0.05) 100%);
+            padding: 2px 4px;
+            border-radius: 4px;
+        }
+
+        .text-quote {
+            color: hsl(258, 85%, 75%); // 更亮的紫色，更易读
+            font-style: italic;
+            padding: 0 4px;
+            border-left: 3px solid hsl(258, 70%, 60%);
+            padding-left: 8px;
+            margin: 0 4px;
+            background: rgba(139, 92, 246, 0.08);
+            border-radius: 0 4px 4px 0;
+        }
+    }
+
+    .message-label {
+        font-size: 10px;
+        color: rgba(139, 92, 246, 0.4);
+        margin-top: $spacing-sm;
+        margin-left: $spacing-sm;
+        font-family: monospace;
+        text-transform: uppercase;
+    }
+
+    .loading-dots {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        height: 56px;
+        padding: 0 $spacing-lg;
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(139, 92, 246, 1);
+            animation: bounce 1.4s infinite;
+        }
+    }
+
+    .story-maintext {
+        color: hsl(213, 40%, 85%);
+        font-size: 15px;
+        line-height: 1.9;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        padding: $spacing-lg;
+        background: rgba(15, 23, 42, 0.4);
+        border-radius: $radius-lg;
+        border: 1px solid rgba(139, 92, 246, 0.15);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+
+        // 富文本样式支持
+        .text-highlight {
+            // **文本** - 加粗/高亮（金色）
+            color: hsl(43, 100%, 65%);
+            font-weight: 700;
+        }
+
+        .text-emphasis {
+            // *文本* - 强调（橙色）
+            color: hsl(25, 100%, 65%);
+            font-weight: 600;
+        }
+
+        .text-underline {
+            // _文本_ - 下划线强调（青色）
+            color: hsl(180, 70%, 70%);
+            text-decoration: underline;
+            text-decoration-color: hsl(180, 70%, 70%);
+        }
+
+        .text-strikethrough {
+            // ~文本~ - 删除线（灰色）
+            color: hsl(0, 0%, 60%);
+            text-decoration: line-through;
+            text-decoration-color: hsl(0, 0%, 50%);
+        }
+
+        .text-special {
+            // #文本# - 标题/特殊（紫色）
+            color: hsl(258, 85%, 75%);
+            font-weight: 600;
+        }
+
+        .text-note {
+            // [文本] - 注释/说明（蓝色）
+            color: hsl(210, 80%, 70%);
+            font-style: italic;
+        }
+
+        .text-bracket {
+            // (文本) - 括号内容（绿色）
+            color: hsl(142, 70%, 65%);
+        }
+
+        .text-quote-cn {
+            // 「文本」 - 引号内容（粉色）
+            color: hsl(330, 70%, 75%);
+        }
+
+        .text-quote {
+            // "文本" - 引用样式（紫色）
+            color: hsl(258, 85%, 75%);
+            font-style: italic;
+        }
+
+        .text-quote-single {
+            // '文本' - 单引号引用（浅蓝色）
+            color: hsl(200, 80%, 75%);
+            font-style: italic;
+        }
+    }
+
+    .modal-options {
+        padding: $spacing-lg;
+        background: linear-gradient(180deg, rgba(15, 23, 42, 0.5) 0%, rgba(15, 23, 42, 0.8) 100%);
+        border-top: 1px solid rgba(139, 92, 246, 0.2);
+        border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+        display: flex;
+        flex-direction: column;
+        
+        @media (max-width: 768px) {
+            padding: 0;
+            background: transparent;
+            border-top: 1px solid rgba(139, 92, 246, 0.15);
+            border-bottom: none;
+        }
+        
+        @media (max-width: 480px) {
+            padding: 0;
+        }
+
+        // 小屏下：默认收起选项，只显示展开按钮
+        @media (max-width: 768px) {
+            &.collapsed {
+                .story-options-wrapper {
+                    display: none;
+                }
+            }
+
+            &.expanded {
+                .story-options-wrapper {
+                    display: flex;
+                    flex-direction: column;
+                    padding: $spacing-md;
+                    background: linear-gradient(180deg, rgba(15, 23, 42, 0.5) 0%, rgba(15, 23, 42, 0.8) 100%);
+                    border-top: 1px solid rgba(139, 92, 246, 0.2);
+                }
+            }
+        }
+
+        // 展开/收起按钮（仅小屏显示）
+        .options-toggle-btn {
+            display: none; // 默认隐藏（桌面端）
+
+            @media (max-width: 768px) {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: $spacing-xs;
+                width: 100%;
+                padding: $spacing-md;
+                background: rgba(139, 92, 246, 0.1);
+                border: 1px solid rgba(139, 92, 246, 0.2);
+                border-top: none;
+                color: rgba(139, 92, 246, 0.9);
+                font-size: 14px;
+                font-weight: 500;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                text-transform: uppercase;
+                letter-spacing: 0.05em;
+
+                &:hover {
+                    background: rgba(139, 92, 246, 0.2);
+                    border-color: rgba(139, 92, 246, 0.4);
+                }
+
+                &:active {
+                    transform: scale(0.98);
+                }
+
+                .toggle-text {
+                    font-size: 13px;
+                }
+
+                .toggle-icon {
+                    width: 16px;
+                    height: 16px;
+                    transition: transform 0.3s ease;
+
+                    &.expanded {
+                        transform: rotate(180deg);
+                    }
+                }
+            }
+        }
+
+        // 选项包装器（小屏下用于控制显示/隐藏）
+        .story-options-wrapper {
+            @media (max-width: 768px) {
+                display: none; // 默认隐藏
+            }
+        }
+    }
+
+    .story-options-container {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-md;
+        max-width: 1024px;
+        margin: 0 auto;
+        
+        @media (max-width: 768px) {
+            gap: $spacing-sm;
+        }
+    }
+
+    .story-option-btn {
+        width: 100%;
+        padding: $spacing-md $spacing-lg;
+        background: rgba(139, 92, 246, 0.1);
+        color: hsl(213, 40%, 85%);
+        border: 1px solid rgba(139, 92, 246, 0.3);
+        border-radius: $radius-lg;
+        font-size: 14px;
+        text-align: left;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+        position: relative;
+        overflow: hidden;
+
+        &::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            background: linear-gradient(90deg, rgba(139, 92, 246, 0.2) 0%, transparent 100%);
+            transition: width 0.3s ease;
+        }
+
+        &:hover:not(:disabled) {
+            background: rgba(139, 92, 246, 0.2);
+            border-color: rgba(139, 92, 246, 0.5);
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.15);
+
+            &::before {
+                width: 100%;
+            }
+        }
+
+        &:active:not(:disabled) {
+            transform: translateX(2px);
+        }
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        // 富文本样式支持
+        .text-highlight {
+            // **文本** - 加粗/高亮（金色）
+            color: hsl(43, 100%, 65%);
+            font-weight: 700;
+        }
+
+        .text-emphasis {
+            // *文本* - 强调（橙色）
+            color: hsl(25, 100%, 65%);
+            font-weight: 600;
+        }
+
+        .text-underline {
+            // _文本_ - 下划线强调（青色）
+            color: hsl(180, 70%, 70%);
+            text-decoration: underline;
+            text-decoration-color: hsl(180, 70%, 70%);
+        }
+
+        .text-strikethrough {
+            // ~文本~ - 删除线（灰色）
+            color: hsl(0, 0%, 60%);
+            text-decoration: line-through;
+            text-decoration-color: hsl(0, 0%, 50%);
+        }
+
+        .text-special {
+            // #文本# - 标题/特殊（紫色）
+            color: hsl(258, 85%, 75%);
+            font-weight: 600;
+        }
+
+        .text-note {
+            // [文本] - 注释/说明（蓝色）
+            color: hsl(210, 80%, 70%);
+            font-style: italic;
+        }
+
+        .text-bracket {
+            // (文本) - 括号内容（绿色）
+            color: hsl(142, 70%, 65%);
+        }
+
+        .text-quote-cn {
+            // 「文本」 - 引号内容（粉色）
+            color: hsl(330, 70%, 75%);
+        }
+
+        .text-quote {
+            // "文本" - 引用样式（黄色）
+            color: hsl(258, 85%, 75%);
+            font-style: italic;
+        }
+
+        .text-quote-single {
+            // '文本' - 单引号引用（浅蓝色）
+            color: hsl(200, 80%, 75%);
+            font-style: italic;
+        }
+    }
+
+    .modal-input {
+        padding: $spacing-lg;
+        background: linear-gradient(180deg, rgba(15, 23, 42, 1) 0%, rgba(15, 23, 42, 0.9) 100%);
+        border-top: 1px solid rgba(139, 92, 246, 0.2);
+    }
+
+    .input-wrapper {
+        position: relative;
+        max-width: 1024px;
+        margin: 0 auto;
+    }
+
+    .story-input {
+        width: 100%;
+        background: rgba(15, 23, 42, 0.5);
+        color: $color-text-main;
+        border: 1px solid rgba(139, 92, 246, 0.3);
+        border-radius: $radius-xl;
+        padding: $spacing-md $spacing-lg;
+        padding-right: 56px;
+        font-size: 14px;
+        transition: all 0.3s ease;
+
+        &:focus {
+            outline: none;
+            border-color: rgba(139, 92, 246, 1);
+            box-shadow: 0 0 0 1px rgba(139, 92, 246, 0.5);
+        }
+
+        &::placeholder {
+            color: $color-text-dim;
+        }
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    }
+
+    .story-send-btn {
+        position: absolute;
+        right: 8px;
+        top: 50%;
+        transform: translateY(-50%);
+        aspect-ratio: 1;
+        width: 40px;
+        background: rgba(139, 92, 246, 1);
+        color: white;
+        border: none;
+        border-radius: $radius-lg;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+
+        &:hover:not(:disabled) {
+            background: rgba(139, 92, 246, 0.8);
+        }
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        svg {
+            width: 20px;
+            height: 20px;
+        }
+    }
+}
+
+// 回顾故事对话框样式
+.review-story-overlay,
+.load-save-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: $spacing-xl;
+    animation: fadeIn 0.3s ease;
+}
+
+.review-story-dialog,
+.load-save-dialog {
+    background: rgba(15, 23, 42, 0.95);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: $radius-xl;
+    box-shadow: 0 0 50px rgba(168, 85, 247, 0.3);
+    max-width: 800px;
+    max-height: 80vh;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.review-story-header,
+.load-save-header {
+    padding: $spacing-lg;
+    border-bottom: 1px solid rgba(139, 92, 246, 0.2);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h3 {
+        color: rgba(139, 92, 246, 0.9);
+        font-size: 20px;
+        font-weight: bold;
+        margin: 0;
+    }
+
+    .review-story-close,
+    .load-save-close {
+        background: transparent;
+        border: none;
+        color: $color-text-dim;
+        font-size: 24px;
+        cursor: pointer;
+        padding: 0;
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: $radius-md;
+        transition: all 0.3s ease;
+
+        &:hover {
+            background: rgba(139, 92, 246, 0.1);
+            color: rgba(139, 92, 246, 0.9);
+        }
+    }
+}
+
+.review-story-content,
+.load-save-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: $spacing-lg;
+    @include scrollbar;
+}
+
+.review-story-item {
+    padding: $spacing-lg;
+    margin-bottom: $spacing-md;
+    background: rgba(15, 23, 42, 0.5);
+    border: 1px solid rgba(139, 92, 246, 0.2);
+    border-radius: $radius-lg;
+
+    .review-story-item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: $spacing-md;
+        padding-bottom: $spacing-sm;
+        border-bottom: 1px solid rgba(139, 92, 246, 0.1);
+
+        .review-story-index {
+            color: rgba(139, 92, 246, 0.9);
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .review-story-id {
+            color: $color-text-dim;
+            font-size: 12px;
+            font-family: monospace;
+        }
+    }
+
+    .review-story-maintext {
+        color: hsl(213, 40%, 85%);
+        font-size: 14px;
+        line-height: 1.8;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+    }
+}
+
+.load-save-item {
+    width: 100%;
+    padding: $spacing-lg;
+    margin-bottom: $spacing-md;
+    background: rgba(139, 92, 246, 0.1);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: $radius-lg;
+    cursor: pointer;
+    text-align: left;
+    transition: all 0.3s ease;
+
+    &:hover {
+        background: rgba(139, 92, 246, 0.2);
+        border-color: rgba(139, 92, 246, 0.5);
+        transform: translateX(4px);
+    }
+
+    .load-save-sum {
+        color: hsl(213, 40%, 85%);
+        font-size: 14px;
+        line-height: 1.8;
+        margin-bottom: $spacing-xs;
+    }
+
+    .load-save-id {
+        color: $color-text-dim;
+        font-size: 12px;
+        font-family: monospace;
+    }
+}

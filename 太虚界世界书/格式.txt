@@ -1,0 +1,49 @@
+<格式要求>
+
+1.你必须使用<maintext></maintext>包裹正文
+2.严格按照以下格式，依次输出每部分的内容。必须严格按照格式分行输出
+3.所有选项都是为{{user}}——即仙玉录，提供行动和不同方案，每个选项15字左右。
+
+<maintext>
+${正文}
+</maintext>
+<option>
+选项1|${中立选项，根据当前剧情，{{user}}向宿主进行提醒/对话}
+选项2|${堕落选项1，根据当前剧情，{{user}}引导宿主进行淫荡的行为解决当前事件}
+选项3|${堕落选项2，根据当前剧情，{{user}}引导宿主进行更加淫荡的行为}
+选项4|${根据当前剧情，{{user}}与宿主对话}
+</option>
+<history>
+序号|${1-999，唯一且不重复}
+日期|${本次事件的日期时间，禁止未知，必须详细x年x月x日+时间}
+标题|${14字简要概括本次事件的标题，格式7个字，7个字，需要具有诗意化，对偶工整，七言诗两句，例子：仙山一梦入轮回，陋室方醒识归墟}
+地点|${当前场景}
+人物|${记录所有在场角色名称}
+描述|${120字内简练完成对本次响应正文的概括，记录谁做了什么导致了什么，特别注意角色与用户间的互动需要更完整摘要}
+人物关系|${出场的非用户npc之间是否有关系，简述npc之间的关系、npc身份和npc此刻的目标小于 50 个字 }
+标签|${标签1}|${标签2，以此类推，使用|分割}
+重要信息|${300字内按需求对本次事件进行以下记录，不要单独的罗列信息，而是将其写成一段文字：1.对事件进行简要逻辑分析：2.重要对话内容：3.空间动作：（角色之间的站位、体位、动作、衣物状态等）4.重要建筑布局：（如果有，否则忽略）5.角色与角色之间的约定，计划，以及对应的开始的时间、结束时间，完成情况等（如果有）：6.重大事件，线索，变故，或者其他值得记录的重要信息：}
+暗线与伏笔|${如果有，则在70字内描述剧情发展的暗线与伏笔，不为宿主所知，或者在正文中给出错误误导，可能是角色谋害宿主，也可能是之前某位角色的崛起、隐忍，是与主线并行但对宿主隐藏的另一条故事线，或者一个不起眼但极为重要的细节}
+</history>
+<UpdateVariable>
+<Analysis>$(IN ENGLISH, no more than 80 words)
+- calculate time passed: ...
+- decide whether dramatic updates are allowed as it's in a special case or the time passed is more than usual: yes/no
+- analyze every variable in `<status_current_variable>` based on its corresponding `check`, according only to current reply instead of previous plots: ...
+</Analysis>
+<JSONPatch>
+  [
+      { "op": "replace", "path": "${/path/to/variable}", "value": "${new_value}" },
+      { "op": "delta", "path": "${/path/to/number/variable}", "value": "${positve_or_negative_delta}" },
+      { "op": "insert", "path": "${/path/to/object/new_key}", "value": "${new_value}" },
+      { "op": "insert", "path": "${/path/to/array/-}", "value": "${new_value}" },
+      { "op": "remove", "path": "${/path/to/object/key}" },
+      { "op": "remove", "path": "${/path/to/array/0}" },
+      { "op": "move", "from": "${/path/to/variable}", "to": "${/path/to/another/path}" },
+      ...
+  ]
+</JSONPatch>
+</UpdateVariable>
+
+</格式要求>
+

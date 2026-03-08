@@ -1,0 +1,668 @@
+@use '../styles/variables.scss' as *;
+
+.splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 100;
+    width: 100vw;
+    height: 100vh;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    font-family: $font-body;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.8s ease;
+    background-color: $color-bg-deep;
+    perspective: 1000px;
+
+    &.visible {
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    .splash-loading {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: $color-bg-deep;
+        z-index: 50;
+
+        .loading-spinner {
+            width: 80px;
+            height: 80px;
+            border: 2px solid rgba($color-primary-light, 0.1);
+            border-top-color: $color-primary;
+            border-bottom-color: $color-secondary;
+            border-radius: 50%;
+            animation: spin 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+            filter: drop-shadow(0 0 10px $color-primary-glow);
+        }
+    }
+
+    .splash-background {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        z-index: 0;
+        transform: scale(1.1);
+        transition: transform 10s ease-out;
+        will-change: transform;
+        
+        &::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: 
+                radial-gradient(circle at 50% 50%, rgba(0,0,0,0) 0%, rgba(2, 6, 23, 0.05) 100%),
+                linear-gradient(to bottom, rgba(2, 6, 23, 0.05) 0%, rgba(2, 6, 23, 0.05) 100%);
+        }
+    }
+
+    // Dynamic Aurora/Fog Effect
+    .splash-aurora {
+        position: absolute;
+        inset: -50%;
+        width: 200%;
+        height: 200%;
+        background: 
+            radial-gradient(circle at 50% 50%, rgba($color-primary, 0.1) 0%, transparent 50%),
+            radial-gradient(circle at 80% 20%, rgba($color-secondary, 0.15) 0%, transparent 40%);
+        filter: blur(60px);
+        animation: auroraMove 20s ease-in-out infinite alternate;
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    .splash-content {
+        position: relative;
+        z-index: 20;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        width: 100%;
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: $spacing-xl;
+        // Avoid reserving space via vh on mobile; footer is made flow-based on small screens
+        min-height: calc(100vh - 200px); // desktop fallback
+        flex: 1;
+        
+        @media (max-width: 768px) {
+            padding: $spacing-lg;
+            min-height: auto;
+        }
+        
+        @media (max-width: 480px) {
+            padding: $spacing-md;
+        }
+    }
+
+    .splash-title-section {
+        margin-bottom: 6vh;
+        text-align: center;
+        transform-style: preserve-3d;
+        
+        @media (max-width: 768px) {
+            margin-bottom: 4vh;
+        }
+        
+        @media (max-width: 480px) {
+            margin-bottom: 3vh;
+        }
+    }
+
+    .splash-title {
+        font-family: $font-fantasy;
+        font-size: clamp(60px, 8vw, 120px);
+        line-height: 1.1;
+        letter-spacing: 0.05em;
+        margin-bottom: $spacing-lg;
+        color: transparent;
+        background: linear-gradient(to bottom, #ffffff 0%, #fcd34d 40%, #b45309 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+        font-weight: 700;
+        text-transform: uppercase;
+        position: relative;
+        
+        &::after {
+            content: attr(data-text);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 40%, rgba(251, 191, 36, 0.8) 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            filter: blur(8px);
+            z-index: -1;
+            opacity: 0.6;
+            animation: titleGlowPulse 3s ease-in-out infinite;
+        }
+    }
+
+    .splash-subtitle-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: $spacing-lg;
+        opacity: 0.9;
+    }
+
+    .splash-subtitle {
+        font-family: $font-serif;
+        font-size: clamp(18px, 2vw, 24px);
+        color: $color-text-main;
+        letter-spacing: 0.3em;
+        font-weight: 300;
+        text-transform: uppercase;
+        text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+        position: relative;
+        
+        &::before, &::after {
+            content: '✦';
+            color: $color-primary;
+            margin: 0 $spacing-sm;
+            font-size: 12px;
+            vertical-align: middle;
+            opacity: 0.8;
+        }
+    }
+
+    .splash-subtitle-line {
+        width: 60px;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
+    }
+
+    .splash-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-lg;
+        width: 100%;
+        max-width: 360px;
+        align-items: stretch;
+        perspective: 1000px;
+        margin-bottom: 8vh; // 确保与 footer 有足够间距
+        
+        @media (max-width: 768px) {
+            max-width: 100%;
+            margin-bottom: 6vh;
+            gap: $spacing-md;
+        }
+        
+        @media (max-width: 480px) {
+            margin-bottom: 4vh;
+            gap: $spacing-sm;
+        }
+    }
+
+    // Enhanced Glass Button Styles (Specific to Splash)
+    .glass-btn {
+        position: relative;
+        padding: $spacing-lg $spacing-xl;
+        background: linear-gradient(90deg, rgba(2, 6, 23, 0.6) 0%, rgba(15, 23, 42, 0.8) 50%, rgba(2, 6, 23, 0.6) 100%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: $radius-sm; // Sharper edges for RPG feel
+        color: $color-text-main;
+        font-family: $font-body;
+        font-size: 16px;
+        font-weight: 500;
+        letter-spacing: 0.15em;
+        text-transform: uppercase;
+        cursor: pointer;
+        transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+        overflow: hidden;
+        backdrop-filter: blur(4px);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        
+        &::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, $color-primary, transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        &::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent, $color-primary, transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .btn-content {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: $spacing-md;
+            transition: transform 0.3s ease;
+        }
+
+        .btn-icon {
+            width: 18px;
+            height: 18px;
+            color: $color-text-muted;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+
+        &:hover {
+            background: linear-gradient(90deg, rgba(2, 6, 23, 0.8) 0%, rgba(30, 41, 59, 0.9) 50%, rgba(2, 6, 23, 0.8) 100%);
+            border-color: rgba($color-primary, 0.3);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 15px rgba($color-primary, 0.2);
+            color: $color-primary-light;
+
+            &::before, &::after {
+                opacity: 1;
+            }
+
+            .btn-content {
+                transform: scale(1.05);
+            }
+            
+            .btn-icon {
+                color: $color-primary;
+                transform: rotate(15deg);
+                filter: drop-shadow(0 0 5px $color-primary);
+            }
+        }
+
+        &.glass-btn-primary {
+            border-color: rgba($color-primary, 0.3);
+            box-shadow: 0 0 20px rgba($color-primary, 0.1);
+            
+            &:hover {
+                box-shadow: 0 0 30px rgba($color-primary, 0.3);
+            }
+        }
+        
+        &.glass-btn-danger {
+             &:hover {
+                border-color: rgba($color-accent-rose, 0.4);
+                color: $color-accent-rose;
+                box-shadow: 0 0 20px rgba($color-accent-rose, 0.2);
+                
+                .btn-icon {
+                    color: $color-accent-rose;
+                    filter: drop-shadow(0 0 5px $color-accent-rose);
+                }
+
+                &::before, &::after {
+                    background: linear-gradient(to bottom, transparent, $color-accent-rose, transparent);
+                }
+            }
+        }
+    }
+
+    .splash-footer {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: $spacing-md;
+        padding: $spacing-xl $spacing-xl $spacing-lg;
+        z-index: 25;
+        background: linear-gradient(to top, rgba(2, 6, 23, 0.85) 0%, rgba(2, 6, 23, 0.6) 50%, transparent 100%);
+        backdrop-filter: blur(8px);
+
+        // Small screens: keep footer in normal flow so it won't cover the start button
+        @media (max-width: 768px), (max-height: 520px) and (orientation: landscape) {
+            position: relative;
+            bottom: auto;
+            left: auto;
+            right: auto;
+            width: 100%;
+            z-index: 20; // same layer as content
+            padding: $spacing-md $spacing-md $spacing-sm;
+            gap: $spacing-sm;
+        }
+        
+        .footer-line {
+            width: 200px;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            opacity: 0.6;
+            margin-bottom: $spacing-sm;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            align-items: center;
+            width: 100%;
+            max-width: 1600px;
+            gap: $spacing-xl;
+            
+            @media (max-width: 1024px) {
+                grid-template-columns: 1fr;
+                gap: $spacing-lg;
+                text-align: center;
+            }
+            
+            @media (max-width: 768px) {
+                gap: $spacing-md;
+                padding: 0 $spacing-md;
+            }
+            
+            @media (max-width: 480px) {
+                gap: $spacing-sm;
+                padding: 0 $spacing-sm;
+            }
+        }
+        
+        .footer-left {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            
+            @media (max-width: 1024px) {
+                justify-content: center;
+            }
+            
+            .footer-text {
+                color: rgba(255, 255, 255, 0.7);
+                font-size: 11px;
+                letter-spacing: 0.15em;
+                text-transform: uppercase;
+                font-weight: 400;
+                text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+            }
+        }
+        
+        .footer-center {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: $spacing-sm;
+            
+            .footer-author {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 4px;
+                margin-bottom: $spacing-xs;
+                
+                .author-label {
+                    color: rgba(255, 255, 255, 0.5);
+                    font-size: 9px;
+                    letter-spacing: 0.2em;
+                    text-transform: uppercase;
+                    font-weight: 300;
+                    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+                }
+                
+                .author-name {
+                    font-family: $font-fantasy;
+                    font-size: 28px;
+                    font-weight: 700;
+                    letter-spacing: 0.1em;
+                    background: linear-gradient(135deg, 
+                        rgba(251, 191, 36, 1) 0%, 
+                        rgba(245, 158, 11, 1) 30%,
+                        rgba(251, 191, 36, 1) 60%,
+                        rgba(234, 179, 8, 1) 100%);
+                    -webkit-background-clip: text;
+                    background-clip: text;
+                    color: transparent;
+                    text-shadow: 0 0 20px rgba(251, 191, 36, 0.5);
+                    position: relative;
+                    text-transform: uppercase;
+                    filter: drop-shadow(0 2px 8px rgba(251, 191, 36, 0.4));
+                    animation: authorGlow 3s ease-in-out infinite;
+                    
+                    @media (max-width: 768px) {
+                        font-size: 24px;
+                    }
+                    
+                    @media (max-width: 480px) {
+                        font-size: 20px;
+                    }
+                    
+                    &::after {
+                        content: 'POARIES';
+                        position: absolute;
+                        left: 0;
+                        top: 0;
+                        width: 100%;
+                        height: 100%;
+                        background: linear-gradient(135deg, 
+                            rgba(251, 191, 36, 0.8) 0%, 
+                            rgba(245, 158, 11, 0.8) 50%,
+                            rgba(251, 191, 36, 0.8) 100%);
+                        -webkit-background-clip: text;
+                        background-clip: text;
+                        color: transparent;
+                        filter: blur(4px);
+                        z-index: -1;
+                        opacity: 0.6;
+                        animation: authorGlowPulse 2s ease-in-out infinite;
+                    }
+                }
+            }
+            
+            .footer-copyright {
+                p {
+                    margin: 0;
+                    color: rgba(255, 255, 255, 0.7);
+                    font-size: 11px;
+                    line-height: 1.6;
+                    font-weight: 300;
+                    text-align: center;
+                    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+                }
+                
+                .license-link {
+                    color: rgba(255, 255, 255, 0.8);
+                    text-decoration: none;
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 4px;
+                    transition: all 0.3s ease;
+                    margin-left: 4px;
+                    font-weight: 400;
+                    
+                    &:hover {
+                        color: rgba(251, 191, 36, 1);
+                        text-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
+                    }
+                }
+                
+                .license-icons {
+                    display: inline-flex;
+                    align-items: center;
+                    gap: 3px;
+                    margin-left: 6px;
+                    vertical-align: middle;
+                }
+                
+                .license-icon {
+                    height: 16px;
+                    width: auto;
+                    opacity: 0.8;
+                    transition: all 0.3s ease;
+                    filter: brightness(1);
+                }
+                
+                .license-link:hover .license-icon {
+                    opacity: 1;
+                    filter: brightness(1.2) drop-shadow(0 0 4px rgba(251, 191, 36, 0.5));
+                    transform: scale(1.1);
+                }
+            }
+        }
+        
+        .footer-right {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            
+            @media (max-width: 1024px) {
+                justify-content: center;
+            }
+            
+            .footer-navigation {
+                display: flex;
+                align-items: center;
+            }
+            
+            .footer-nav-link {
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                color: rgba(255, 255, 255, 0.8);
+                font-size: 12px;
+                letter-spacing: 0.15em;
+                text-transform: uppercase;
+                text-decoration: none;
+                padding: 8px 16px;
+                border-radius: 6px;
+                transition: all 0.3s ease;
+                font-weight: 600;
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                background: rgba(88, 101, 242, 0.1);
+                text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5);
+                
+                svg {
+                    width: 16px;
+                    height: 16px;
+                    transition: transform 0.3s ease;
+                }
+                
+                &:hover {
+                    color: rgba(255, 255, 255, 1);
+                    background: rgba(88, 101, 242, 0.25);
+                    border-color: rgba(88, 101, 242, 0.5);
+                    transform: translateY(-2px);
+                    box-shadow: 0 4px 12px rgba(88, 101, 242, 0.3);
+                    
+                    svg {
+                        transform: scale(1.15) rotate(5deg);
+                    }
+                }
+                
+                &:active {
+                    transform: translateY(0);
+                }
+            }
+        }
+    }
+
+    // 工具按钮容器
+    .splash-utility-buttons {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        z-index: 20;
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .splash-utility-btn {
+        padding: 0.75rem;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        color: rgba(148, 163, 184, 1);
+        cursor: pointer;
+        backdrop-filter: blur(8px);
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 2.75rem;
+        height: 2.75rem;
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba($color-primary, 0.3);
+            color: rgba(251, 191, 36, 1);
+
+            svg {
+                transform: scale(1.1);
+            }
+        }
+
+        &:active {
+            transform: scale(0.95);
+        }
+
+        svg {
+            width: 1.125rem;
+            height: 1.125rem;
+            transition: transform 0.3s ease;
+        }
+    }
+
+    // Small screens: use available space and place footer below content (no overlap)
+    @media (max-width: 768px), (max-height: 520px) and (orientation: landscape) {
+        justify-content: flex-start;
+
+        .splash-content {
+            flex: 1;
+            min-height: 0;
+        }
+    }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes auroraMove {
+    0% { transform: translate(-10%, -10%) rotate(0deg); }
+    100% { transform: translate(10%, 10%) rotate(5deg); }
+}
+
+@keyframes titleGlowPulse {
+    0%, 100% { opacity: 0.4; filter: blur(8px); }
+    50% { opacity: 0.8; filter: blur(12px); }
+}
+
+@keyframes authorGlow {
+    0%, 100% { 
+        filter: drop-shadow(0 2px 8px rgba(251, 191, 36, 0.4)) 
+                drop-shadow(0 0 12px rgba(251, 191, 36, 0.3));
+    }
+    50% { 
+        filter: drop-shadow(0 2px 12px rgba(251, 191, 36, 0.6)) 
+                drop-shadow(0 0 20px rgba(251, 191, 36, 0.5));
+    }
+}
+
+@keyframes authorGlowPulse {
+    0%, 100% { opacity: 0.5; filter: blur(4px); }
+    50% { opacity: 0.8; filter: blur(6px); }
+}

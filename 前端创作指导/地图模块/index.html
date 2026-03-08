@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>瓦片地图模块</title>
+  <link rel="stylesheet" href="./map.css" />
+</head>
+<body>
+  <div class="app">
+    <header class="toolbar">
+      <div class="title">瓦片地图模块</div>
+      <div class="controls">
+        <button id="zoom-out" type="button">缩小</button>
+        <span id="zoom-level">100%</span>
+        <button id="zoom-in" type="button">放大</button>
+      </div>
+    </header>
+
+    <section class="input-panel">
+      <div class="input-header">
+        <div>粘贴或编辑 <code>&lt;map&gt;...&lt;/map&gt;</code> 数据</div>
+        <button id="render-map" type="button">渲染地图</button>
+      </div>
+      <textarea id="map-input" spellcheck="false"></textarea>
+      <div class="hint">支持完整 <code>&lt;map&gt;</code> 块，或直接粘贴块内内容。</div>
+    </section>
+
+    <section class="map-panel">
+      <div class="map-info">
+        <div>地图：<strong id="map-name">未加载</strong></div>
+        <div>场景：<strong id="scene-name">未加载</strong></div>
+      </div>
+      <div class="map-main">
+        <div class="map-container" id="map-container">
+          <div class="map-grid" id="map-grid"></div>
+        </div>
+        <aside class="tile-info" id="tile-info">
+          <h3>地点信息</h3>
+          <div id="tile-info-content" class="tile-info-content">悬停地图地点查看详情。</div>
+        </aside>
+      </div>
+      <div class="legend" id="legend">
+        <div class="legend-title">图例</div>
+        <ul id="legend-list"></ul>
+      </div>
+    </section>
+  </div>
+
+  <script src="./map.js"></script>
+</body>
+</html>

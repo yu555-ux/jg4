@@ -1,0 +1,75 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>瓦片地图解耦示例</title>
+    <link rel="stylesheet" href="./tilemap.css">
+</head>
+<body>
+    <div class="tilemap-app">
+        <section class="map-controls-area">
+            <div class="map-scale-info">地图: <strong id="map-current-theme">未加载</strong></div>
+            <div>
+                <button class="custom-button small-button" id="map-zoom-out" type="button">-</button>
+                <span id="map-zoom-level" style="padding: 0 0.7em; color: var(--text-secondary); min-width: 45px; display: inline-block; text-align: center;">100%</span>
+                <button class="custom-button small-button" id="map-zoom-in" type="button">+</button>
+            </div>
+        </section>
+
+        <section style="display:flex; gap: 1em; flex-wrap: wrap; align-items: stretch;">
+            <div style="flex: 1 1 420px; min-width: 280px;">
+                <h3 style="margin: 0 0 0.5em 0; color: var(--primary-color);">地图文本</h3>
+                <textarea id="map-input" rows="12" style="width: 100%; background: #120f0d; color: var(--text-color-normal); border: 1px solid var(--border-color); border-radius: 3px; padding: 0.6em; font-family: monospace;"></textarea>
+                <div style="margin-top: 0.6em;">
+                    <button class="custom-button" id="load-map" type="button">加载地图</button>
+                </div>
+            </div>
+            <div style="flex: 1 1 320px; min-width: 240px;">
+                <h3 style="margin: 0 0 0.5em 0; color: var(--primary-color);">提示</h3>
+                <div style="background: rgba(10,8,5,0.6); border: 1px solid var(--border-color); border-radius: 3px; padding: 0.8em;">
+                    <p style="margin: 0 0 0.5em 0;">此页只保留瓦片地图相关逻辑。</p>
+                    <p style="margin: 0;">地图格式参考 `前端创作指导/瓦片地图解耦/地图学习示例`。</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="map-main-area">
+            <div class="dynamic-tile-grid-map-container" id="dynamic-tile-grid-map-container">
+                <div class="dynamic-tile-grid-map" id="dynamic-tile-grid-map">
+                    <p style="grid-column: 1 / -1; color: var(--text-secondary); text-align: center; padding:2em; font-style:italic;">地图加载中或无可用地图数据...</p>
+                </div>
+            </div>
+            <div class="tile-info-panel" id="tile-info-panel">
+                <h4>地点信息</h4>
+                <div id="tile-info-content">
+                    <p style="color:var(--text-secondary); font-style:italic;">悬停地点查看详情。</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="map-legend-filters">
+            <div class="map-legend">
+                <strong>图例:</strong>
+                <ul id="map-legend-list">
+                    <li>
+                        <p style="color: var(--text-secondary); font-style: italic;">图例加载中...</p>
+                    </li>
+                </ul>
+            </div>
+        </section>
+    </div>
+
+    <div id="tile-interaction-panel">
+        <button class="close-btn" aria-label="关闭面板">×</button>
+        <div class="panel-info">
+            <strong id="panel-tile-name">地点名称</strong>
+            <hr>
+            <span id="panel-tile-details" style="font-family: monospace;">地点详细信息...</span>
+        </div>
+        <div class="panel-actions" id="tile-interaction-actions"></div>
+    </div>
+
+    <script src="./tilemap.js"></script>
+</body>
+</html>

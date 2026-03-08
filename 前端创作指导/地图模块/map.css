@@ -1,0 +1,251 @@
+﻿:root {
+  --bg: #0f0f0f;
+  --panel: #1b1b1b;
+  --panel-2: #222;
+  --text: #e6e6e6;
+  --muted: #a0a0a0;
+  --accent: #d4af37;
+  --border: #3b3227;
+  --tile-size: 16px;
+  --tile-step: calc(var(--tile-size) + 1px);
+  --tileset-url: url('https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png');
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: radial-gradient(1200px 800px at 10% 0%, #1b1b1b, #0a0a0a 60%);
+  color: var(--text);
+  font-family: "Noto Sans SC", system-ui, sans-serif;
+}
+
+.app {
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  gap: 16px;
+  padding: 16px;
+  min-height: 100vh;
+}
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--panel);
+  border: 1px solid var(--border);
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+button {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+button:hover { border-color: var(--accent); color: var(--accent); }
+
+.input-panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 12px;
+  display: grid;
+  gap: 8px;
+}
+
+.input-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+textarea {
+  width: 100%;
+  min-height: 180px;
+  background: #0f0f0f;
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 10px;
+  font-family: Consolas, Menlo, monospace;
+  font-size: 13px;
+  resize: vertical;
+}
+
+.hint {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.map-panel {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  padding: 12px;
+  display: grid;
+  gap: 12px;
+}
+
+.map-info {
+  display: flex;
+  gap: 16px;
+  color: var(--muted);
+}
+
+.map-main {
+  display: grid;
+  grid-template-columns: 1fr 260px;
+  gap: 12px;
+  min-height: 0;
+}
+
+.map-container {
+  background: #080808;
+  border: 1px solid var(--border);
+  overflow: auto;
+  padding: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.map-grid {
+  display: grid;
+  background: #000;
+  border: 1px solid #000;
+  image-rendering: pixelated;
+  transform-origin: center center;
+  transition: transform 0.15s ease-out;
+}
+
+.map-tile {
+  width: var(--tile-size);
+  height: var(--tile-size);
+  background-image: var(--tileset-url);
+  background-repeat: no-repeat;
+  border: 1px solid transparent;
+}
+
+.map-tile:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 6px rgba(212, 175, 55, 0.7);
+}
+
+.tile-info {
+  background: #111;
+  border: 1px solid var(--border);
+  padding: 10px;
+  overflow: auto;
+}
+
+.tile-info-content {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.legend {
+  background: #111;
+  border: 1px solid var(--border);
+  padding: 10px;
+}
+
+.legend-title {
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+#legend-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+}
+
+#legend-list li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.legend-tile {
+  width: var(--tile-size);
+  height: var(--tile-size);
+  background-image: var(--tileset-url);
+  background-repeat: no-repeat;
+  border: 1px solid var(--border);
+}
+
+/* Tile definitions (subset, extend if needed) */
+.tile-player-avatar { background-position: calc(var(--tile-step) * -28) calc(var(--tile-step) * -1); }
+.tile-npc-figure { background-position: calc(var(--tile-step) * -25) calc(var(--tile-step) * 0); }
+.tile-monster-figure { background-position: calc(var(--tile-step) * -26) calc(var(--tile-step) * -2); }
+.tile-grass-dark { background-position: calc(var(--tile-step) * 0) calc(var(--tile-step) * 0); }
+.tile-grass-light { background-position: calc(var(--tile-step) * -7) calc(var(--tile-step) * 0); }
+.tile-forest-floor-dirt { background-position: calc(var(--tile-step) * -6) calc(var(--tile-step) * 0); }
+.tile-path-brown { background-position: calc(var(--tile-step) * -5) calc(var(--tile-step) * -2); }
+.tile-rock-small { background-position: calc(var(--tile-step) * -5) calc(var(--tile-step) * -2); }
+.tile-water-surface { background-position: calc(var(--tile-step) * -14) calc(var(--tile-step) * -2); }
+.tile-building-roof-brown { background-position: calc(var(--tile-step) * -6) calc(var(--tile-step) * -20); }
+.tile-shop-awning { background-position: calc(var(--tile-step) * -7) calc(var(--tile-step) * -20); }
+.tile-palace-interior-wall { background-position: calc(var(--tile-step) * -10) calc(var(--tile-step) * -17); }
+.tile-palace-stone-floor { background-position: calc(var(--tile-step) * -37) calc(var(--tile-step) * -12); }
+.tile-dungeon-wall-brick { background-position: calc(var(--tile-step) * -16) calc(var(--tile-step) * 0); }
+.tile-dungeon-floor-stone { background-position: calc(var(--tile-step) * -4) calc(var(--tile-step) * 0); }
+.tile-dungeon-cell-door { background-position: calc(var(--tile-step) * -11) calc(var(--tile-step) * -3); }
+.tile-chest-wooden { background-position: calc(var(--tile-step) * -4) calc(var(--tile-step) * -14); }
+.tile-treasure-box { background-position: calc(var(--tile-step) * -8) calc(var(--tile-step) * -6); }
+.tile-forest-tree-trunk { background-position: calc(var(--tile-step) * -3) calc(var(--tile-step) * -1); }
+.tile-forest-bush { background-position: calc(var(--tile-step) * 0) calc(var(--tile-step) * -2); }
+.tile-forest-dense-tree { background-position: calc(var(--tile-step) * -2) calc(var(--tile-step) * -1); }
+.tile-interior-wall { background-position: calc(var(--tile-step) * -13) calc(var(--tile-step) * -16); }
+.tile-interior-floor { background-position: calc(var(--tile-step) * -11) calc(var(--tile-step) * -2); }
+.tile-interior-door { background-position: calc(var(--tile-step) * -10) calc(var(--tile-step) * -9); }
+.tile-bar-counter { background-position: calc(var(--tile-step) * -13) calc(var(--tile-step) * -10); }
+.tile-interior-stairs { background-position: calc(var(--tile-step) * -2) calc(var(--tile-step) * -6); }
+.tile-fireplace { background-position: calc(var(--tile-step) * -5) calc(var(--tile-step) * -16); }
+.tile-table-and-chairs { background-position: calc(var(--tile-step) * -12) calc(var(--tile-step) * -9); }
+.tile-outdoor-ground-paved { background-position: calc(var(--tile-step) * -11) calc(var(--tile-step) * -1); }
+.tile-market-stall { background-position: calc(var(--tile-step) * -14) calc(var(--tile-step) * -11); }
+.tile-building-exterior-generic { background-position: calc(var(--tile-step) * -1) calc(var(--tile-step) * -21); }
+.tile-weapon-rack { background-position: calc(var(--tile-step) * -15) calc(var(--tile-step) * -1); }
+.tile-watchtower-small { background-position: calc(var(--tile-step) * -2) calc(var(--tile-step) * -19); }
+.tile-ruin-floor-broken { background-position: calc(var(--tile-step) * -18) calc(var(--tile-step) * -1); }
+.tile-ruin-wall-collapsed { background-position: calc(var(--tile-step) * -2) calc(var(--tile-step) * -11); }
+.tile-bookshelf-tall { background-position: calc(var(--tile-step) * -6) calc(var(--tile-step) * -5); }
+.tile-scroll-ancient { background-position: calc(var(--tile-step) * -45) calc(var(--tile-step) * -5); }
+.tile-lectern-ornate { background-position: calc(var(--tile-step) * -43) calc(var(--tile-step) * -4); }
+.tile-location-city { background-position: calc(var(--tile-step) * -7) calc(var(--tile-step) * -19); }
+.tile-location-capital { background-position: calc(var(--tile-step) * -2) calc(var(--tile-step) * -19); }
+.tile-location-player { background-position: calc(var(--tile-step) * -6) calc(var(--tile-step) * -19); }
+.tile-landmass { background-position: calc(var(--tile-step) * -1) calc(var(--tile-step) * 0); }
+.tile-mountain-range { background-position: calc(var(--tile-step) * -22) calc(var(--tile-step) * 0); }
+.tile-water-deep { background-position: calc(var(--tile-step) * -8) calc(var(--tile-step) * -5); }
+.tile-nation-player { background-position: calc(var(--tile-step) * -17) calc(var(--tile-step) * -8); }
+.tile-nation-other { background-position: calc(var(--tile-step) * -17) calc(var(--tile-step) * -9); }
+.tile-space-empty { background-image: none; background-color: #050510; }
+.tile-star-yellow { background-position: calc(var(--tile-step) * -43) calc(var(--tile-step) * -12); }
+.tile-planet-player { background-position: calc(var(--tile-step) * -38) calc(var(--tile-step) * -2); }
+.tile-planet-other { background-position: calc(var(--tile-step) * -39) calc(var(--tile-step) * -13); }
+.tile-nebula-hazard { background-position: calc(var(--tile-step) * -35) calc(var(--tile-step) * -21); }
+.tile-nav-beacon { background-position: calc(var(--tile-step) * -41) calc(var(--tile-step) * -21); }
+.tile-unknown { background-image: none; background-color: rgba(128,0,128,0.6); border: 1px dashed #ffeb3b; }
+
+@media (max-width: 900px) {
+  .map-main { grid-template-columns: 1fr; }
+  .tile-info { order: 2; }
+}

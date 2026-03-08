@@ -1,0 +1,80 @@
+<%_
+// --- 变量声明区域 ---
+// 声明堕落值变量
+if (typeof fallValue === 'undefined') var fallValue = getvar('stat_data.角色基础.总堕落值', { defaults: 0 });
+
+// 声明依存度变量 (范围 -200 ~ 200)
+if (typeof relianceValue === 'undefined') var relianceValue = getvar('stat_data.角色基础.依存度', { defaults: 0 });
+_%>
+
+<%_ /* ============================== */ _%>
+<%_ /* 第一部分：[顾昀]基于堕落值的人设 */ _%>
+<%_ /* ============================== */ _%>
+
+<%_ if (fallValue >= 0 && fallValue <= 100) { _%>
+<%- await getwi(null, '[顾昀]清纯少女') %>
+
+<%_ } else if (fallValue >= 101 && fallValue <= 200) { _%>
+<%- await getwi(null, '[顾昀]渐染尘埃') %>
+
+<%_ } else if (fallValue >= 201 && fallValue <= 300) { _%>
+<%- await getwi(null, '[顾昀]欲望萌芽') %>
+
+<%_ } else if (fallValue >= 301 && fallValue <= 400) { _%>
+<%- await getwi(null, '[顾昀]禁果初尝') %>
+
+<%_ } else if (fallValue >= 401 && fallValue <= 500) { _%>
+<%- await getwi(null, '[顾昀]灵肉沉沦') %>
+
+<%_ } else if (fallValue >= 501 && fallValue <= 600) { _%>
+<%- await getwi(null, '[顾昀]欲海浮沉') %>
+
+<%_ } else if (fallValue >= 601 && fallValue <= 700) { _%>
+<%- await getwi(null, '[顾昀]绝世尤物') %>
+
+<%_ } else if (fallValue >= 701 && fallValue <= 800) { _%>
+<%- await getwi(null, '[顾昀]淫心入骨') %>
+
+<%_ } else if (fallValue >= 801 && fallValue <= 900) { _%>
+<%- await getwi(null, '[顾昀]倾世淫仙') %>
+
+<%_ } else if (fallValue >= 901) { _%>
+<%- await getwi(null, '[顾昀]堕落神女') %>
+
+<%_ } else { _%>
+<%- await getwi(null, '[顾昀]清纯少女') %>
+<%_ } _%>
+
+<%_ /* ============================== */ _%>
+<%_ /* 第二部分：[顾昀]对仙玉录态度 */ _%>
+<%_ /* 范围：-200 到 200，共8个阶段 */ _%>
+<%_ /* ============================== */ _%>
+
+<%_ if (relianceValue >= -200 && relianceValue <= -151) { _%>
+<%- await getwi(null, '[顾昀态度]反抗') %>
+
+<%_ } else if (relianceValue >= -150 && relianceValue <= -101) { _%>
+<%- await getwi(null, '[顾昀态度]敌视') %>
+
+<%_ } else if (relianceValue >= -100 && relianceValue <= -51) { _%>
+<%- await getwi(null, '[顾昀态度]戒备') %>
+
+<%_ } else if (relianceValue >= -50 && relianceValue <= -1) { _%>
+<%- await getwi(null, '[顾昀态度]中立') %>
+
+<%_ } else if (relianceValue >= 0 && relianceValue <= 49) { _%>
+<%- await getwi(null, '[顾昀态度]顺从') %>
+
+<%_ } else if (relianceValue >= 50 && relianceValue <= 99) { _%>
+<%- await getwi(null, '[顾昀态度]依赖') %>
+
+<%_ } else if (relianceValue >= 100 && relianceValue <= 149) { _%>
+<%- await getwi(null, '[顾昀态度]痴迷') %>
+
+<%_ } else if (relianceValue >= 150) { _%>
+<%- await getwi(null, '[顾昀态度]狂热') %>
+
+<%_ } else { _%>
+<%_ /* 默认加载中立阶段，防止数值异常 */ _%>
+<%- await getwi(null, '[顾昀态度]顺从') %>
+<%_ } _%>

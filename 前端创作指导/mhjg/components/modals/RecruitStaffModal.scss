@@ -1,0 +1,308 @@
+@use '../../styles/variables.scss' as *;
+
+.mhjg-modal-recruit-staff {
+  position: fixed;
+  inset: 0;
+  z-index: 60; // 比普通模态框更高
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $spacing-xl;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+
+  &.open {
+    opacity: 1;
+    pointer-events: all;
+  }
+
+  .modal-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+
+  .modal-window {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    max-height: 90vh;
+    @include glass-panel;
+    border-radius: $radius-xl;
+    display: flex;
+    flex-direction: column;
+    animation: scaleIn 0.3s ease;
+    overflow: hidden;
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  }
+
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: $spacing-lg;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background: linear-gradient(90deg, rgba(15, 23, 42, 0.9) 0%, transparent 100%);
+
+    .modal-header-left {
+      display: flex;
+      align-items: center;
+      gap: $spacing-md;
+    }
+
+    .modal-icon {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: $radius-lg;
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2));
+      color: $color-secondary;
+      flex-shrink: 0;
+
+      svg {
+        width: 24px;
+        height: 24px;
+      }
+    }
+
+    .modal-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: $spacing-xs;
+    }
+
+    .modal-title {
+      margin: 0;
+      font-size: 1.5rem;
+      font-weight: 600;
+      @include text-gradient-gold;
+    }
+
+    .modal-subtitle {
+      margin: 0;
+      font-size: 0.875rem;
+      color: rgba(255, 255, 255, 0.6);
+    }
+
+    .modal-close {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: none;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: $radius-md;
+      color: rgba(255, 255, 255, 0.7);
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.1);
+        color: rgba(255, 255, 255, 1);
+        transform: rotate(90deg);
+      }
+
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+  }
+
+  .modal-content {
+    flex: 1;
+    padding: $spacing-xl;
+    overflow-y: auto;
+    @include scrollbar;
+  }
+
+  .recruit-form {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-lg;
+  }
+
+  .form-section {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-sm;
+  }
+
+  .form-label {
+    display: flex;
+    flex-direction: column;
+    gap: $spacing-xs;
+
+    .label-text {
+      font-size: 0.9375rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .label-hint {
+      font-size: 0.8125rem;
+      color: rgba(255, 255, 255, 0.5);
+    }
+  }
+
+  .gender-options {
+    display: flex;
+    gap: $spacing-md;
+    flex-wrap: wrap;
+  }
+
+  .gender-option {
+    flex: 1;
+    min-width: 100px;
+    position: relative;
+    cursor: pointer;
+
+    input[type="radio"] {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+
+      &:checked + .option-label {
+        background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(59, 130, 246, 0.3));
+        border-color: $color-secondary;
+        color: $color-secondary;
+        box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.2);
+      }
+    }
+
+    .option-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: $spacing-md $spacing-lg;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: $radius-md;
+      background: rgba(255, 255, 255, 0.03);
+      color: rgba(255, 255, 255, 0.7);
+      font-size: 0.875rem;
+      transition: all 0.2s ease;
+      user-select: none;
+
+      &:hover {
+        background: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.2);
+        color: rgba(255, 255, 255, 0.9);
+      }
+    }
+  }
+
+  .form-input,
+  .form-textarea {
+    width: 100%;
+    padding: $spacing-md;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: $radius-md;
+    background: rgba(15, 23, 42, 0.6);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 0.9375rem;
+    font-family: inherit;
+    transition: all 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: $color-secondary;
+      background: rgba(15, 23, 42, 0.8);
+      box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+    }
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.4);
+    }
+  }
+
+  .form-textarea {
+    resize: vertical;
+    min-height: 80px;
+    line-height: 1.6;
+  }
+
+  .salary-input-wrapper {
+    display: flex;
+    align-items: center;
+    gap: $spacing-md;
+    position: relative;
+
+    .form-input-number {
+      flex: 1;
+      padding-right: 80px;
+    }
+
+    .salary-unit {
+      position: absolute;
+      right: $spacing-md;
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 0.875rem;
+      pointer-events: none;
+    }
+  }
+
+  .form-actions {
+    display: flex;
+    gap: $spacing-md;
+    margin-top: $spacing-md;
+    padding-top: $spacing-lg;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+  }
+
+  .form-btn {
+    flex: 1;
+    padding: $spacing-md $spacing-lg;
+    border: none;
+    border-radius: $radius-md;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: $spacing-sm;
+
+    svg {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  .form-btn-cancel {
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.9);
+    }
+  }
+
+  .form-btn-submit {
+    @include glass-card;
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.3), rgba(59, 130, 246, 0.3));
+    color: rgba(255, 255, 255, 0.95);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+
+    &:hover {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.4), rgba(59, 130, 246, 0.4));
+      box-shadow: 0 6px 16px rgba(139, 92, 246, 0.3);
+      transform: translateY(-1px);
+    }
+
+    &:active {
+      transform: translateY(0);
+    }
+  }
+}
+

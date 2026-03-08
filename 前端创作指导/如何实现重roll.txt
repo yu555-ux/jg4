@@ -1,0 +1,506 @@
+# 长按正文显示重roll和编辑功能实现提示词
+
+## 功能需求
+
+在正文显示区域实现长按功能，长按后显示上下文菜单，提供以下两个选项：
+1. **重roll**：删除当前assistant消息，使用相同的user消息重新生成
+2. **编辑正文**：打开编辑模态框，允许用户修改正文内容并保存
+
+## 技术实现要点
+
+### 1. 状态管理
+
+需要添加以下状态：
+
+```typescript
+// 上下文菜单状态（位置坐标）
+const [contextMenu, setContextMenu] = useState<{ x: number; y: number } | null>(null);
+
+// 编辑状态（包含消息ID、当前文本、完整消息）
+const [editingMessage, setEditingMessage] = useState<{
+  messageId: number;
+  currentText: string;
+  fullMessage: string;
+} | null>(null);
+
+// 当前消息信息（用于重roll和编辑）
+const [currentMessageInfo, setCurrentMessageInfo] = useState<{
+  messageId?: number;
+  userMessageId?: number;
+  fullMessage?: string;
+}>({});
+
+// 长按定时器引用
+const longPressTimerRef = useRef<number | null>(null);
+```
+
+### 2. 长按事件处理
+
+**关键点**：
+- 长按时间阈值：500毫秒
+- 需要同时支持鼠标（desktop）和触摸（mobile）
+- 在正文容器上绑定 `onMouseDown`、`onMouseUp`、`onTouchStart`、`onTouchEnd`、`onTouchCancel` 事件
+
+```typescript
+// 开始长按
+const handleLongPressStart = (event: React.MouseEvent | React.TouchEvent) => {
+  // 检查条件：不能有已打开的菜单、必须有正文、必须有消息ID、不能正在加载
+  // ⚠️ 重要：messageId 可能为 0，不能用 truthy 检查，必须显式检查 undefined 或 null
+  if (
+    contextMenu ||
+    !maintext ||
+    currentMessageInfo.messageId === undefined ||
+    currentMessageInfo.messageId === null ||
+    isLoading
+  ) {
+    return;
+  }
+
+  // 设置500ms延迟触发上下文菜单
+  longPressTimerRef.current = window.setTimeout(() => {
+    // 获取鼠标/触摸位置
+    const clientX = 'touches' in event ? event.touches[0].clientX : event.clientX;
+    const clientY = 'touches' in event ? event.touches[0].clientY : event.clientY;
+
+    // 显示上下文菜单
+    setContextMenu({ x: clientX, y: clientY });
+    longPressTimerRef.current = null;
+  }, 500);
+};
+
+// 结束长按
+const handleLongPressEnd = () => {
+  if (longPressTimerRef.current) {
+    clearTimeout(longPressTimerRef.current);
+    longPressTimerRef.current = null;
+  }
+};
+```
+
+**事件绑定**：
+
+```tsx
+<div
+  className="maintext-container"
+  onMouseDown={(e) => {
+    if (contextMenu) return;
+    e.preventDefault();
+    e.stopPropagation();
+    // ⚠️ 重要：messageId 可能为 0，不能用 truthy 检查
+    if (currentMessageInfo.messageId !== undefined && currentMessageInfo.messageId !== null) {
+      handleLongPressStart(e);
+    }
+  }}
+  onMouseUp={(e) => {
+    e.stopPropagation();
+    handleLongPressEnd();
+  }}
+  onTouchStart={(e) => {
+    if (contextMenu) return;
+    if (currentMessageInfo.messageId !== undefined && currentMessageInfo.messageId !== null) {
+      handleLongPressStart(e);
+    }
+  }}
+  onTouchEnd={(e) => {
+    handleLongPressEnd();
+  }}
+  onTouchCancel={(e) => {
+    handleLongPressEnd();
+  }}
+  style={{ cursor: (currentMessageInfo.messageId !== undefined && currentMessageInfo.messageId !== null) ? 'pointer' : 'default' }}
+>
+  {/* 正文内容 */}
+</div>
+```
+
+### 3. 重roll功能
+
+```typescript
+const handleRegenerate = async () => {
+  // ⚠️ 重要：messageId 可能为 0，不能用 truthy 检查
+  if (
+    currentMessageInfo.messageId === undefined ||
+    currentMessageInfo.messageId === null ||
+    currentMessageInfo.userMessageId === undefined ||
+    currentMessageInfo.userMessageId === null
+  ) {
+    alert('无法重新生成：缺少必要的数据');
+    setContextMenu(null);
+    return;
+  }
+
+  try {
+    setIsLoading(true);
+    setContextMenu(null);
+
+    // 1. 获取user消息内容
+    const userMessages = getChatMessages(currentMessageInfo.userMessageId, { role: 'user' });
+    if (!userMessages || userMessages.length === 0) {
+      throw new Error('无法找到用户消息');
+    }
+    const userMessageText = userMessages[0].message || '';
+
+    // 2. 删除当前的assistant消息
+    await deleteChatMessages([currentMessageInfo.messageId], { refresh: 'none' });
+
+    // 3. 使用统一请求处理器重新生成（传递相同的user消息文本）
+    const success = await handleUnifiedRequest(userMessageText, {
+      onDisableOptions: () => setIsLoading(true),
+      onShowGenerating: () => setIsLoading(true),
+      onHideGenerating: () => setIsLoading(false),
+      onEnableOptions: () => setIsLoading(false),
+      onRefreshStory: () => {
+        setTimeout(() => {
+          loadMaintext(); // 重新加载消息内容
+        }, 100);
+      },
+      onError: (error) => {
+        setIsLoading(false);
+        alert(`重新生成失败: ${error.message}`);
+      },
+    });
+
+    if (!success) {
+      setIsLoading(false);
+    }
+  } catch (error) {
+    setIsLoading(false);
+    alert(`重新生成失败: ${error instanceof Error ? error.message : String(error)}`);
+  }
+};
+```
+
+### 4. 编辑功能
+
+```typescript
+// 打开编辑模态框
+const handleEdit = () => {
+  // ⚠️ 重要：messageId 可能为 0，不能用 truthy 检查
+  if (
+    currentMessageInfo.messageId === undefined ||
+    currentMessageInfo.messageId === null ||
+    !currentMessageInfo.fullMessage
+  ) {
+    alert('无法编辑：缺少必要的数据');
+    setContextMenu(null);
+    return;
+  }
+
+  try {
+    // 从完整消息中提取正文部分（假设使用 <maintext> 标签）
+    const maintextMatch = currentMessageInfo.fullMessage.match(/<maintext>([\s\S]*?)<\/maintext>/i);
+    if (!maintextMatch) {
+      alert('无法提取要编辑的文本内容');
+      return;
+    }
+
+    // 设置编辑状态
+    setEditingMessage({
+      messageId: currentMessageInfo.messageId,
+      currentText: maintextMatch[1].trim(),
+      fullMessage: currentMessageInfo.fullMessage,
+    });
+    setContextMenu(null);
+  } catch (error) {
+    alert(`编辑消息失败: ${error instanceof Error ? error.message : String(error)}`);
+  }
+};
+
+// 保存编辑
+const handleSaveEdit = async () => {
+  if (!editingMessage) return;
+
+  try {
+    const { messageId, currentText, fullMessage } = editingMessage;
+
+    // 更新消息内容（替换maintext部分）
+    const updatedMessage = fullMessage.replace(
+      /<maintext>[\s\S]*?<\/maintext>/i,
+      `<maintext>${currentText}</maintext>`
+    );
+
+    // 保存更新（使用 setChatMessages API）
+    await setChatMessages(
+      [{ message_id: messageId, message: updatedMessage }],
+      { refresh: 'affected' }
+    );
+
+    // 关闭编辑模态框
+    setEditingMessage(null);
+
+    // 刷新显示
+    setTimeout(() => {
+      loadMaintext(); // 重新加载消息内容
+    }, 100);
+  } catch (error) {
+    alert(`保存编辑失败: ${error instanceof Error ? error.message : String(error)}`);
+  }
+};
+```
+
+### 5. 上下文菜单UI
+
+```tsx
+{contextMenu && (
+  <div
+    className="context-menu"
+    style={{
+      position: 'fixed',
+      left: `${Math.min(contextMenu.x, window.innerWidth - 220)}px`,
+      top: `${Math.min(contextMenu.y, window.innerHeight - 100)}px`,
+      zIndex: 1000,
+      backgroundColor: 'rgba(0, 0, 0, 0.95)',
+      border: '1px solid rgba(30, 255, 0, 0.3)',
+      boxShadow: '0 4px 20px rgba(0, 0, 0, 0.8)',
+      minWidth: '200px',
+    }}
+    onClick={(e) => {
+      e.stopPropagation();
+      e.preventDefault();
+    }}
+  >
+    {/* 菜单标题栏 */}
+    <div style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 16px' }}>
+      <span>操作</span>
+      <button onClick={() => setContextMenu(null)}>×</button>
+    </div>
+
+    {/* 重roll按钮 */}
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        if (!isLoading) {
+          handleRegenerate();
+        }
+      }}
+      disabled={isLoading}
+    >
+      {isLoading ? '⏳ 处理中...' : '🔄 重roll'}
+    </button>
+
+    {/* 编辑按钮 */}
+    <button
+      onClick={(e) => {
+        e.stopPropagation();
+        if (!isLoading) {
+          handleEdit();
+        }
+      }}
+      disabled={isLoading}
+    >
+      ✏️ 修改正文
+    </button>
+  </div>
+)}
+```
+
+### 6. 编辑模态框UI
+
+```tsx
+{editingMessage && (
+  <div
+    style={{
+      position: 'fixed',
+      inset: 0,
+      zIndex: 2000,
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'rgba(0, 0, 0, 0.8)',
+      backdropFilter: 'blur(4px)',
+    }}
+  >
+    <div style={{ backgroundColor: 'rgba(0, 0, 0, 0.95)', width: '100%', maxWidth: '800px' }}>
+      {/* 标题栏 */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', padding: '16px 20px' }}>
+        <h2>编辑文本</h2>
+        <button onClick={() => setEditingMessage(null)}>×</button>
+      </div>
+
+      {/* 文本编辑区 */}
+      <div style={{ padding: '20px' }}>
+        <textarea
+          value={editingMessage.currentText}
+          onChange={(e) =>
+            setEditingMessage({ ...editingMessage, currentText: e.target.value })
+          }
+          style={{
+            width: '100%',
+            height: '400px',
+            padding: '12px',
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            border: '1px solid rgba(30, 255, 0, 0.2)',
+            color: 'rgba(30, 255, 0, 0.9)',
+            fontFamily: 'monospace',
+            fontSize: '14px',
+            resize: 'none',
+            outline: 'none',
+            lineHeight: '1.6',
+          }}
+        />
+
+        {/* 按钮组 */}
+        <div style={{ display: 'flex', gap: '12px', marginTop: '16px' }}>
+          <button onClick={handleSaveEdit}>保存</button>
+          <button onClick={() => setEditingMessage(null)}>取消</button>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+```
+
+### 7. 点击外部关闭菜单
+
+```typescript
+useEffect(() => {
+  const handleClickOutside = (event: MouseEvent) => {
+    if (contextMenu) {
+      const target = event.target as HTMLElement;
+      const menuElement = target.closest('.context-menu');
+      const textElement = target.closest('.maintext-container');
+      if (!menuElement && !textElement) {
+        setContextMenu(null);
+      }
+    }
+  };
+
+  if (contextMenu) {
+    const timer = setTimeout(() => {
+      document.addEventListener('click', handleClickOutside, true);
+    }, 300);
+
+    return () => {
+      clearTimeout(timer);
+      document.removeEventListener('click', handleClickOutside, true);
+    };
+  }
+}, [contextMenu]);
+```
+
+### 8. 数据加载
+
+在加载消息内容时，需要保存消息信息：
+
+```typescript
+const loadMaintext = () => {
+  try {
+    const result = loadFromLatestMessage(); // 获取最新消息
+    // ... 设置 maintext 和 options ...
+    
+    // ⚠️ 重要：保存当前消息信息（用于长按功能）
+    setCurrentMessageInfo({
+      messageId: result.messageId,
+      userMessageId: result.userMessageId,
+      fullMessage: result.fullMessage,
+    });
+  } catch (error) {
+    console.error('加载消息失败:', error);
+  }
+};
+```
+
+## 关键注意事项
+
+### 1. messageId 可能为 0
+
+**⚠️ 非常重要**：在聊天系统中，消息ID可能从0开始。在JavaScript中，`0` 是 falsy 值，所以不能使用 `if (messageId)` 这样的检查，必须显式检查：
+
+```typescript
+// ❌ 错误：如果 messageId 为 0，这个检查会失败
+if (currentMessageInfo.messageId) {
+  // ...
+}
+
+// ✅ 正确：显式检查 undefined 和 null
+if (currentMessageInfo.messageId !== undefined && currentMessageInfo.messageId !== null) {
+  // ...
+}
+```
+
+### 2. API函数
+
+需要以下全局API函数（由酒馆助手提供）：
+
+```typescript
+// 获取聊天消息
+declare function getChatMessages(
+  range: string | number,
+  options?: { role?: 'all' | 'system' | 'assistant' | 'user' },
+): Array<{ message: string; message_id: number; role: string }>;
+
+// 删除聊天消息
+declare function deleteChatMessages(
+  message_ids: number[],
+  options?: { refresh?: 'none' | 'all' },
+): Promise<void>;
+
+// 更新聊天消息
+declare function setChatMessages(
+  messages: Array<{ message_id: number; message: string }>,
+  options?: { refresh?: 'none' | 'affected' | 'all' },
+): Promise<void>;
+
+// 统一请求处理器（用于重新生成）
+declare function handleUnifiedRequest(
+  userInput: string,
+  callbacks?: {
+    onDisableOptions?: () => void;
+    onShowGenerating?: () => void;
+    onHideGenerating?: () => void;
+    onEnableOptions?: () => void;
+    onRefreshStory?: () => void;
+    onError?: (error: Error) => void;
+  },
+): Promise<boolean>;
+```
+
+### 3. 消息格式
+
+假设消息使用 `<maintext>` 标签包裹正文内容：
+
+```xml
+<maintext>
+这里是正文内容
+</maintext>
+```
+
+编辑时需要提取和替换这个标签内的内容。
+
+### 4. 事件处理顺序
+
+- `onMouseDown` / `onTouchStart`：开始长按计时
+- `onMouseUp` / `onTouchEnd` / `onTouchCancel`：取消长按计时
+- 如果500ms内没有释放，显示上下文菜单
+
+### 5. 样式和UX
+
+- 上下文菜单使用 `position: fixed`，并限制在窗口范围内
+- 编辑模态框使用全屏遮罩层（backdrop blur）
+- 按钮应该有hover效果和禁用状态
+- 加载状态应该禁用所有交互
+
+## 实现步骤
+
+1. 添加所需的状态和ref
+2. 实现长按事件处理函数
+3. 实现重roll功能
+4. 实现编辑功能（打开和保存）
+5. 添加上下文菜单UI
+6. 添加编辑模态框UI
+7. 在正文容器上绑定事件
+8. 实现点击外部关闭菜单的逻辑
+9. 在加载消息时保存消息信息
+10. 测试各种边界情况（messageId为0、无消息、正在加载等）
+
+## 测试要点
+
+- [ ] 长按正文区域能触发上下文菜单
+- [ ] 鼠标和触摸设备都能正常工作
+- [ ] messageId为0时也能正常工作
+- [ ] 重roll功能能正确删除消息并重新生成
+- [ ] 编辑功能能正确提取、修改和保存正文
+- [ ] 点击外部能关闭上下文菜单
+- [ ] 加载状态时禁用所有交互
+- [ ] 没有消息时不显示菜单
+

@@ -1,0 +1,298 @@
+@import './variables.scss';
+
+// Global Styles
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  min-height: 100%;
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overscroll-behavior: contain;
+}
+
+body {
+  background-color: $color-bg-deep;
+  color: $color-text-main;
+  font-family: $font-body;
+  font-weight: normal;
+  overflow-x: hidden;
+  overflow-y: auto;
+  @include scrollbar;
+}
+
+#app {
+  width: 100%;
+  min-height: 100%;
+  height: 100%;
+  position: relative;
+}
+
+// Utility Classes
+.rpg-panel {
+  @include glass-panel;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+}
+
+.rpg-card {
+  @include glass-card;
+  border-radius: $radius-lg;
+  padding: $spacing-lg;
+}
+
+.rpg-btn {
+  @include flex-center;
+  padding: $spacing-sm $spacing-md;
+  border-radius: $radius-md;
+}
+
+// 全局富文本样式 - 确保在所有组件中都能应用
+// 这些样式会被 .story-maintext 和 .story-option-btn 继承
+.text-highlight {
+  // **文本** - 加粗/高亮（金色）
+  color: hsl(43, 100%, 65%) !important;
+  font-weight: 700;
+}
+
+.text-emphasis {
+  // *文本* - 强调（橙色）
+  color: hsl(25, 100%, 65%) !important;
+  font-weight: 600;
+}
+
+.text-underline {
+  // _文本_ - 下划线强调（青色）
+  color: hsl(180, 70%, 70%) !important;
+  text-decoration: underline;
+  text-decoration-color: hsl(180, 70%, 70%);
+}
+
+.text-strikethrough {
+  // ~文本~ - 删除线（灰色）
+  color: hsl(0, 0%, 60%) !important;
+  text-decoration: line-through;
+  text-decoration-color: hsl(0, 0%, 50%);
+}
+
+.text-special {
+  // #文本# 或 【文本】 - 标题/特殊（紫色）
+  color: hsl(258, 85%, 75%) !important;
+  font-weight: 600;
+}
+
+.text-note {
+  // [文本] - 注释/说明（蓝色）
+  color: hsl(210, 80%, 70%) !important;
+  font-style: italic;
+}
+
+.text-bracket {
+  // (文本) - 括号内容（绿色）
+  color: hsl(142, 70%, 65%) !important;
+}
+
+.text-quote-cn {
+  // 「文本」 - 引号内容（粉色）
+  color: hsl(330, 70%, 75%) !important;
+}
+
+.text-quote {
+  // "文本" - 引用样式（紫色）
+  color: hsl(258, 85%, 75%) !important;
+  font-style: italic;
+}
+
+.text-quote-single {
+  // '文本' - 单引号引用（浅蓝色）
+  color: hsl(200, 80%, 75%) !important;
+  font-style: italic;
+  border: 1px solid $color-border;
+  background: rgba(255, 255, 255, 0.05);
+  color: $color-text-main;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: $color-primary;
+    transform: translateY(-2px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  &.rpg-btn-primary {
+    background: linear-gradient(135deg, $color-primary-dark 0%, $color-primary 100%);
+    border-color: $color-primary;
+    color: #000;
+
+    &:hover {
+      background: linear-gradient(135deg, $color-primary 0%, $color-primary-light 100%);
+    }
+  }
+}
+
+.rpg-window {
+  @include glass-panel;
+  border-radius: $radius-xl;
+  box-shadow: $shadow-lg;
+}
+
+.fantasy-font {
+  font-family: $font-fantasy;
+}
+
+.text-glow-gold {
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+}
+
+.text-glow-magic {
+  text-shadow: 0 0 10px rgba(139, 92, 246, 0.5);
+}
+
+// Loading state
+.loading {
+  @include flex-center;
+  height: 100%;
+  font-size: 1.2em;
+  color: $color-primary;
+}
+
+// App Layout
+.mhjg-app {
+  position: relative;
+  width: 100%;
+  min-height: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.mhjg-background {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+
+  .background-image {
+    position: absolute;
+    inset: 0;
+    background-image: url('https://images.unsplash.com/photo-1519074069444-1ba4fff66d16?q=80&w=2544&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    transition: all 1s ease;
+    filter: blur(8px) brightness(0.4);
+  }
+
+  .background-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(15, 23, 42, 0.6) 40%, rgba(15, 23, 42, 0.95) 100%);
+    background: radial-gradient(ellipse at top, rgba(99, 102, 241, 0.2) 0%, transparent 50%);
+  }
+}
+
+.mhjg-main {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  width: 100%;
+  max-width: 1920px;
+  margin: 0 auto;
+  box-shadow: $shadow-lg;
+  height: 100%;
+  min-height: 100%;
+
+  // Mobile: stack layout, keep navigation at bottom, and let main content scroll
+  @media (max-width: 768px) {
+    flex-direction: column;
+  }
+
+  // Phone landscape: width may be large but height is limited — force mobile layout
+  @media (max-height: 520px) and (orientation: landscape) {
+    flex-direction: column;
+  }
+}
+
+.mhjg-navigation-container {
+  flex-shrink: 0;
+
+  // Mobile: move navigation to bottom (bottom bar)
+  @media (max-width: 768px) {
+    order: 2;
+  }
+
+  @media (max-height: 520px) and (orientation: landscape) {
+    order: 2;
+  }
+}
+
+.mhjg-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+
+  @media (max-width: 768px) {
+    order: 1;
+  }
+
+  @media (max-height: 520px) and (orientation: landscape) {
+    order: 1;
+  }
+}
+
+// Navigation collapse (mobile convenience)
+.mhjg-app.nav-collapsed {
+  .mhjg-navigation-container {
+    display: none;
+  }
+}
+
+.mhjg-topbar-container {
+  flex-shrink: 0;
+}
+
+.mhjg-main-content {
+  flex: 1;
+  position: relative;
+  padding: $spacing-lg;
+  overflow-y: auto;
+  overflow-x: hidden;
+  -webkit-overflow-scrolling: touch;
+  min-height: 0;
+
+  @media (max-width: 768px) {
+    padding: $spacing-md;
+  }
+
+  @media (max-width: 480px) {
+    padding: $spacing-sm;
+  }
+}
+
+.mhjg-dashboard-container {
+  height: 100%;
+  width: 100%;
+}
+
+.mhjg-story-container {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}

@@ -1,0 +1,58 @@
+@use '../styles/variables.scss' as *;
+
+.background-effects {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 10;
+
+    .bg-gradient-overlay {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            to top,
+            $color-bg-deep 0%,
+            rgba($color-bg-deep, 0.8) 50%,
+            rgba($color-bg-deep, 0.4) 100%
+        );
+        z-index: 10;
+    }
+
+    .bg-radial-gradient {
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(
+            circle at center,
+            rgba($color-primary, 0.2) 0%,
+            rgba($color-bg-deep, 0.6) 50%,
+            $color-bg-deep 100%
+        );
+        mix-blend-mode: overlay;
+        z-index: 10;
+    }
+
+    .bg-particles-container {
+        position: absolute;
+        inset: 0;
+        z-index: 5;
+    }
+
+    .bg-particle {
+        position: absolute;
+        border-radius: 50%;
+        pointer-events: none;
+
+        &.bg-particle-amber {
+            background: $color-primary-light;
+            filter: blur(1px);
+            box-shadow: 0 0 4px $color-primary-glow;
+        }
+
+        &.bg-particle-purple {
+            background: $color-secondary-light;
+            filter: blur(2px);
+            box-shadow: 0 0 6px $color-secondary-glow;
+        }
+    }
+}

@@ -1,0 +1,1798 @@
+```html
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="default">
+<head>
+    <meta charset="UTF-8">
+    <title>历史错乱 - 游戏界面 v5.3.5 (Multi-Theme & Fonts)</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+           /* --- Font Import --- */
+           @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700&family=Noto+Sans+SC:wght@400;700&display=swap');
+        @import url("https://fontsapi.zeoseven.com/238/main/result.css"); /* XiangcuiDazijitiW35 */
+        @import url("https://fontsapi.zeoseven.com/467/main/result.css"); /* NanoOldSong-A */
+        @import url("https://fontsapi.zeoseven.com/63/main/result.css");  /* HouZunSongTi */
+        @import url("https://fontsapi.zeoseven.com/567/main/result.css"); /* Fusion Pixel 8px Proportional zh_hans */
+
+        /* --- Theme Variables (Default Medieval Style) --- */
+        :root {
+            --primary-color: #D4AF37;    /* Gold */
+            --secondary-color: #8B4513; /* Brown */
+            --accent-color: #FFD700;    /* Brighter Gold */
+            --bg-color-dark: #120F0D;   /* Very dark brown/black */
+            --bg-color-medium: #2A221B; /* Dark brown */
+            --bg-color-light: #3F3327;  /* Medium dark brown */
+            --bg-image-main-panel: url('https://www.transparenttextures.com/patterns/dark-marble.png');
+            --bg-image-overlay-panel: url('https://www.transparenttextures.com/patterns/worn-dots.png');
+            --text-color-normal: #D8CFC0;
+            --text-color-bright: #FFFFFF;
+            --text-color-gold: var(--primary-color);
+            --text-secondary: #A09080;
+            --text-shadow-glow: 0 0 4px rgba(212, 175, 55, 0.7);
+            --text-shadow-gold-strong: 0 0 6px var(--primary-color), 0 0 10px var(--accent-color);
+            --border-color: #504030;
+            --border-color-medium: #706050;
+            --border-color-bright: var(--primary-color);
+            --border-color-bevel-light: #F0E68C;
+            --border-color-bevel-dark: #B8860B;
+            --highlight-bg: rgba(212, 175, 55, 0.2);
+            --highlight-shadow: 0 0 12px rgba(212, 175, 55, 0.8);
+            --warning-color: #FFC107;
+            --critical-color: #C62828;
+            --good-color: #558B2F;
+            --neutral-color: #78909C;
+            --danger-color: var(--critical-color);
+            --spacing-unit: 1em;
+            --panel-border-radius: 3px;
+            --button-border-radius: 2px;
+            --overlay-border-radius: 4px;
+            --crt-glow-color: rgba(212, 175, 55, 0.03);
+            --scanline-color: rgba(0, 0, 0, 0.01);
+            --scanline-highlight: rgba(212, 175, 55, 0.02);
+            --scanline-opacity: 0.05;
+            --vignette-color: rgba(0, 0, 0, 0.15);
+            --vignette-opacity: 0.2;
+            --noise-opacity: 0.02;
+
+            --font-family-main: 'Cinzel', 'Noto Sans SC', serif;
+            --font-family-body: 'Noto Sans SC', 'Cinzel', sans-serif;
+            --font-size-main: 16px;
+
+            --tileset-url: url('https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png');
+            --tile-size: 16px;
+            --tile-step: calc(var(--tile-size) + 1px); /* 16px tile + 1px space */
+
+            --bg-panel: var(--bg-color-medium);
+            --bg-panel-lighter: var(--bg-color-light);
+        }
+
+        /* --- Base Styles, Game Container, Status, Nav, Main, Input (Keep as before) --- */
+        html { background-color: var(--bg-color-dark); box-sizing: border-box; height: 100%; }
+        *, *:before, *:after { box-sizing: inherit; }
+        body { background-color: var(--bg-color-dark); color: var(--text-color-normal); font-family: var(--font-family-body); font-size: var(--font-size-main); line-height: 1.6; margin: 0; padding: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; height: 100%; overflow: hidden; }
+        .game-container { display: grid; grid-template-areas: "status status" "nav main" "nav input"; grid-template-columns: 260px 1fr; grid-template-rows: auto 1fr auto; width: 96%; max-width: 1700px; height: 96vh; max-height: 900px; border: 2px solid var(--primary-color); border-image: linear-gradient(to bottom right, var(--border-color-bevel-dark) 0%, var(--border-color-bevel-light) 50%, var(--border-color-bevel-dark) 100%); border-image-slice: 1; border-radius: var(--panel-border-radius); box-shadow: 0 0 25px rgba(0,0,0,0.6), inset 0 0 10px rgba(0,0,0,0.4), 0 0 30px var(--primary-color); overflow: hidden; position: relative; background-image: var(--bg-image-main-panel); background-color: var(--bg-color-dark); background-blend-mode: multiply; font-family: var(--font-family-body); }
+        .game-container::before { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; border-radius: inherit; background-image: linear-gradient(0deg, transparent 0%, var(--scanline-color) 1px, transparent 3px); animation: scan 15s linear infinite; opacity: var(--scanline-opacity); z-index: 101; }
+        .game-container::after { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; border-radius: inherit; background-image: radial-gradient(ellipse 180% 30% at 50% 0%, var(--vignette-color), transparent); background-size: 100%; opacity: var(--vignette-opacity); z-index: 102; }
+        .grain-overlay { content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; border-radius: inherit; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 600 600' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='1.0' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E"); background-repeat: repeat; animation: grain 1.5s steps(2) infinite; opacity: var(--noise-opacity); z-index: 103; mix-blend-mode: overlay; }
+        h1, h2, h3, h4, strong, button, .overlay-title-bar h2, #side-nav button, .custom-button, #status-bar .status-label { font-family: var(--font-family-main); }
+        #status-bar { grid-area: status; position: relative; z-index: 10; background: linear-gradient(to bottom, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 100%); border-bottom: 1px solid var(--primary-color); padding: 0.5em 1.2em; display: flex; justify-content: space-between; align-items: center; font-size: 0.9em; text-shadow: 1px 1px 2px #000, var(--text-shadow-glow); flex-wrap: wrap; gap: 0.5em 1em; }
+        #status-bar > div { display: flex; flex-wrap: wrap; gap: 0.5em 1em; } #status-bar span { white-space: nowrap; } #status-bar .status-label { color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; } #status-bar .status-value { color: var(--text-color-bright); font-weight: bold; } #status-bar .warning { color: var(--warning-color); text-shadow: 0 0 5px var(--warning-color); } #status-bar .critical, #status-bar #status-alerts.blinking { color: var(--critical-color); text-shadow: 0 0 6px var(--critical-color), 0 0 10px #FF0000; animation: blink 1.2s linear infinite; } #status-bar .good { color: var(--good-color); text-shadow: 0 0 5px var(--good-color); } @keyframes blink { 50% { opacity: 0.6; } }
+        #side-nav { grid-area: nav; position: relative; z-index: 10; background-color: rgba(10,8,5,0.7); border-right: 1px solid var(--primary-color); padding: 1em 0.5em; display: flex; flex-direction: column; align-items: center; gap: 0.8em; box-shadow: inset -7px 0 15px -7px rgba(0,0,0,0.8); overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--primary-color) rgba(0,0,0,0.3); }
+        #side-nav::-webkit-scrollbar { width: 8px; } #side-nav::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); } #side-nav::-webkit-scrollbar-thumb { background-color: var(--primary-color); border-radius: 4px; border: 1px solid var(--border-color-bevel-dark); } #side-nav::-webkit-scrollbar-thumb:hover { background-color: var(--accent-color); } #side-nav button { width: 95%; min-height: 50px; padding: 0.8em 0.4em; font-size: 1em; text-align: center; text-shadow: 1px 1px 2px #000; background: linear-gradient(to bottom, var(--bg-color-light) 0%, var(--bg-color-medium) 100%); border: 1px solid var(--border-color-medium); color: var(--text-color-normal); cursor: pointer; transition: all 0.2s ease-out; box-shadow: inset 0 1px 0px rgba(255,255,255,0.1), 0 2px 3px rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; gap: 10px; border-radius: var(--button-border-radius); } #side-nav button:hover:not(.active) { background: linear-gradient(to bottom, var(--highlight-bg) 0%, rgba(from var(--highlight-bg) r g b / 0.7) 100%); border-color: var(--primary-color); color: var(--primary-color); box-shadow: inset 0 1px 0px rgba(255,215,0,0.3), 0 0 10px var(--primary-color), 0 3px 5px rgba(0,0,0,0.6); transform: translateY(-2px) scale(1.02); } #side-nav button.active { background: var(--primary-color); color: var(--bg-color-dark); border-color: var(--border-color-bevel-light); text-shadow: 1px 1px 0px var(--border-color-bevel-dark), 0 0 5px var(--border-color-bevel-dark); font-weight: 700; box-shadow: inset 0 0 12px rgba(0,0,0,0.4), inset 0 3px 5px rgba(0,0,0,0.5); } #side-nav button i { margin-right: 8px; color: var(--text-color-gold); transition: color 0.2s ease; } #side-nav button:hover:not(.active) i { color: var(--primary-color); } #side-nav button.active i { color: inherit; text-shadow: none; }
+        #main-content-area { grid-area: main; position: relative; z-index: 1; overflow: hidden; background-color: rgba(0,0,0,0.3); padding: 0; box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.6); }
+        .main-panel { display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border-radius: 0; overflow: hidden; z-index: 20; color: var(--text-color-normal); opacity: 0; transition: opacity 0.3s ease-in-out; pointer-events: none; } .main-panel.active { display: block; opacity: 1; pointer-events: auto; } #main-console-panel { overflow: hidden; padding: 0; border: none; background-color: transparent; box-shadow: none; z-index: 10; } #main-output { position: absolute; top: 1.5em; left: 1.5em; right: 1.5em; bottom: 1.5em; overflow-y: auto; color: var(--text-color-normal); white-space: pre-wrap; line-height: 1.7; font-size: 1.1em; padding: 1em; padding-right: 1.5em; text-shadow: 1px 1px 1px rgba(0,0,0,0.5); z-index: 2; scrollbar-width: thin; scrollbar-color: var(--primary-color) rgba(0,0,0,0.3); background-color: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: var(--panel-border-radius); } #main-output::-webkit-scrollbar { width: 8px; } #main-output::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); } #main-output::-webkit-scrollbar-thumb { background-color: var(--primary-color); border-radius: 4px; border: 1px solid var(--border-color-bevel-dark); } #main-output::-webkit-scrollbar-thumb:hover { background-color: var(--accent-color); } #main-output:empty::before { content: "等待来自时空管理局的数据..."; font-style: italic; opacity: 0.7; position: absolute; top: 1.5em; left: 1.5em; color: var(--text-secondary); font-family: var(--font-family-body); }
+        #input-area { grid-area: input; position: relative; z-index: 10; background: linear-gradient(to top, rgba(0,0,0,0.6) 0%, rgba(0,0,0,0.3) 100%); border-top: 1px solid var(--primary-color); padding: 1em 1.2em; display: flex; flex-direction: column; gap: 1em; box-shadow: inset 0 5px 15px -5px rgba(0,0,0,0.7); }
+        #llm-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8em;
+            max-height: 15em; /* MODIFIED: Increased from 120px. Approx 240px if 1em=16px */
+            overflow-y: auto;
+            padding-bottom: 0.5em;
+            scrollbar-width: thin;
+            scrollbar-color: var(--primary-color) rgba(0,0,0,0.3);
+        }
+        #llm-options::-webkit-scrollbar { width: 8px; }
+        #llm-options::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+        #llm-options::-webkit-scrollbar-thumb { background-color: var(--primary-color); border-radius: 4px; border: 1px solid var(--border-color-bevel-dark); }
+        #llm-options button { flex-grow: 1; min-width: 160px; font-size: 0.95em; background: linear-gradient(to bottom, var(--bg-color-light) 0%, var(--bg-color-medium) 100%); border: 1px solid var(--border-color-medium); color: var(--text-color-normal); padding: 0.7em 1.3em; cursor: pointer; box-shadow: inset 0 1px 0px rgba(255,255,255,0.1), 0 1px 2px rgba(0,0,0,0.5); transition: all 0.2s ease-out; text-align: center; border-radius: var(--button-border-radius); text-shadow: 1px 1px 1px #000; }
+        #llm-options button:hover { background: linear-gradient(to bottom, var(--highlight-bg) 0%, rgba(from var(--highlight-bg) r g b / 0.7) 100%); border-color: var(--primary-color); color: var(--primary-color); box-shadow: inset 0 1px 0px rgba(255,215,0,0.3), 0 0 8px var(--primary-color), 0 2px 4px rgba(0,0,0,0.6); transform: translateY(-1px) scale(1.01); }
+        #llm-options button:active { background-color: var(--bg-color-dark); transform: translateY(1px); box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); }
+        #llm-options:empty::before { content: "等待可用操作..."; font-style: italic; opacity: 0.7; width: 100%; text-align: center; padding: 0.5em; color: var(--text-secondary); font-family: var(--font-family-body); }
+        #player-input-container { display: flex; gap: 0.8em; } #player-input { flex-grow: 1; background-color: rgba(0,0,0,0.4); border: 1px solid var(--border-color-medium); color: var(--text-color-normal); padding: 0.8em 1em; font-family: var(--font-family-body); font-size: 1em; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); border-radius: 3px; } #player-input:focus { outline: none; border-color: var(--primary-color); box-shadow: inset 0 2px 4px rgba(0,0,0,0.3), 0 0 8px var(--highlight-shadow); } #player-input-container button { background: var(--primary-color); color: var(--bg-color-dark); border: 1px solid var(--border-color-bevel-dark); padding: 0.8em 1.6em; cursor: pointer; transition: all 0.2s ease-out; box-shadow: inset 0 1px 0px var(--border-color-bevel-light), 0 2px 3px rgba(0,0,0,0.5); flex-shrink: 0; border-radius: var(--button-border-radius); font-weight: 700; text-shadow: 1px 1px 0px rgba(255,255,255,0.2); } #player-input-container button:hover { background-color: var(--accent-color); border-color: var(--border-color-bevel-light); box-shadow: inset 0 1px 0px #FFFACD, 0 0 12px var(--accent-color), 0 3px 5px rgba(0,0,0,0.6); transform: translateY(-1px); } #player-input-container button:active { background-color: var(--border-color-bevel-dark); transform: translateY(1px); box-shadow: inset 0 2px 4px rgba(0,0,0,0.5); }
+
+        /* Overlay Panel Styles */
+        .overlay-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; display: none; align-items: center; justify-content: center; }
+        .overlay-container.active { display: flex; }
+        .overlay-backdrop { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(10, 8, 5, 0.85); backdrop-filter: blur(4px) saturate(0.8); }
+        .overlay-panel { position: relative; border: 2px solid; border-image: linear-gradient(to bottom right, var(--border-color-bevel-dark) 0%, var(--border-color-bevel-light) 30%, var(--primary-color) 50%, var(--border-color-bevel-light) 70%, var(--border-color-bevel-dark) 100%); border-image-slice: 1; border-radius: var(--overlay-border-radius); box-shadow: 0px 0px 25px 5px rgba(0, 0, 0, 0.8), inset 0 0 0 1.5px var(--border-color-medium), inset 0 0 15px rgba(0,0,0,0.6); width: 85%; max-width: 1200px; height: 88%; max-height: 800px; display: flex; flex-direction: column; overflow: hidden; background-image: var(--bg-image-overlay-panel); background-color: var(--bg-color-medium); background-blend-mode: multiply; background-size: cover; }
+        .overlay-title-bar { display: flex; justify-content: space-between; align-items: center; padding: 0.8em 1.2em; background: linear-gradient(to bottom, rgba(0,0,0,0.75) 0%, rgba(0,0,0,0.5) 100%); border-bottom: 1px solid var(--primary-color); border-radius: calc(var(--overlay-border-radius) - 2px) calc(var(--overlay-border-radius) - 2px) 0 0; flex-shrink: 0; box-shadow: inset 0 -2px 5px rgba(0,0,0,0.4); }
+        .overlay-title-bar h2 { color: var(--primary-color); font-size: 1.5em; margin: 0; text-shadow: var(--text-shadow-gold-strong), 2px 2px 3px #000; display: flex; align-items: center; gap: 0.6em; letter-spacing: 1px; }
+        .overlay-title-bar h2 i { font-size: 0.9em; opacity: 0.9; filter: drop-shadow(0 0 3px var(--primary-color));}
+        .overlay-close-btn { background: none; border: none; color: var(--text-secondary); font-size: 1.8em; cursor: pointer; line-height: 1; padding: 0 8px; transition: color 0.2s, text-shadow 0.2s; }
+        .overlay-close-btn:hover { color: var(--danger-color); text-shadow: 0 0 5px var(--danger-color); }
+        .overlay-content.map-content {
+            padding: calc(var(--spacing-unit)*0.6);
+            flex-grow: 1; /* Ensure content area tries to fill space */
+            display: flex; /* Make it a flex container */
+            flex-direction: column; /* Stack children vertically */
+            overflow: hidden; /* Prevent content itself from scrolling vertically, children will handle scroll */
+        }
+        .overlay-content { /* General overlay content padding and scroll */
+             padding: var(--spacing-unit); flex-grow: 1; overflow-y: auto; background-color: rgba(0,0,0,0.1); scrollbar-width: thin; scrollbar-color: var(--primary-color) rgba(0,0,0,0.3);
+        }
+        .overlay-content::-webkit-scrollbar { width: 8px; }
+        .overlay-content::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); }
+        .overlay-content::-webkit-scrollbar-thumb { background-color: var(--primary-color); border-radius: 4px; border: 1px solid var(--border-color-bevel-dark); }
+        .overlay-content .panel-section { margin-bottom: var(--spacing-unit); padding: var(--spacing-unit); background-color: rgba(0,0,0,0.35); border: 1px solid var(--border-color); border-radius: var(--panel-border-radius); box-shadow: inset 0 0 8px rgba(0,0,0,0.3); } .overlay-content .panel-section:last-child { margin-bottom: 0; } .overlay-content h3 { color: var(--text-color-gold); font-size: 1.25em; border-bottom: 1px solid var(--border-color); padding-bottom: 0.4em; margin-top: 0; margin-bottom: 0.8em; text-shadow: var(--text-shadow-glow), 1px 1px 2px #000; } .overlay-content ul li { font-family: var(--font-family-body); }
+
+        /* Tilemap Styles */
+        .map-controls-area { display: flex; justify-content: space-between; align-items: center; background-color: rgba(0,0,0,0.4); padding: calc(var(--spacing-unit)*0.6) var(--spacing-unit); border-radius: var(--button-border-radius); border: 1px solid var(--border-color); flex-shrink: 0; box-shadow: inset 0 0 8px rgba(0,0,0,0.3); }
+        .map-scale-info strong { color: var(--primary-color); text-shadow: var(--text-shadow-glow); }
+
+        .map-main-area {
+            display: flex;
+            flex-grow: 1;
+            gap: var(--spacing-unit);
+            overflow: hidden; /* Important: prevent this div from scrolling */
+            margin-top: calc(var(--spacing-unit)*0.6);
+            align-items: stretch; /* Stretch children vertically */
+            min-height: 0; /* Allow this area to shrink if needed */
+        }
+
+        .dynamic-tile-grid-map-container {
+            flex-grow: 1;
+            overflow: auto; /* THIS container should scroll if map inside is too big */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #0A0806;
+            padding: calc(var(--spacing-unit)*0.5);
+            border: 1px solid var(--border-color);
+            border-radius: var(--panel-border-radius);
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.7);
+            min-height: 0; /* Allow shrinking */
+        }
+        .dynamic-tile-grid-map {
+            display: grid;
+            border: 1px solid #000;
+            image-rendering: pixelated;
+            -ms-interpolation-mode: nearest-neighbor;
+            width: fit-content;
+            height: fit-content;
+            position: relative;
+            transform-origin: center center;
+            transition: transform 0.15s ease-out;
+            background-color: #000;
+            box-shadow: 0 0 5px rgba(0,0,0,0.5);
+            transform: scale(2.5);
+        }
+        .map-tile {
+            width: var(--tile-size); height: var(--tile-size);
+            background-image: var(--tileset-url); background-repeat: no-repeat;
+            position: relative; cursor: help; overflow: hidden;
+            display:flex; align-items:center; justify-content:center;
+            border: 1px solid transparent;
+            transition: border-color 0.1s, box-shadow 0.1s;
+        }
+        .map-tile:hover {
+            border-color: var(--primary-color);
+            z-index: 2;
+            box-shadow: 0 0 8px var(--primary-color), inset 0 0 5px rgba(from var(--primary-color) r g b / 0.3);
+        }
+
+        /* === Tile Definitions (Keep as before) === */
+        /* Format: background-position: calc(var(--tile-step) * -COLUMN_INDEX) calc(var(--tile-step) * -ROW_INDEX); */
+        /* --- Consistent Character Tiles --- */
+        .tile-player-avatar  { background-position: calc(var(--tile-step) * -28) calc(var(--tile-step) *  -1); }
+        .tile-npc-figure     { background-position: calc(var(--tile-step) * -25) calc(var(--tile-step) *  -0); }
+        .tile-monster-figure { background-position: calc(var(--tile-step) * -26) calc(var(--tile-step) * -2); }
+        .tile-grass-dark     { background-position: calc(var(--tile-step) *  0) calc(var(--tile-step) *  0); }
+        .tile-path-brown     { background-position: calc(var(--tile-step) * -5) calc(var(--tile-step) *  -2); }
+        .tile-rock-small     { background-position: calc(var(--tile-step) * -5) calc(var(--tile-step) * -2); }
+        .tile-building-roof-brown { background-position: calc(var(--tile-step) * -6) calc(var(--tile-step) * -20); }
+        .tile-shop-awning    { background-position: calc(var(--tile-step) * -7) calc(var(--tile-step) * -20); }
+        .tile-palace-interior-wall { background-position: calc(var(--tile-step) * -10) calc(var(--tile-step) * -17); }
+        .tile-palace-stone-floor   { background-position: calc(var(--tile-step) * -37) calc(var(--tile-step) * -12); }
+        .tile-palace-decoration    { background-position: calc(var(--tile-step) * -5) calc(var(--tile-step) * -15); }
+        .tile-dungeon-wall-brick { background-position: calc(var(--tile-step) * -16) calc(var(--tile-step) * 0); }
+        .tile-dungeon-floor-stone{ background-position: calc(var(--tile-step) * -4) calc(var(--tile-step) * 0); }
+        .tile-dungeon-cell-door  { background-position: calc(var(--tile-step) * -11) calc(var(--tile-step) * -3); }
+        .tile-chest-wooden       { background-position: calc(var(--tile-step) * -4) calc(var(--tile-step) * -14); }
+        .tile-treasure-box     { background-position: calc(var(--tile-step) * -8) calc(var(--tile-step) * -6); }
+        .tile-stalagmite         { background-position: calc(var(--tile-step) * -17) calc(var(--tile-step) * -3); }
+        .tile-forest-floor-dirt{ background-position: calc(var(--tile-step) * -6) calc(var(--tile-step) *  0); }
+        .tile-forest-tree-trunk{ background-position: calc(var(--tile-step) * -3) calc(var(--tile-step) * -1); }
+        .tile-forest-bush      { background-position: calc(var(--tile-step) * -0) calc(var(--tile-step) * -2); }
+        .tile-forest-dense-tree{ background-position: calc(var(--tile-step) * -2) calc(var(--tile-step) * -1); }
+        .tile-water-surface    { background-position: calc(var(--tile-step) * -14) calc(var(--tile-step) * -2); }
+        .tile-scifi-wall-panel { background-position: calc(var(--tile-step) * -19) calc(var(--tile-step) * -7); }
+        .tile-scifi-floor-metal{ background-position: calc(var(--tile-step) * -48) calc(var(--tile-step) * -11); }
+        .tile-scifi-door       { background-position: calc(var(--tile-step) * -1) calc(var(--tile-step) * -9); }
+        .tile-scifi-console    { background-position: calc(var(--tile-step) * -3) calc(var(--tile-step) * -10); }
+        .tile-force-field      { background-position: calc(var(--tile-step) * -48) calc(var(--tile-step) * -21); }
+        /* Fallback */
+        .tile-unknown { background-image: none !important; background-color: rgba(128,0,128,0.6) !important; border: 1px dashed #FFEB3B !important; display: flex; align-items: center; justify-content: center; color: white; font-size: calc(var(--tile-size) * 0.6); font-weight: bold; }
+        .tile-unknown::before { content: '?'; }
+        /* --- Tiles for Large Scale Maps --- */
+        .tile-mountain-peak    { background-position: calc(var(--tile-step) * -23) calc(var(--tile-step) * -1); }
+        .tile-grass-light      {background-position: calc(var(--tile-step) * -7) calc(var(--tile-step) * 0); }
+        /* .tile-grass-dark is already defined */
+        /* .tile-water-surface is already defined */
+        .tile-location-other   { background-position: calc(var(--tile-step) * -20) calc(var(--tile-step) * -4); }
+        .tile-mountain-range { background-position: calc(var(--tile-step) * -22) calc(var(--tile-step) * 0); }
+        .tile-water-deep { background-position: calc(var(--tile-step) * -8) calc(var(--tile-step) * -5); }
+        .tile-nation-player { background-position: calc(var(--tile-step) * -17) calc(var(--tile-step) * -8); } /* Green Banner */
+        .tile-nation-other { background-position: calc(var(--tile-step) * -17) calc(var(--tile-step) * -9); }  /* Red Banner */
+        .tile-landmass { background-position: calc(var(--tile-step) * -1) calc(var(--tile-step) * 0); }
+        .tile-plains-generic   { background-position: calc(var(--tile-step) * -1) calc(var(--tile-step) * 0); }
+        .tile-mountain-green   { background-position: calc(var(--tile-step) * -3) calc(var(--tile-step) * -2); }
+        .tile-location-city    { background-position: calc(var(--tile-step) * -7) calc(var(--tile-step) * -19); }
+        .tile-location-capital { background-position: calc(var(--tile-step) * -2) calc(var(--tile-step) * -19); }
+        .tile-location-player  { background-position: calc(var(--tile-step) * -6) calc(var(--tile-step) * -19); }
+        /* Galaxy Specific Tiles */
+        .tile-space-empty      { background-image: none; background-color: #050510; }
+        .tile-star-yellow      { background-position: calc(var(--tile-step) * -43) calc(var(--tile-step) * -12); }
+        .tile-planet-player    { background-position: calc(var(--tile-step) * -38) calc(var(--tile-step) * -2); }
+        .tile-planet-other     { background-position: calc(var(--tile-step) * -39) calc(var(--tile-step) * -13); }
+        .tile-nebula-hazard    { background-position: calc(var(--tile-step) * -35) calc(var(--tile-step) * -21); }
+        .tile-nav-beacon       { background-position: calc(var(--tile-step) * -41) calc(var(--tile-step) * -21); }
+        /* Interior Tiles */
+        .tile-interior-wall { background-position: calc(var(--tile-step) * -13) calc(var(--tile-step) * -16); }
+        .tile-interior-floor { background-position: calc(var(--tile-step) * -11) calc(var(--tile-step) * -2); }
+        .tile-interior-door { background-position: calc(var(--tile-step) * -10) calc(var(--tile-step) * -9); }
+        .tile-bar-counter { background-position: calc(var(--tile-step) * -13) calc(var(--tile-step) * -10); }
+        .tile-interior-stairs { background-position: calc(var(--tile-step) * -2) calc(var(--tile-step) * -6); }
+        .tile-fireplace { background-position: calc(var(--tile-step) * -5) calc(var(--tile-step) * -16); }
+        .tile-table-and-chairs { background-position: calc(var(--tile-step) * -12) calc(var(--tile-step) * -9); }
+        .tile-interior-furniture-generic { background-position: calc(var(--tile-step) * 0) calc(var(--tile-step) * -8); }
+        .tile-interior-container-generic { background-position: calc(var(--tile-step) * -5) calc(var(--tile-step) * -6); }
+        /* Outdoor & Building Tiles */
+        .tile-outdoor-ground-paved { background-position: calc(var(--tile-step) * -11) calc(var(--tile-step) * -1); }
+        .tile-market-stall { background-position: calc(var(--tile-step) * -14) calc(var(--tile-step) * -11); }
+        .tile-outdoor-feature-stone { background-position: calc(var(--tile-step) * -17) calc(var(--tile-step) * -14); }
+        .tile-building-exterior-generic { background-position: calc(var(--tile-step) * -1) calc(var(--tile-step) * -21); }
+        .tile-building-exterior-grand { background-position: calc(var(--tile-step) * -5) calc(var(--tile-step) * -5); }
+        .tile-outdoor-grass-manicured { background-position: calc(var(--tile-step) * -6) calc(var(--tile-step) * -0); }
+        .tile-outdoor-path-gravel { background-position: calc(var(--tile-step) * -19) calc(var(--tile-step) * -1); }
+        .tile-outdoor-feature-garden { background-position: calc(var(--tile-step) * -7) calc(var(--tile-step) * -2); }
+        .tile-outdoor-tree-large { background-position: calc(var(--tile-step) * -1) calc(var(--tile-step) * -1); }
+        .tile-building-entrance-grand { background-position: calc(var(--tile-step) * -13) calc(var(--tile-step) * -11); }
+        /* Specific Location Tiles */
+        .tile-training-dummy     { background-position: calc(var(--tile-step) * -26) calc(var(--tile-step) * -2); }
+        .tile-weapon-rack        { background-position: calc(var(--tile-step) * -15) calc(var(--tile-step) * -1); }
+        .tile-watchtower-small   { background-position: calc(var(--tile-step) * -2) calc(var(--tile-step) * -19); }
+        .tile-altar-stone        { background-position: calc(var(--tile-step) * -21) calc(var(--tile-step) * -11); }
+        .tile-statue-holy        { background-position: calc(var(--tile-step) * -27) calc(var(--tile-step) * -12); }
+        .tile-priest-figure      { background-position: calc(var(--tile-step) * -25) calc(var(--tile-step) *  0); }
+        .tile-temple-door-grand  { background-position: calc(var(--tile-step) * 0) calc(var(--tile-step) * -9); }
+        .tile-forge-active       { background-position: calc(var(--tile-step) * -7) calc(var(--tile-step) * -14); }
+        .tile-anvil-metal        { background-position: calc(var(--tile-step) * -3) calc(var(--tile-step) * -11); }
+        .tile-weapon-display-rack { background-position: calc(var(--tile-step) * -14) calc(var(--tile-step) * -11); }
+        .tile-sand-dune          { background-position: calc(var(--tile-step) * -19) calc(var(--tile-step) * 1); }
+        .tile-palm-tree          { background-position: calc(var(--tile-step) * -3) calc(var(--tile-step) * -1); }
+        .tile-ruin-debris-small  { background-position: calc(var(--tile-step) * -32) calc(var(--tile-step) * -12); }
+        .tile-snow-drift         { background-position: calc(var(--tile-step) * -36) calc(var(--tile-step) * -11); }
+        .tile-cave-entrance-ice  { background-position: calc(var(--tile-step) * -6) calc(var(--tile-step) * -9); }
+        .tile-swamp-water        { background-position: calc(var(--tile-step) * -2) calc(var(--tile-step) * 0); }
+        .tile-volcanic-rock-ground { background-position: calc(var(--tile-step) * -12) calc(var(--tile-step) * -6); }
+        .tile-lava-pool          { background-position: calc(var(--tile-step) * -36) calc(var(--tile-step) * -21); }
+        .tile-smoke-vent         { background-position: calc(var(--tile-step) * -17) calc(var(--tile-step) * -12); }
+        .tile-sand-beach         { background-position: calc(var(--tile-step) * -30) calc(var(--tile-step) * 12); }
+        .tile-coconut-tree       { background-position: calc(var(--tile-step) * -3) calc(var(--tile-step) * -1); }
+        .tile-ruin-shipwreck-part{ background-position: calc(var(--tile-step) * 0) calc(var(--tile-step) * -15); }
+        .tile-ship-docked        { background-position: calc(var(--tile-step) * -11) calc(var(--tile-step) * -19); }
+        .tile-crates-stacked     { background-position: calc(var(--tile-step) * -4) calc(var(--tile-step) * -14); }
+        .tile-warehouse-door     { background-position: calc(var(--tile-step) * -11) calc(var(--tile-step) * -3); }
+        .tile-crane-wooden       { background-position: calc(var(--tile-step) * -12) calc(var(--tile-step) * -13); }
+        .tile-lighthouse-small   { background-position: calc(var(--tile-step) * -2) calc(var(--tile-step) * -19); }
+        .tile-horse-standing     { background-position: calc(var(--tile-step) * -28) calc(var(--tile-step) * -7); }
+        .tile-cart-parked        { background-position: calc(var(--tile-step) * -15) calc(var(--tile-step) * -13); }
+        .tile-bridge-plank       { background-position: calc(var(--tile-step) * -15) calc(var(--tile-step) * -5); }
+        .tile-bridge-stone       { background-position: calc(var(--tile-step) * -4) calc(var(--tile-step) * 0); }
+        .tile-bridge-tower       { background-position: calc(var(--tile-step) * -6) calc(var(--tile-step) * -20); }
+        .tile-portal-active      { background-position: calc(var(--tile-step) * -48) calc(var(--tile-step) * -21); }
+        .tile-portal-inactive    { background-position: calc(var(--tile-step) * -48) calc(var(--tile-step) * -20); }
+        .tile-ruin-floor-broken  { background-position: calc(var(--tile-step) * -18) calc(var(--tile-step) *  -1); }
+        .tile-ruin-wall-collapsed{ background-position: calc(var(--tile-step) * -2) calc(var(--tile-step) * -11); }
+        .tile-ruin-altar-broken  { background-position: calc(var(--tile-step) * -16) calc(var(--tile-step) * -12); }
+        .tile-bookshelf-tall     { background-position: calc(var(--tile-step) * -6) calc(var(--tile-step) * -5); }
+        .tile-scholar-figure     { background-position: calc(var(--tile-step) * -25) calc(var(--tile-step) *  0); }
+        .tile-scroll-ancient     { background-position: calc(var(--tile-step) * -45) calc(var(--tile-step) * -5); }
+        .tile-grimoire-heavy     { background-position: calc(var(--tile-step) * -4) calc(var(--tile-step) * -14); }
+        .tile-lectern-ornate     { background-position: calc(var(--tile-step) * -43) calc(var(--tile-step) * -4); }
+        .tile-astrolabe-device   { background-position: calc(var(--tile-step) * -10) calc(var(--tile-step) * -3); }
+
+
+        /* Tile Info Panel */
+        .tile-info-panel {
+            flex-shrink: 0;
+            width: 320px;
+            overflow-y: auto;
+            background-color: rgba(10,8,5,0.6);
+            padding: var(--spacing-unit);
+            border-left: 1px solid var(--border-color-bright);
+            box-shadow: inset 3px 0 8px rgba(0,0,0,0.5);
+            border-radius: var(--panel-border-radius);
+            min-height: 0; /* Allow shrinking */
+            scrollbar-width: thin; /* Added for Firefox */
+            scrollbar-color: var(--primary-color) rgba(0,0,0,0.3); /* Added for Firefox */
+        }
+        .tile-info-panel::-webkit-scrollbar { width: 6px; }
+        .tile-info-panel::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); }
+        .tile-info-panel::-webkit-scrollbar-thumb { background-color: var(--primary-color); border-radius: 3px; }
+        .tile-info-panel h4 { color: var(--primary-color); margin-top:0; margin-bottom: 0.8em; border-bottom: 1px solid var(--border-color); padding-bottom: 0.4em; font-size: 1.3em; text-shadow: var(--text-shadow-gold-strong); }
+        #tile-info-content .tile-name { font-size: 1.2em; font-weight: 700; color: var(--text-color-gold); display: block; margin-bottom: 0.4em; text-shadow: var(--text-shadow-glow); font-family: var(--font-family-main); }
+        #tile-info-content .tile-description { font-style: italic; color: var(--text-secondary); font-family: var(--font-family-body); }
+        #tile-info-content p { font-family: var(--font-family-body); }
+        #tile-info-content ul li { font-family: var(--font-family-body); }
+
+        /* Map Legend */
+        .map-legend-filters { /* Container for the legend */
+            margin-top: var(--spacing-unit);
+            flex-shrink: 0; /* Prevent shrinking */
+        }
+        .map-legend { font-size: 0.9em; color: var(--text-color-normal); padding: calc(var(--spacing-unit) * 0.7); background-color: rgba(10,8,5,0.6); border-radius: var(--button-border-radius); border: 1px solid var(--border-color); box-shadow: inset 0 0 8px rgba(0,0,0,0.4); }
+        .map-legend strong { color: var(--primary-color); text-shadow: var(--text-shadow-glow); font-family: var(--font-family-main);}
+        .map-legend ul { list-style: none; padding-left: 0; margin-top: 0.6em; display: flex; flex-wrap: wrap; gap: 0.7em 1.3em;}
+        .map-legend li { margin-bottom: 0.4em; display: flex; align-items: center; font-family: var(--font-family-body);}
+        .map-legend .legend-tile-example { display: inline-block; width: var(--tile-size); height: var(--tile-size); margin-right: 0.6em; vertical-align: middle; border: 1px solid var(--border-color-medium); background-image: var(--tileset-url); background-repeat: no-repeat; image-rendering: pixelated; -ms-interpolation-mode: nearest-neighbor; box-shadow: inset 0 0 3px rgba(0,0,0,0.5), 0 1px 1px rgba(0,0,0,0.3); }
+
+        /* Interaction Panel, Buttons, Settings, Tasks, Responsive (Keep as before) */
+        #tile-interaction-panel { position: fixed; display: none; background-color: rgba(from var(--bg-color-medium) r g b / 0.97); border: 2px outset var(--primary-color); border-radius: var(--panel-border-radius); padding: 1.2em; box-shadow: 0 10px 25px rgba(0,0,0,0.7), inset 0 0 12px rgba(0,0,0,0.4), 0 0 15px var(--primary-color); min-width: 280px; max-width: 350px; z-index: 150; color: var(--text-color-normal); font-family: var(--font-family-body); text-shadow: 1px 1px 1px rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out; transform: scale(0.95) translateY(10px); pointer-events: none; } #tile-interaction-panel.visible { display: block; opacity: 1; transform: scale(1) translateY(0); pointer-events: auto; } #tile-interaction-panel .close-btn { position: absolute; top: 10px; right: 12px; background: none; border: none; color: var(--text-secondary); font-size: 1.8em; line-height: 1; padding: 0 5px; cursor: pointer; transition: color 0.2s, text-shadow 0.2s; } #tile-interaction-panel .close-btn:hover { color: var(--danger-color); text-shadow: 0 0 5px var(--danger-color); } #tile-interaction-panel .panel-info { margin-bottom: 1em; padding-bottom: 0.8em; border-bottom: 1px dashed var(--border-color); font-size: 1em; line-height: 1.5; padding-right: 30px; } #tile-interaction-panel .panel-info strong { font-family:var(--font-family-main); color: var(--text-color-gold); font-size: 1.2em; text-shadow: var(--text-shadow-glow); } #tile-interaction-panel .panel-info hr { border: none; border-top: 1px dotted var(--border-color); margin: 10px 0; } #tile-interaction-panel .panel-info #panel-tile-details { display: block; font-size: 0.95em; opacity: 0.9; max-height: 120px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--primary-color) rgba(0,0,0,0.3); white-space: pre-wrap; padding-right: 8px;} #panel-tile-details::-webkit-scrollbar { width: 6px; } #panel-tile-details::-webkit-scrollbar-track { background: rgba(0,0,0,0.3); } #panel-tile-details::-webkit-scrollbar-thumb { background-color: var(--primary-color); border-radius: 3px; } #tile-interaction-panel .panel-actions { display: grid; grid-template-columns: 1fr; gap: 0.7em; } #tile-interaction-panel .panel-actions button { background: linear-gradient(to bottom, var(--bg-color-light) 0%, var(--bg-color-medium) 100%); color: var(--text-color-normal); border: 1px solid var(--border-color-medium); padding: 0.8em 1.2em; font-family: var(--font-family-main); font-size: 1em; cursor: pointer; transition: all 0.2s ease-out; box-shadow: inset 0 1px 0px rgba(255,255,255,0.1), 0 1px 3px rgba(0,0,0,0.5); border-radius: var(--button-border-radius); text-align: left; display: flex; align-items: center; gap: 10px; text-shadow: 1px 1px 1px #000; } #tile-interaction-panel .panel-actions button i { width: 1.3em; text-align: center; opacity: 0.85; margin-right: 5px; color: var(--text-color-gold);} #tile-interaction-panel .panel-actions button:hover { background: linear-gradient(to bottom, var(--highlight-bg) 0%, rgba(from var(--highlight-bg) r g b / 0.7) 100%); border-color: var(--primary-color); color: var(--primary-color); box-shadow: inset 0 1px 0px rgba(255,215,0,0.3), 0 0 8px var(--primary-color), 0 2px 4px rgba(0,0,0,0.6); } #tile-interaction-panel .panel-actions button:hover i { color: inherit; }
+        .custom-button { padding: 0.8em 1.8em; font-family: var(--font-family-main); cursor: pointer; transition: all 0.2s ease-out; border-radius: var(--button-border-radius); font-weight: 700; letter-spacing: 0.5px; background: linear-gradient(to bottom, var(--bg-color-light) 0%, var(--bg-color-medium) 100%); color: var(--text-color-normal); border: 1px solid var(--border-color-medium); box-shadow: inset 0 1px 0px rgba(255,255,255,0.1), 0 2px 4px rgba(0,0,0,0.6); text-align: center; text-shadow: 1px 1px 2px #000; } .custom-button:hover { background: linear-gradient(to bottom, var(--highlight-bg) 0%, rgba(from var(--highlight-bg) r g b / 0.7) 100%); box-shadow: inset 0 1px 0px rgba(255,215,0,0.3), 0 0 12px var(--primary-color), 0 3px 6px rgba(0,0,0,0.7); transform: translateY(-2px) scale(1.02); border-color: var(--primary-color); color: var(--primary-color); } .custom-button:active { transform: translateY(0px) scale(1); box-shadow: inset 0 2px 5px rgba(0,0,0,0.5); } .custom-button.primary { background: var(--primary-color); color: var(--bg-color-dark); border-color: var(--border-color-bevel-dark); text-shadow: 1px 1px 0px var(--border-color-bevel-light); } .custom-button.primary:hover { background-color: var(--accent-color); border-color: var(--border-color-bevel-light); filter: brightness(1.1); } .custom-button.small-button { padding: 0.6em 1.2em; font-size: 0.9em; } .custom-button i { margin-right: 0.5em; }
+        .settings-container { display: flex; flex-direction: column; gap: var(--spacing-unit); } .settings-card { background-color: rgba(0,0,0,0.2); border: 1px solid var(--border-color); border-radius: var(--panel-border-radius); box-shadow: inset 0 0 5px rgba(0,0,0,0.2); } .settings-header { padding: calc(var(--spacing-unit) * 0.8) var(--spacing-unit); background-color: rgba(0,0,0,0.3); border-bottom: 1px solid var(--border-color); color: var(--text-color-gold); text-shadow: var(--text-shadow-glow); font-size: 1.1em; } .settings-header i { opacity: 0.8; margin-right: 0.5em; } .settings-content { padding: var(--spacing-unit); font-family: var(--font-family-body); } .settings-group { margin-bottom: calc(var(--spacing-unit) * 1.2); } .settings-group:last-child { margin-bottom: 0; } .settings-label { display: block; margin-bottom: calc(var(--spacing-unit) * 0.5); font-weight: 700; color: var(--text-color-bright); font-family: var(--font-family-main); } .font-options { display: flex; flex-wrap: wrap; gap: calc(var(--spacing-unit) * 0.6); } .font-option { padding: calc(var(--spacing-unit) * 0.6) var(--spacing-unit); border: 1px solid var(--border-color); border-radius: var(--button-border-radius); cursor: pointer; background-color: var(--bg-color-light); transition: all 0.2s ease; box-shadow: 0 1px 2px rgba(0,0,0,0.4); } .font-option input[type="radio"] { display: none; } .font-option.active, .font-option:hover { background-color: var(--highlight-bg); border-color: var(--primary-color); color: var(--primary-color); box-shadow: 0 0 8px var(--primary-color); } .font-preview { font-size: 1em; } .font-size-slider { width: 100%; cursor: pointer; margin-top: 0.3em;}
+        .theme-selector {
+            padding: calc(var(--spacing-unit) * 0.6) var(--spacing-unit);
+            border: 1px solid var(--border-color);
+            border-radius: var(--button-border-radius);
+            background-color: var(--bg-color-light);
+            color: var(--text-color-normal);
+            font-family: var(--font-family-body);
+            width: 100%;
+            max-width: 300px; /* Or adjust as needed */
+            box-shadow: 0 1px 2px rgba(0,0,0,0.4);
+        }
+        .theme-selector:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 8px var(--primary-color);
+        }
+        .save-status { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background-color: var(--good-color); color: white; padding: 0.8em 1.5em; border-radius: var(--button-border-radius); box-shadow: 0 2px 10px rgba(0,0,0,0.5), 0 0 8px var(--good-color); z-index: 200; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; font-family: var(--font-family-main); } .save-status.show { opacity: 1; } .save-status i { margin-right: 0.5em; }
+        .menu-content { display: flex; flex-direction: column; gap: calc(var(--spacing-unit)*0.8); padding: var(--spacing-unit); }
+        #tasks-list { list-style: none; padding: 0;} .task-item { padding: 1em; border-bottom: 1px solid var(--border-color); margin-bottom: 1em; background-color: rgba(0,0,0,0.25); border-radius: var(--panel-border-radius); border: 1px solid var(--border-color-medium); box-shadow: inset 0 0 5px rgba(0,0,0,0.2); } .task-item:last-child { margin-bottom: 0; border-bottom: none; } .task-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.4em;} .task-title { font-weight: 700; color: var(--text-color-gold); font-size: 1.1em; text-shadow: var(--text-shadow-glow); } .task-description { display: block; color: var(--text-secondary); font-size: 0.95em; line-height: 1.5; font-family: var(--font-family-body); } .task-status { padding: 0.3em 0.7em; border-radius: var(--button-border-radius); font-size: 0.85em; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; box-shadow: 0 1px 2px rgba(0,0,0,0.3); } .task-status.status-critical { background-color: var(--critical-color); color: white; text-shadow: 0 0 3px rgba(0,0,0,0.5); } .task-status.status-warning { background-color: var(--warning-color); color: var(--bg-color-dark); text-shadow: 0 0 2px rgba(0,0,0,0.2); } .task-status.status-good { background-color: var(--good-color); color: white; text-shadow: 0 0 3px rgba(0,0,0,0.5); } .task-status.status-neutral { background-color: var(--neutral-color); color: var(--bg-color-dark); text-shadow: 0 0 2px rgba(0,0,0,0.2); }
+
+        @media (max-width: 1200px) {
+            .game-container { grid-template-columns: 230px 1fr; }
+        }
+        @media (max-width: 1024px) {
+            #tilemap-overlay .overlay-content.map-content > .map-main-area { flex-direction: column; }
+            #tilemap-overlay .tile-info-panel { width: 100%; max-height: 200px; overflow-y: auto; border-left: none; border-top: 1px solid var(--border-color-bright); margin-top: var(--spacing-unit); }
+            .game-container { grid-template-columns: 210px 1fr; }
+            .overlay-panel { width: 94%; height: 94%; }
+             /* MODIFIED: Adjust #llm-options height for medium screens if needed, but 15em might still be okay.
+               If it feels too tall, you could set something like:
+            #llm-options { max-height: 12em; }
+            */
+        }
+       /* 请将这些规则放在你的 <style> 标签内，并确保它们在相应的媒体查询中或全局生效 */
+
+/* --- 针对小屏幕 (例如 max-width: 768px) --- */
+/* ====================================================================== */
+/* ===   STYLES FOR SCREENS 768px AND NARROWER                        === */
+/* ====================================================================== */
+@media (max-width: 768px) {
+    .game-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        /* height: 100%; /* 移除或设为auto，让SillyTavern或内容决定总高度 */
+        /* max-height: none; /* 同上 */
+        overflow: hidden; /* 确保子元素溢出时容器本身裁剪 */
+        border-radius: 0;
+        border: none;
+        border-image: none;
+        box-shadow: none;
+    }
+
+    /* --- 1. Status Bar --- */
+    #status-bar {
+        order: 1;
+        flex-shrink: 0; /* 不收缩 */
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 0.4em 0.8em;
+        gap: 0.2em;
+        border-bottom: 1px solid var(--primary-color);
+    }
+    #status-bar > div {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.3em 0.7em;
+        width: 100%;
+    }
+
+    /* --- 2. Side Navigation (Now as a Top Nav Bar) --- */
+    #side-nav {
+        order: 2; /* 放置在 Status Bar 之后 */
+        flex-shrink: 0; /* 不收缩 */
+        width: 100%; /* 占据全部宽度 */
+        flex-direction: row; /* 按钮横向排列 */
+        overflow-x: auto;    /* 如果按钮过多，允许横向滚动 */
+        overflow-y: hidden;
+        background-color: rgba(10, 8, 5, 0.85); /* 深色背景以区分 */
+        border-right: none; /* 移除之前的右边框 */
+        border-top: none; /* 如果之前有顶部边框，移除 */
+        border-bottom: 1px solid var(--primary-color); /* 在导航栏下方添加分隔线 */
+        padding: 0.4em; /* 导航栏本身的内边距 */
+        justify-content: flex-start; /* 按钮从左开始排列，或者用 space-around 平均分布 */
+        gap: 0.5em; /* 按钮之间的间隙 */
+    }
+    #side-nav button {
+        width: auto; /* 按钮宽度自适应内容 */
+        min-width: auto; /* 允许按钮根据内容和可用空间调整，而不是固定最小宽度 */
+        flex: 0 0 auto;  /* 不放大，不缩小，基于内容宽度 */
+        font-size: 0.9em;
+        padding: 0.6em 0.8em; /* 调整按钮内边距以适应横向排列 */
+        /* border: 1px solid var(--border-color-medium); /* 可选，按钮边框 */
+        /* border-radius: var(--button-border-radius); */
+    }
+    #side-nav button i {
+        margin-right: 6px; /* 图标和文字的间距 */
+    }
+
+    /* --- 3. Main Content Area --- */
+    #main-content-area {
+        order: 3; /* 放置在 Side Nav 之后 */
+        flex-grow: 1; /* 占据所有剩余垂直空间 */
+        min-height: 0; /* 关键：允许其内部内容滚动，而不是撑开父容器 */
+        display: flex; /* 使其成为flex容器，以便其子元素可以填充 */
+        flex-direction: column;
+        overflow: hidden; /* #main-console-panel 将处理自己的溢出 */
+        padding: 0; /* 移除外层padding，让#main-output控制内容区的padding */
+    }
+    /* Ensure .main-panel (like #main-console-panel) fills #main-content-area */
+    .main-panel.active {
+        position: relative; /* 从 absolute 改为 relative 或 static */
+        flex-grow: 1;
+        min-height: 0;
+        display: flex;
+        flex-direction: column;
+        /* 清理绝对定位残留 */
+        top: auto; left: auto; right: auto; bottom: auto; width:auto; height:auto;
+        opacity: 1; /* 确保可见 */
+        pointer-events: auto; /* 确保可交互 */
+    }
+    /* #main-console-panel 应该已经是 flex-grow: 1 了 */
+    #main-output {
+        position: relative; /* 从 absolute 改为 relative 或 static */
+        flex-grow: 1;     /* 占据 #main-console-panel 的所有可用空间 */
+        min-height: 0;    /* 允许自身内容滚动 */
+        /* 清理绝对定位残留 */
+        top: auto; left: auto; right: auto; bottom: auto;
+        /* 现在在这里设置内边距 */
+        padding: 1em;
+        padding-right: 1.2em; /* 为滚动条留出空间 */
+        /* overflow-y: auto; 应该已经存在，确保主叙事文本可以滚动 */
+        /* white-space: pre-wrap; line-height: 1.7; font-size: 1.1em; text-shadow... etc. 保持 */
+    }
+
+    /* --- 4. Input Area --- */
+    #input-area {
+        order: 4; /* 保持在最底部 */
+        flex-shrink: 0; /* 不收缩 */
+        /* padding, gap 等可按需调整 */
+    }
+
+    /* Overlay panel adjustments (基本保持，因为它们是独立的覆盖层) */
+    .overlay-panel {
+        width: 98%; /* 在小屏幕上几乎占满 */
+        height: 95%;
+        /* border-image: ...保持 */
+    }
+    #tilemap-overlay .tile-info-panel {
+        max-height: 160px; /* 地图信息面板高度限制 */
+    }
+    #llm-options {
+        max-height: 10em; /* LLM 选项按钮区域高度 */
+    }
+}
+
+/* ====================================================================== */
+/* ===   STYLES FOR SCREENS 480px AND NARROWER                        === */
+/* ====================================================================== */
+@media (max-width: 480px) {
+    /* Status Bar Refinements */
+    #status-bar {
+        padding: 0.3em 0.6em;
+        font-size: 0.85em;
+    }
+    #status-bar > div {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.2em; /* 之前是0.3em，可以根据喜好调整 */
+    }
+
+    /* Top Navigation Bar (was Side Nav) Refinements */
+    #side-nav {
+        padding: 0.3em; /* 导航栏本身的内边距再小一点 */
+        gap: 0.3em;     /* 按钮间隙再小一点 */
+    }
+    #side-nav button {
+        padding: 0.5em 0.5em; /* 按钮内边距进一步减小 */
+        font-size: 0.8em;    /* 按钮字体更小 */
+    }
+    #side-nav button i {
+        margin-right: 4px;
+    }
+
+    /* Main Output Area Refinements */
+    #main-output {
+        padding: 0.8em;       /* 主叙事区域内边距减小 */
+        font-size: 1em;       /* 调整字体，但不要太小 */
+        line-height: 1.6;
+    }
+
+    /* Input Area Refinements */
+    #llm-options {
+        max-height: 8em;      /* 进一步限制LLM选项按钮区域的最大高度 */
+    }
+    #llm-options button {
+        font-size: 0.85em;
+        padding: 0.5em 0.8em;
+        min-width: auto; /* 允许按钮变得更窄 */
+    }
+
+    #player-input-container { /* 已在768px设为column，这里可微调 */
+        flex-direction: column;
+        gap: 0.5em;
+    }
+    #player-input-container input[type="text"]{
+         font-size: 0.95em;
+         padding: 0.7em 0.9em;
+    }
+    #player-input-container button {
+        padding: 0.7em 1em; /* 确认按钮的内边距 */
+        font-size: 0.9em;
+    }
+
+    /* Overlay Panels - 在极小屏幕上通常使其全屏化 */
+    .overlay-panel {
+        width: 100%;
+        height: 100%;
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 0;
+        border: none; /* 在480px下可以考虑完全移除边框 */
+        box-shadow: none; /* 也可以考虑移除阴影 */
+    }
+    .overlay-title-bar {
+        padding: 0.6em 1em;
+    }
+    .overlay-title-bar h2 {
+        font-size: 1.1em;
+    }
+    .overlay-title-bar h2 i {
+        font-size: 0.85em;
+    }
+    .overlay-close-btn {
+        font-size: 1.5em;
+        padding: 0 6px;
+    }
+    .overlay-content {
+        padding: calc(var(--spacing-unit) * 0.6);
+    }
+    #tilemap-overlay .tile-info-panel {
+        max-height: 120px; /* 地图信息面板可以更矮 */
+        font-size: 0.85em;
+    }
+}
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+    <!-- HTML Structure -->
+    <div class="grain-overlay"></div>
+    <div class="game-container">
+        <!-- Status Bar, Side Nav, Main Content, Input Area -->
+         <header id="status-bar">
+            <div> <span class="status-label">日期:</span> <span id="status-date">加载中...</span> </div>
+            <div> <span class="status-label">国库:</span> <span id="status-gold" class="status-value">...</span> <span class="status-label">民心:</span> <span id="status-morale" class="status-value">...</span> <span class="status-label">稳定:</span> <span id="status-stability" class="status-value">...</span> <span class="status-label">军力:</span> <span id="status-military" class="status-value">...</span> <span class="status-label">警报:</span> <span id="status-alerts" class="status-value">无</span> </div>
+        </header>
+        <nav id="side-nav"> <button data-panel="main-console-panel" class="active"><i class="fas fa-scroll"></i>主叙事</button> <button class="overlay-trigger" data-overlay-id="tilemap-overlay"><i class="fas fa-map-marked-alt"></i>区域地图</button> <button class="overlay-trigger" data-overlay-id="character-overlay"><i class="fas fa-user-shield"></i>角色状态</button> <button class="overlay-trigger" data-overlay-id="inventory-overlay"><i class="fas fa-gem"></i>资源与国策</button> <button class="overlay-trigger" data-overlay-id="factions-overlay"><i class="fas fa-landmark"></i>势力与外交</button> <button class="overlay-trigger" data-overlay-id="tasks-overlay"><i class="fas fa-tasks"></i>目标与任务</button> <button class="overlay-trigger" data-overlay-id="log-overlay"><i class="fas fa-book-open"></i>历史记录</button> <button class="overlay-trigger" data-overlay-id="settings-overlay"><i class="fas fa-cogs"></i>设置</button> </nav>
+        <main id="main-content-area">
+            <div id="main-console-panel" class="main-panel active">
+                <div id="main-output"></div>
+            </div>
+        </main>
+        <footer id="input-area">
+            <div id="llm-options"></div>
+            <div id="player-input-container"> <input type="text" id="player-input" placeholder="在此输入你的决策或与AI互动..."> <button id="submit-input"><i class="fas fa-feather-alt"></i>确认决策</button> </div>
+        </footer>
+    </div>
+
+    <!-- Overlay Panels -->
+    <div class="overlay-container" id="tilemap-overlay">
+        <div class="overlay-backdrop"></div>
+        <div class="overlay-panel" style="max-width: 96%; width: 1300px; height: 96%; max-height: 95vh;">
+            <div class="overlay-title-bar">
+                <h2 id="map-overlay-title"><i class="fas fa-map-marked-alt"></i> 区域地图</h2> <button class="overlay-close-btn" data-overlay-id="tilemap-overlay">×</button>
+            </div>
+            <div class="overlay-content map-content">
+                <div class="map-controls-area">
+                    <div class="map-scale-info"> 地图: <strong id="map-current-theme">[地图名称]</strong> </div>
+                    <div> <button class="custom-button small-button" id="map-zoom-out" title="缩小"><i class="fas fa-search-minus"></i></button> <span id="map-zoom-level" style="padding: 0 0.7em; color: var(--text-secondary); min-width: 45px; display: inline-block; text-align: center;">100%</span> <button class="custom-button small-button" id="map-zoom-in" title="放大"><i class="fas fa-search-plus"></i></button> </div>
+                </div>
+                <div class="map-main-area">
+                    <div class="dynamic-tile-grid-map-container" id="dynamic-tile-grid-map-container">
+                        <div class="dynamic-tile-grid-map" id="dynamic-tile-grid-map">
+                            <p style="grid-column: 1 / -1; color: var(--text-secondary); text-align: center; padding:2em; font-style:italic;">地图加载中或无可用地图数据...</p>
+                        </div>
+                    </div>
+                    <div class="tile-info-panel" id="tile-info-panel">
+                        <h4><i class="fas fa-info-circle"></i> 地点信息</h4>
+                        <div id="tile-info-content">
+                            <p style="color:var(--text-secondary); font-style:italic;">悬停地点查看详情。</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="map-legend-filters">
+                    <div class="map-legend"> <strong><i class="fas fa-list-ul"></i> 图例:</strong>
+                        <ul id="map-legend-list">
+                            <li>
+                                <p style="color: var(--text-secondary); font-style: italic;">图例加载中...</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Other Overlays -->
+    <div class="overlay-container" id="character-overlay">
+        <div class="overlay-backdrop"></div>
+        <div class="overlay-panel">
+            <div class="overlay-title-bar">
+                <h2><i class="fas fa-user-shield"></i> 角色状态</h2> <button class="overlay-close-btn" data-overlay-id="character-overlay">×</button>
+            </div>
+            <div class="overlay-content character-details-content">
+                <div class="panel-section">
+                    <h3><i class="fas fa-id-card"></i> 基础信息</h3>
+                    <p><strong>姓名:</strong> <span id="char-name">...</span></p>
+                    <p><strong>头衔:</strong> <span id="char-title">...</span></p>
+                    <p><strong>年龄:</strong> <span id="char-age">...</span></p>
+                    <p><strong>背景:</strong> <span id="char-background" style="font-family: var(--font-family-body);">...</span></p>
+                </div>
+                <div class="panel-section">
+                    <h3><i class="fas fa-chart-bar"></i> 主要属性</h3>
+                    <ul class="attributes-list" id="player-game-attributes">
+                        <li>加载中...</li>
+                    </ul>
+                </div>
+                <div class="panel-section">
+                    <h3><i class="fas fa-star"></i> 技能/特长</h3>
+                    <ul class="skills-list" id="player-game-skills">
+                        <li>加载中...</li>
+                    </ul>
+                </div>
+                <div class="panel-section">
+                    <h3><i class="fas fa-heartbeat"></i> 当前状态/思绪</h3>
+                    <ul id="player-status-effects-list">
+                        <li>加载中...</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="overlay-container" id="inventory-overlay">
+        <div class="overlay-backdrop"></div>
+        <div class="overlay-panel">
+            <div class="overlay-title-bar">
+                <h2><i class="fas fa-gem"></i> 资源与国策</h2> <button class="overlay-close-btn" data-overlay-id="inventory-overlay">×</button>
+            </div>
+            <div class="overlay-content inventory-content" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: var(--spacing-unit);">
+                <div class="panel-section" style="grid-column: 1 / -1;">
+                    <h3><i class="fas fa-landmark"></i> 帝国资源储备</h3>
+                    <ul id="faction-resource-list" class="attributes-list">
+                        <li>加载中...</li>
+                    </ul>
+                </div>
+                <div class="panel-section">
+                    <h3><i class="fas fa-scroll"></i> 当前国策</h3>
+                    <ul id="faction-policies-list">
+                        <li>加载中...</li>
+                    </ul>
+                </div>
+                <div class="panel-section">
+                    <h3><i class="fas fa-briefcase"></i> 个人资产</h3>
+                    <ul id="player-personal-assets" class="attributes-list">
+                        <li>加载中...</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="overlay-container" id="factions-overlay">
+        <div class="overlay-backdrop"></div>
+        <div class="overlay-panel">
+            <div class="overlay-title-bar">
+                <h2><i class="fas fa-users"></i> 势力与外交</h2> <button class="overlay-close-btn" data-overlay-id="factions-overlay">×</button>
+            </div>
+            <div class="overlay-content">
+                <div class="panel-section">
+                    <h3><i class="fas fa-chess-rook"></i> 朝堂主要派系</h3>
+                    <ul id="internal-factions-list">
+                        <li>加载中...</li>
+                    </ul>
+                </div>
+                <div class="panel-section">
+                    <h3><i class="fas fa-globe-americas"></i> 周边势力/国家</h3>
+                    <ul id="external-factions-list">
+                        <li>加载中...</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="overlay-container" id="tasks-overlay">
+        <div class="overlay-backdrop"></div>
+        <div class="overlay-panel">
+            <div class="overlay-title-bar">
+                <h2><i class="fas fa-tasks"></i> 目标与任务</h2> <button class="overlay-close-btn" data-overlay-id="tasks-overlay">×</button>
+            </div>
+            <div class="overlay-content">
+                <ul id="tasks-list">
+                    <li>
+                        <p style="color: var(--text-secondary); font-style: italic;">任务列表加载中...</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="overlay-container" id="log-overlay">
+        <div class="overlay-backdrop"></div>
+        <div class="overlay-panel">
+            <div class="overlay-title-bar">
+                <h2><i class="fas fa-book"></i> 历史记录</h2> <button class="overlay-close-btn" data-overlay-id="log-overlay">×</button>
+            </div>
+            <div class="overlay-content" id="log-content-wrapper">
+                <div id="log-content">
+                    <p style="color: var(--text-secondary); font-style: italic;">历史记录加载中...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="overlay-container" id="settings-overlay">
+        <div class="overlay-backdrop"></div>
+        <div class="overlay-panel" style="max-width: 800px;">
+            <div class="overlay-title-bar">
+                <h2><i class="fas fa-tools"></i> 显示设置</h2> <button class="overlay-close-btn" data-overlay-id="settings-overlay">×</button>
+            </div>
+            <div class="overlay-content">
+                <div class="settings-container">
+                    <div class="settings-card">
+                        <div class="settings-header"><i class="fas fa-font"></i>字体设置</div>
+                        <div class="settings-content">
+                            <div class="settings-group">
+                                <label class="settings-label">选择字体样式 (标题/按钮)</label>
+                                <div class="font-options">
+                                    <label class="font-option" data-font="Cinzel"><input type="radio" name="font_main" value="Cinzel"><span class="font-preview" style="font-family: 'Cinzel', serif;">Cinzel (默认西方)</span></label>
+                                    <label class="font-option" data-font="NotoSansSC_Header"><input type="radio" name="font_main" value="NotoSansSC_Header"><span class="font-preview" style="font-family: 'Noto Sans SC', sans-serif;">思源黑体 (备用)</span></label>
+                                    <label class="font-option" data-font="XiangcuiDazijitiW35"><input type="radio" name="font_main" value="XiangcuiDazijitiW35"><span class="font-preview" style="font-family: 'XiangcuiDazijitiW35', serif;">香萃大字迹体</span></label>
+                                    <label class="font-option" data-font="HouZunSongTi"><input type="radio" name="font_main" value="HouZunSongTi"><span class="font-preview" style="font-family: 'HouZunSongTi', serif;">厚尊宋体</span></label>
+                                    <label class="font-option" data-font="FusionPixel"><input type="radio" name="font_main" value="FusionPixel"><span class="font-preview" style="font-family: 'Fusion Pixel 8px Proportional zh_hans', sans-serif;">融合像素8px</span></label>
+
+                                </div>
+                            </div>
+                            <div class="settings-group">
+                                <label class="settings-label">选择字体样式 (正文)</label>
+                                <div class="font-options">
+                                    <label class="font-option" data-font="NotoSansSC_Body"><input type="radio" name="font_body" value="NotoSansSC_Body"><span class="font-preview" style="font-family: 'Noto Sans SC', sans-serif;">思源黑体 (默认中文)</span></label>
+                                    <label class="font-option" data-font="Cinzel_Body"><input type="radio" name="font_body" value="Cinzel_Body"><span class="font-preview" style="font-family: 'Cinzel', serif;">Cinzel (备用)</span></label>
+                                    <label class="font-option" data-font="XiangcuiDazijitiW35"><input type="radio" name="font_body" value="XiangcuiDazijitiW35"><span class="font-preview" style="font-family: 'XiangcuiDazijitiW35', serif;">香萃大字迹体</span></label>
+                                    <label class="font-option" data-font="HouZunSongTi"><input type="radio" name="font_body" value="HouZunSongTi"><span class="font-preview" style="font-family: 'HouZunSongTi', serif;">厚尊宋体</span></label>
+                                    <label class="font-option" data-font="NanoOldSong-A"><input type="radio" name="font_body" value="NanoOldSong-A"><span class="font-preview" style="font-family: 'NanoOldSong-A', sans-serif;">Nano旧宋体-A</span></label>
+                                    <label class="font-option" data-font="FusionPixel"><input type="radio" name="font_body" value="FusionPixel"><span class="font-preview" style="font-family: 'Fusion Pixel 8px Proportional zh_hans', sans-serif;">融合像素8px</span></label>
+                                </div>
+                            </div>
+                            <div class="settings-group">
+                                <label class="settings-label" for="fontSizeSlider">字体大小: <span class="font-size-value">16px</span></label>
+                                <input type="range" min="13" max="22" value="16" class="font-size-slider" id="fontSizeSlider">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="settings-card">
+                        <div class="settings-header"><i class="fas fa-palette"></i>主题设置</div>
+                        <div class="settings-content">
+                            <div class="settings-group">
+                                <label class="settings-label" for="themeSelector">选择界面主题</label>
+                                <select id="themeSelector" class="theme-selector">
+                                    <option value="default">中世纪默认 (金色)</option>
+                                    <option value="cyberpunk">赛博朋克 (青色/品红)</option>
+                                    <option value="natural_green">自然绿意 (绿色/棕色)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="save-status"><i class="fas fa-check-circle"></i>设置已应用</div>
+            </div>
+        </div>
+    </div>
+    <div class="overlay-container" id="main-menu-overlay">
+        <div class="overlay-backdrop"></div>
+        <div class="overlay-panel" style="max-width: 550px; height: auto; max-height: none;">
+            <div class="overlay-title-bar">
+                <h2><i class="fas fa-bars"></i> 主菜单</h2> <button class="overlay-close-btn" data-overlay-id="main-menu-overlay">×</button>
+            </div>
+            <div class="overlay-content menu-content"> <button class="custom-button primary overlay-close-btn" data-overlay-id="main-menu-overlay"><i class="fas fa-play-circle"></i> 继续游戏</button><button class="custom-button"><i class="fas fa-save"></i> 保存游戏 (待实现)</button><button class="custom-button"><i class="fas fa-folder-open"></i> 加载游戏 (待实现)</button><button class="custom-button overlay-trigger" data-overlay-id="settings-overlay"><i class="fas fa-tools"></i> 游戏设置</button><button class="custom-button"><i class="fas fa-question-circle"></i> 帮助 / 关于 (待实现)</button><button class="custom-button" style="background: var(--danger-color); border-color: var(--danger-color); color: white; text-shadow: 1px 1px 1px #000;"><i class="fas fa-sign-out-alt"></i> 退出游戏 (待实现)</button> </div>
+        </div>
+    </div>
+    <!-- Tile Interaction Panel -->
+    <div id="tile-interaction-panel"> <button class="close-btn" aria-label="关闭面板">×</button>
+        <div class="panel-info"> <strong id="panel-tile-name">地点名称</strong>
+            <hr> <span id="panel-tile-details" style="font-family: var(--font-family-body);">地点详细信息...</span>
+        </div>
+        <div class="panel-actions" id="tile-interaction-actions">
+        </div>
+    </div>
+
+    <script>
+        // --- Shared Overlay Management Functions ---
+        function openOverlay(overlayId) {
+            const overlayToOpen = document.getElementById(overlayId);
+            if (!overlayToOpen) { console.error(`Overlay with ID "${overlayId}" not found.`); return; }
+            document.querySelectorAll('.overlay-container.active').forEach(activeOverlay => { if (activeOverlay.id !== overlayId) activeOverlay.classList.remove('active'); });
+            document.getElementById('main-console-panel').classList.remove('active');
+            overlayToOpen.classList.add('active');
+            document.querySelectorAll('#side-nav button').forEach(btn => btn.classList.remove('active'));
+            const triggerButton = document.querySelector(`#side-nav button[data-overlay-id="${overlayId}"], button.overlay-trigger[data-overlay-id="${overlayId}"]`);
+            if (triggerButton && triggerButton.closest('#side-nav')) triggerButton.classList.add('active');
+            const tileInteractionPanel = document.getElementById('tile-interaction-panel');
+            if (tileInteractionPanel && tileInteractionPanel.classList.contains('visible')) tileInteractionPanel.classList.remove('visible');
+         }
+        function closeOverlay(overlayId) {
+            const overlayToClose = document.getElementById(overlayId);
+            if (overlayToClose) overlayToClose.classList.remove('active');
+            document.getElementById('main-console-panel').classList.add('active');
+            document.querySelectorAll('#side-nav button').forEach(btn => btn.classList.remove('active'));
+            const mainConsoleButton = document.querySelector('#side-nav button[data-panel="main-console-panel"]');
+            if (mainConsoleButton) mainConsoleButton.classList.add('active');
+         }
+
+        // --- JavaScript Code ---
+        if (typeof window.updateGameText !== 'function') {
+            window.updateGameText = function(newText) {
+                gameText = newText;
+                if (GameController && typeof GameController.processGameText === 'function') {
+                    GameController.processGameText(gameText);
+                } else { console.warn("GameController or processGameText not ready for new gameText."); }
+            };
+        }
+
+        let gameText = `<gametext>$1</gametext>`; // Placeholder, will be replaced by actual game data
+
+        const themes = {
+            "default": {
+                name: "中世纪默认 (金色)",
+                vars: {
+                    "--primary-color": "#D4AF37",
+                    "--secondary-color": "#8B4513",
+                    "--accent-color": "#FFD700",
+                    "--bg-color-dark": "#120F0D",
+                    "--bg-color-medium": "#2A221B",
+                    "--bg-color-light": "#3F3327",
+                    "--bg-image-main-panel": "url('https://www.transparenttextures.com/patterns/dark-marble.png')",
+                    "--bg-image-overlay-panel": "url('https://www.transparenttextures.com/patterns/worn-dots.png')",
+                    "--text-color-normal": "#D8CFC0",
+                    "--text-color-bright": "#FFFFFF",
+                    "--text-color-gold": "var(--primary-color)",
+                    "--text-secondary": "#A09080",
+                    "--border-color": "#504030",
+                    "--border-color-medium": "#706050",
+                    "--border-color-bright": "var(--primary-color)",
+                    "--border-color-bevel-light": "#F0E68C",
+                    "--border-color-bevel-dark": "#B8860B",
+                    "--highlight-bg": "rgba(212, 175, 55, 0.2)",
+                    "--highlight-shadow": "0 0 12px rgba(212, 175, 55, 0.8)",
+                    "--warning-color": "#FFC107",
+                    "--critical-color": "#C62828",
+                    "--good-color": "#558B2F",
+                    "--neutral-color": "#78909C",
+                    "--crt-glow-color": "rgba(212, 175, 55, 0.03)",
+                    "--scanline-color": "rgba(0, 0, 0, 0.01)",
+                    "--scanline-highlight": "rgba(212, 175, 55, 0.02)",
+                    "--vignette-color": "rgba(0, 0, 0, 0.15)",
+                }
+            },
+            "cyberpunk": {
+                name: "赛博朋克 (青色/品红)",
+                vars: {
+                    "--primary-color": "#00FFFF",    /* Cyan */
+                    "--secondary-color": "#FF00FF", /* Magenta */
+                    "--accent-color": "#FFFF00",    /* Yellow */
+                    "--bg-color-dark": "#0A0A23",   /* Dark Blue/Purple */
+                    "--bg-color-medium": "#1B1B3A",
+                    "--bg-color-light": "#2A2A52",
+                    "--bg-image-main-panel": "url('https://www.transparenttextures.com/patterns/carbon-fibre.png')",
+                    "--bg-image-overlay-panel": "url('https://www.transparenttextures.com/patterns/hexellence.png')",
+                    "--text-color-normal": "#E0E0E0",
+                    "--text-color-bright": "#FFFFFF",
+                    "--text-color-gold": "var(--primary-color)", /* Use primary for "gold" text */
+                    "--text-secondary": "#A0A0C0",
+                    "--border-color": "#303060",
+                    "--border-color-medium": "#505090",
+                    "--border-color-bright": "var(--primary-color)",
+                    "--border-color-bevel-light": "#80FFFF",
+                    "--border-color-bevel-dark": "#00A0A0",
+                    "--highlight-bg": "rgba(0, 255, 255, 0.15)",
+                    "--highlight-shadow": "0 0 12px rgba(0, 255, 255, 0.7)",
+                    "--warning-color": "#FFEB3B", /* Yellow */
+                    "--critical-color": "#F44336", /* Red */
+                    "--good-color": "#4CAF50",   /* Green */
+                    "--neutral-color": "#9E9E9E",  /* Grey */
+                    "--crt-glow-color": "rgba(0, 255, 255, 0.05)",
+                    "--scanline-color": "rgba(0, 0, 0, 0.1)",
+                    "--scanline-highlight": "rgba(0, 255, 255, 0.03)",
+                    "--vignette-color": "rgba(0, 0, 0, 0.2)",
+                }
+            },
+            "natural_green": {
+                name: "自然绿意 (绿色/棕色)",
+                vars: {
+                    "--primary-color": "#4CAF50",    /* Green */
+                    "--secondary-color": "#8D6E63", /* Brown */
+                    "--accent-color": "#FFEB3B",    /* Light Yellow */
+                    "--bg-color-dark": "#1B5E20",   /* Dark Green */
+                    "--bg-color-medium": "#2E7D32",
+                    "--bg-color-light": "#388E3C",
+                    "--bg-image-main-panel": "url('https://www.transparenttextures.com/patterns/light-paper-fibers.png')",
+                    "--bg-image-overlay-panel": "url('https://www.transparenttextures.com/patterns/binding-light.png')",
+                    "--text-color-normal": "#F5F5F5",
+                    "--text-color-bright": "#FFFFFF",
+                    "--text-color-gold": "#FFC107", /* Keep gold for text highlights */
+                    "--text-secondary": "#BCAAA4",
+                    "--border-color": "#5D4037",
+                    "--border-color-medium": "#795548",
+                    "--border-color-bright": "var(--primary-color)",
+                    "--border-color-bevel-light": "#A5D6A7",
+                    "--border-color-bevel-dark": "#2E7D32",
+                    "--highlight-bg": "rgba(76, 175, 80, 0.2)",
+                    "--highlight-shadow": "0 0 12px rgba(76, 175, 80, 0.7)",
+                    "--warning-color": "#FF9800", /* Orange */
+                    "--critical-color": "#D32F2F", /* Dark Red */
+                    "--good-color": "#388E3C",   /* Darker Green */
+                    "--neutral-color": "#757575",  /* Grey */
+                    "--crt-glow-color": "rgba(76, 175, 80, 0.03)",
+                    "--scanline-color": "rgba(0, 0, 0, 0.01)",
+                    "--scanline-highlight": "rgba(76, 175, 80, 0.02)",
+                    "--vignette-color": "rgba(0, 0, 0, 0.1)",
+                }
+            }
+        };
+
+
+        const SceneContextManager = {
+            contexts: {
+                // --- Local Scale Scenes (Keep as previously corrected) ---
+                "town_generic": {
+                    name: "城镇", scale: 'local', defaultTileSymbol: '.', tilesetUrl: 'https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png',
+                    symbolMap: { '#': { name: "障碍物", cssClassSuffix: "rock-small", defaultInteract:[], defaultDesc: "无法通行的障碍物。" }, '.': { name: "草地", cssClassSuffix: "grass-dark", defaultInteract:[], defaultDesc: "一片普通的草地。" },
+                     'C': { name: "普通房屋", cssClassSuffix: "building-roof-brown", defaultInteract:["敲门"], defaultDesc: "一栋普通的民居。" },
+                     'P': { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你在这里。" },
+                     'Z': { name: "城镇居民", cssClassSuffix: "npc-figure", defaultInteract:["交谈"], defaultDesc: "一位城镇居民。" },
+                      'K': { name: "商店", cssClassSuffix: "shop-awning", defaultInteract:["进入商店"], defaultDesc: "一家挂着招牌的商店。" },
+                      'W': { name: "水井", cssClassSuffix: "chest-wooden", defaultInteract:["查看水井"], defaultDesc: "一口石头砌成的水井。" } }
+                },
+                "forbidden_city_throne_room": {
+                    name: "宫殿", scale: 'local', defaultTileSymbol: '.', tilesetUrl: 'https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png',
+                    symbolMap: { '#': { name: "烛台", cssClassSuffix: "palace-decoration", defaultInteract:[], defaultDesc: "华丽的烛台照亮宫殿。" },
+                     '.': { name: "宫殿地面", cssClassSuffix: "palace-stone-floor", defaultInteract:[], defaultDesc: "光滑如镜的金砖。" },
+                      'C': { name: "宫殿结构", cssClassSuffix: "palace-interior-wall", defaultInteract:["检查结构"], defaultDesc: "宏伟的宫殿梁柱或墙壁。" },
+                       'P': { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "尊贵的你。" },
+                        'Z': { name: "大臣", cssClassSuffix: "npc-figure", defaultInteract:["交谈"], defaultDesc: "一位身着官服的大臣。" } }
+                },
+                 "dungeon_level_1": {
+                    name: "地牢", scale: 'local', defaultTileSymbol: '.', tilesetUrl: 'https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png',
+                    symbolMap: { '#': { name: "墙壁/落石", cssClassSuffix: "dungeon-wall-brick", defaultInteract:[], defaultDesc: "粗糙的砖石墙壁或落石。" },
+                    '.': { name: "地牢地面", cssClassSuffix: "dungeon-floor-stone", defaultInteract:[], defaultDesc: "冰冷潮湿的石头地面。" },
+                    'C': { name: "牢房门", cssClassSuffix: "dungeon-cell-door", defaultInteract:["检查门锁"], defaultDesc: "一扇生锈的牢房门。" },
+                    'P': { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你的位置。" },
+                    'Z': { name: "囚犯/残骸", cssClassSuffix: "npc-figure", defaultInteract:["检查"], defaultDesc: "一个蜷缩的身影或一堆白骨。" },
+                    'M': { name: "怪物", cssClassSuffix: "monster-figure", defaultInteract:["战斗"], defaultDesc: "一个潜伏的怪物！" },
+                    'T': { name: "宝箱", cssClassSuffix: "treasure-box", defaultInteract:["打开宝箱"], defaultDesc: "一个普通的木制宝箱。" } }
+                 },
+                "forest_path": {
+                    name: "森林", scale: 'local', defaultTileSymbol: '.', tilesetUrl: 'https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png',
+                     symbolMap: { '#': { name: "茂密树木", cssClassSuffix: "forest-dense-tree", defaultInteract:[], defaultDesc: "茂密的树木，无法通过。" }, '.': { name: "林间土地", cssClassSuffix: "forest-floor-dirt", defaultInteract:[], defaultDesc: "覆盖着落叶的泥土小径。" }, 'C': { name: "树干", cssClassSuffix: "forest-tree-trunk", defaultInteract:["检查树木"], defaultDesc: "一颗粗壮的树干。" }, 'P': { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你正走在林间。" }, 'Z': { name: "林地生物", cssClassSuffix: "npc-figure", defaultInteract:["观察"], defaultDesc: "一只小动物或林地居民。" }, 'W': { name: "溪流", cssClassSuffix: "water-surface", defaultInteract:["查看水流"], defaultDesc: "一条清澈的溪流。" }, 'B': { name: "灌木丛", cssClassSuffix: "forest-bush", defaultInteract:["搜索灌木丛"], defaultDesc: "一簇茂密的灌木。" }, 'T': { name: "宝箱", cssClassSuffix: "chest-wooden", defaultInteract:["打开宝箱"], defaultDesc: "一个普通的木制宝箱。"}, 'M': { name: "怪物", cssClassSuffix: "monster-figure", defaultInteract:["战斗"], defaultDesc: "潜伏的危险！"} }
+                 },
+                 "tavern_inn": {
+                    name: "酒馆旅店", scale: 'local', defaultTileSymbol: '.', tilesetUrl: 'https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png',
+                    symbolMap: {
+                        '#': { name: "酒馆墙壁", cssClassSuffix: "interior-wall", defaultInteract:[], defaultDesc: "酒馆的木质或石制墙壁。" },
+                        'B': { name: "吧台", cssClassSuffix: "bar-counter", defaultInteract:["点酒","与酒保交谈"], defaultDesc: "一个厚实的吧台，摆满了酒瓶和杯子。" },
+                        '.': { name: "酒馆地板", cssClassSuffix: "interior-floor", defaultInteract:[], defaultDesc: "被踩得发亮的木地板或粗糙石板。" },
+                        'P': { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你走进了喧闹的酒馆。" },
+                        'C': { name: "桌椅", cssClassSuffix: "table-and-chairs", defaultInteract:["找个位置坐下","检查桌子"], defaultDesc: "一张普通的木制桌子和几把椅子。" },
+                        'F': { name: "壁炉", cssClassSuffix: "fireplace", defaultInteract:["取暖","添柴"], defaultDesc: "一个燃烧着火焰的石头壁炉。" },
+                        'Z': { name: "酒保/顾客", cssClassSuffix: "npc-figure", defaultInteract:["点单","打听消息","交谈"], defaultDesc: "忙碌的酒保或形形色色的顾客。" },
+                        'D': { name: "房门", cssClassSuffix: "interior-door", defaultInteract:["开门","离开"], defaultDesc: "通往其他房间的门或酒馆的出口。" },
+                        'S': { name: "楼梯", cssClassSuffix: "interior-stairs", defaultInteract:["上楼","下楼"], defaultDesc: "通往楼上或楼下的楼梯。" }
+                    }
+                },
+                "market_square_outdoor": {
+                    name: "市场", scale: 'local', defaultTileSymbol: '.', tilesetUrl: 'https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png',
+                    symbolMap: {
+                        '.': { name: "广场地面", cssClassSuffix: "outdoor-ground-paved", defaultInteract:[], defaultDesc: "被踩实的泥土或石板广场。" },
+                        'P': { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你穿梭在热闹的市场中。" },
+                        'K': { name: "市场摊位", cssClassSuffix: "market-stall", defaultInteract:["浏览商品","购买"], defaultDesc: "摆满各色商品的摊位。" }, // 使用你已有的 shop-awning
+                        'Z': { name: "摊主/顾客", cssClassSuffix: "npc-figure", defaultInteract:["询价","交谈"], defaultDesc: "吆喝的摊主或挑选商品的顾客。" },
+                        'F': { name: "广场设施", cssClassSuffix: "outdoor-feature-stone", defaultInteract:["查看","休息"], defaultDesc: "广场中央的喷泉、雕像或公告板。" },
+                        '#': { name: "市场周边建筑", cssClassSuffix: "building-exterior-generic", defaultInteract:[], defaultDesc: "市场周围的店铺或房屋。" }
+                    }
+                },
+                "generic_interior_room": {
+                    name: "室内房间", scale: 'local', defaultTileSymbol: '.', tilesetUrl: 'https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png',
+                    symbolMap: {
+                        '#': { name: "房间墙壁", cssClassSuffix: "interior-wall", defaultInteract:[], defaultDesc: "房间的普通墙壁。" },
+                        '.': { name: "房间地板", cssClassSuffix: "interior-floor", defaultInteract:[], defaultDesc: "房间的普通地板。" },
+                        'P': { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你在这个房间里。" },
+                        'F': { name: "室内家具", cssClassSuffix: "interior-furniture-generic", defaultInteract:["检查家具"], defaultDesc: "一件普通的家具，如桌子、椅子或柜子。" },
+                        'D': { name: "房门/窗户", cssClassSuffix: "interior-door", defaultInteract:["开门","查看窗外"], defaultDesc: "一扇普通的门或一扇窗户。" },
+                        'T': { name: "容器/物品堆", cssClassSuffix: "interior-container-generic", defaultInteract:["打开","检查物品"], defaultDesc: "一个箱子、书架上的物品堆或其他可交互物件。" },
+                        'Z': { name: "人物", cssClassSuffix: "npc-figure", defaultInteract:["交谈"], defaultDesc: "房间里的另一个人。" }
+                    }
+                },
+                "training_ground": {
+                    name: "训练场/校场", scale: 'local', defaultTileSymbol: '.', tilesetUrl: 'https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png',
+                    symbolMap: {
+                        '.': { name: "平整地面", cssClassSuffix: "forest-floor-dirt", defaultInteract:[], defaultDesc: "被反复踩踏而变得坚实的平整地面，适合操练。" },
+                        '#': { name: "围栏/障碍", cssClassSuffix: "rock-small", defaultInteract:[], defaultDesc: "训练场的边界围栏或固定的训练障碍物。" },
+                        'P': { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你正在训练场上。" },
+                        'Z': { name: "士兵/教官", cssClassSuffix: "npc-figure", defaultInteract:["交谈","挑战","请教"], defaultDesc: "正在操练的士兵或严厉的教官。" },
+                        'M': { name: "训练假人/靶子", cssClassSuffix: "training-dummy", defaultInteract:["攻击训练","检查靶子"], defaultDesc: "用于练习攻击的稻草人或木制靶子。" },
+                        'W': { name: "武器架", cssClassSuffix: "weapon-rack", defaultInteract:["查看武器","拾取练习武器"], defaultDesc: "摆放着各类练习用武器的架子。" },
+                        'T': { name: "箭塔/瞭望台", cssClassSuffix: "watchtower-small", defaultInteract:["登上瞭望"], defaultDesc: "训练场边缘的简易箭塔或瞭望台。" },
+                        'F': { name: "篝火/休息区", cssClassSuffix: "fireplace", defaultInteract:["休息","取暖"], defaultDesc: "供士兵们休息和取暖的篝火区域。" },
+                        'S': { name: "沙坑/障碍跑道", cssClassSuffix: "path-brown", defaultInteract:["进行体能训练"], defaultDesc: "用于体能训练的沙坑或设有障碍的跑道区。" }
+                    }
+                },
+                "temple_generic": {
+                    name: "神殿/宗教场所", scale: 'local', defaultTileSymbol: '.', tilesetUrl: 'https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png',
+                    symbolMap: {
+                        '.': { name: "神殿地砖", cssClassSuffix: "palace-stone-floor", defaultInteract:[], defaultDesc: "庄严肃穆的石制地砖。" },
+                        '#': { name: "神殿墙壁/石柱", cssClassSuffix: "palace-interior-wall", defaultInteract:[], defaultDesc: "刻有神圣图案的墙壁或高耸的石柱。" },
+                        'P': { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你来到了这处神圣之地。" },
+                        'Z': { name: "祭司/信徒", cssClassSuffix: "priest-figure", defaultInteract:["交谈","祈祷","寻求指引"], defaultDesc: "虔诚的祭司或正在祈祷的信徒。" },
+                        'A': { name: "祭坛", cssClassSuffix: "altar-stone", defaultInteract:["查看祭坛","献上祭品"], defaultDesc: "用于举行仪式的石制祭坛。" },
+                        'S': { name: "神像/圣物", cssClassSuffix: "statue-holy", defaultInteract:["瞻仰","研究铭文"], defaultDesc: "受人敬拜的神像或蕴含力量的圣物。" },
+                        'D': { name: "神殿大门", cssClassSuffix: "temple-door-grand", defaultInteract:["进入/离开"], defaultDesc: "通往神殿内部或外部的厚重门扉。" },
+                        'C': { name: "长椅/蒲团", cssClassSuffix: "table-and-chairs", defaultInteract:["坐下休息","冥想"], defaultDesc: "供信徒使用的长椅或蒲团。" },
+                        'F': { name: "圣火/长明灯", cssClassSuffix: "fireplace", defaultInteract:["感受神圣火焰"], defaultDesc: "永不熄灭的圣火或长明灯。" }
+                    }
+                },
+                "workshop_blacksmith": {
+                    name: "铁匠铺", scale: 'local', defaultTileSymbol: '.', tilesetUrl: 'https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png',
+                    symbolMap: {
+                        '.': { name: "工坊地面", cssClassSuffix: "dungeon-floor-stone", defaultInteract:[], defaultDesc: "布满煤灰和金属碎屑的石质地面。" },
+                        '#': { name: "工坊墙壁", cssClassSuffix: "dungeon-wall-brick", defaultInteract:[], defaultDesc: "简陋但坚固的墙壁。" },
+                        'P': { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你走进了叮当作响的铁匠铺。" },
+                        'Z': { name: "铁匠", cssClassSuffix: "npc-figure", defaultInteract:["交谈","购买装备","委托锻造"], defaultDesc: "正在忙碌的铁匠。" },
+                        'F': { name: "锻炉", cssClassSuffix: "forge-active", defaultInteract:["查看火焰","添煤"], defaultDesc: "燃烧着熊熊烈火的锻炉。" },
+                        'A': { name: "铁砧", cssClassSuffix: "anvil-metal", defaultInteract:["检查铁砧"], defaultDesc: "厚重的金属铁砧。" },
+                        'W': { name: "武器/工具架", cssClassSuffix: "weapon-display-rack", defaultInteract:["浏览商品"], defaultDesc: "挂满或摆放着打造好的武器和工具。" },
+                        'T': { name: "淬火槽", cssClassSuffix: "water-surface", defaultInteract:["查看"], defaultDesc: "用于给炽热金属降温的水槽。" },
+                        'M': { name: "材料堆", cssClassSuffix: "rock-small", defaultInteract:["检查材料"], defaultDesc: "堆放的金属锭、煤炭等原材料。" }
+                    }
+                },
+                "desert_oasis": {
+                    name: "沙漠绿洲", scale: 'local', defaultTileSymbol: 's', tilesetUrl: 'https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png',
+                    symbolMap: {
+                        's': { name: "沙地", cssClassSuffix: "sand-dune", defaultInteract:[], defaultDesc: "一望无际的沙地。" },
+                        'P': { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你在酷热的沙漠中。" },
+                        'W': { name: "水池/泉眼", cssClassSuffix: "water-surface", defaultInteract:["取水","休息"], defaultDesc: "沙漠中珍贵的泉水。" },
+                        'T': { name: "棕榈树/耐旱植物", cssClassSuffix: "palm-tree", defaultInteract:["寻找荫凉"], defaultDesc: "稀疏的耐旱植物，提供少许荫凉。" },
+                        '#': { name: "岩石/沙丘", cssClassSuffix: "rock-small", defaultInteract:[], defaultDesc: "巨大的岩石或高耸的沙丘。" },
+                        'Z': { name: "沙漠旅人/生物", cssClassSuffix: "npc-figure", defaultInteract:["交谈","观察"], defaultDesc: "罕见的沙漠居民或生物。" },
+                        'C': { name: "废弃帐篷/遗骸", cssClassSuffix: "ruin-debris-small", defaultInteract:["搜索"], defaultDesc: "前人留下的痕迹或不幸者的遗骸。" }
+                    }
+                },
+                "snowy_mountain_pass": {
+                    name: "雪山隘口", scale: 'local', defaultTileSymbol: 's', tilesetUrl: 'https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png',
+                    symbolMap: {
+                        's': { name: "积雪地面", cssClassSuffix: "snow-drift", defaultInteract:[], defaultDesc: "厚厚的积雪覆盖着地面。" },
+                        '#': { name: "山壁/冰岩", cssClassSuffix: "mountain-peak", defaultInteract:[], defaultDesc: "陡峭的山壁或覆盖着坚冰的岩石。" },
+                        'P': { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你艰难地跋涉在雪山之中。" },
+                        'Z': { name: "雪地生物/隐士", cssClassSuffix: "npc-figure", defaultInteract:["追踪","交谈"], defaultDesc: "适应了严寒的生物或隐居于此的怪人。" },
+                        'C': { name: "冰洞入口/避风处", cssClassSuffix: "cave-entrance-ice", defaultInteract:["进入探索","躲避风雪"], defaultDesc: "一个可能的冰洞入口或可以暂时避风的岩石凹陷。" },
+                        'T': { name: "耐寒松柏", cssClassSuffix: "forest-dense-tree", defaultInteract:[], defaultDesc: "稀疏的耐寒树木。" }
+                    }
+                },
+                "swamp_marsh": {
+                    name: "沼泽湿地", scale: 'local', defaultTileSymbol: 'm', tilesetUrl: 'https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png',
+                    symbolMap: {
+                        'm': { name: "泥沼/浅水", cssClassSuffix: "swamp-water", defaultInteract:[], defaultDesc: "难以行走的泥沼或漂浮着腐殖质的浅水。" },
+                        'P': { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你小心翼翼地在沼泽中前进。" },
+                        '#': { name: "茂密芦苇/红树林", cssClassSuffix: "forest-bush", defaultInteract:[], defaultDesc: "难以看清深处的茂密植物。" },
+                        'T': { name: "枯树/浮木", cssClassSuffix: "forest-tree-trunk", defaultInteract:["攀爬观察"], defaultDesc: "倒在沼泽中的枯树或漂浮的木头，可能是唯一的立足点。" },
+                        'Z': { name: "沼泽生物/迷失者", cssClassSuffix: "monster-figure", defaultInteract:["战斗","帮助"], defaultDesc: "危险的沼泽生物或迷失在其中的人。" },
+                        'H': { name: "安全小径/木板路", cssClassSuffix: "path-brown", defaultInteract:[], defaultDesc: "前人搭建的相对安全的小路或木板。" }
+                    }
+                },
+                "volcanic_caldera": {
+                    name: "火山口边缘", scale: 'local', defaultTileSymbol: '.', tilesetUrl: 'https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png',
+                    symbolMap: {
+                        '.': { name: "火山岩地面", cssClassSuffix: "volcanic-rock-ground", defaultInteract:[], defaultDesc: "冷却凝固的火山岩地面，布满裂隙。" },
+                        '#': { name: "峭壁/凝固岩浆", cssClassSuffix: "rock-small", defaultInteract:[], defaultDesc: "火山口的陡峭内壁或形态奇特的凝固岩浆。" },
+                        'P': { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你来到了炽热的火山口。" },
+                        'L': { name: "岩浆池/裂口", cssClassSuffix: "lava-pool", defaultInteract:["靠近观察 (危险!)"], defaultDesc: "翻滚着致命高温的岩浆池或深不见底的裂口。" },
+                        'S': { name: "硫磺喷口/烟雾", cssClassSuffix: "smoke-vent", defaultInteract:["小心避开"], defaultDesc: "散发着刺鼻气味的硫磺喷口，烟雾缭绕。" },
+                        'Z': { name: "火焰元素/耐热生物", cssClassSuffix: "monster-figure", defaultInteract:["战斗"], defaultDesc: "生活在极端环境中的生物。" }
+                    }
+                },
+                "beach_coastline": {
+                    name: "沙滩海岸", scale: 'local', defaultTileSymbol: 's', tilesetUrl: 'https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png',
+                    symbolMap: {
+                        's': { name: "沙滩", cssClassSuffix: "sand-beach", defaultInteract:[], defaultDesc: "柔软的沙滩，散落着贝壳。" },
+                        '~': { name: "海水/海浪", cssClassSuffix: "water-surface", defaultInteract:["游泳","冲浪"], defaultDesc: "不断拍打着岸边的海水。" },
+                        'P': { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你漫步在沙滩上。" },
+                        '#': { name: "礁石/峭壁", cssClassSuffix: "rock-small", defaultInteract:["攀爬"], defaultDesc: "海岸边的礁石或峭壁。" },
+                        'T': { name: "椰子树/海岸植被", cssClassSuffix: "coconut-tree", defaultInteract:["摘椰子"], defaultDesc: "生长在海岸边的树木。" },
+                        'C': { name: "螃蟹/海鸟", cssClassSuffix: "npc-figure", defaultInteract:["捕捉"], defaultDesc: "沙滩上的小生物。" },
+                        'D': { name: "沉船残骸/漂流物", cssClassSuffix: "ruin-shipwreck-part", defaultInteract:["搜索残骸"], defaultDesc: "被海浪冲上岸的破旧船板或漂流物。" }
+                    }
+                },
+                "docks_harbor": {
+                    name: "码头/港口", scale: 'local', defaultTileSymbol: '.', tilesetUrl: 'https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png',
+                    symbolMap: {
+                        '.': { name: "码头地面/木板", cssClassSuffix: "path-brown", defaultInteract:[], defaultDesc: "由厚木板铺成的码头地面，有些湿滑。" },
+                        '~': { name: "海水/港池", cssClassSuffix: "water-surface", defaultInteract:[], defaultDesc: "停泊船只的水域。" },
+                        'P': { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你来到了繁忙的码头。" },
+                        'Z': { name: "水手/商人/渔夫", cssClassSuffix: "npc-figure", defaultInteract:["交谈","打听消息","雇佣"], defaultDesc: "码头上形形色色的人们。" },
+                        'S': { name: "停泊的船只", cssClassSuffix: "ship-docked", defaultInteract:["登船","检查货物"], defaultDesc: "一艘停泊在码头的船只。" },
+                        'C': { name: "货物堆/仓库入口", cssClassSuffix: "crates-stacked", defaultInteract:["检查货物","进入仓库"], defaultDesc: "堆放的货物或通往仓库的门。" },
+                        'O': { name: "起重机/吊臂", cssClassSuffix: "crane-wooden", defaultInteract:["操作 (如果可能)"], defaultDesc: "用于装卸货物的木制起重机。" },
+                        'B': { name: "灯塔/航标", cssClassSuffix: "lighthouse-small", defaultInteract:[], defaultDesc: "指引船只的灯塔或航标。" }
+                    }
+                },
+                "stable_驿站": {
+                    name: "马厩/驿站", scale: 'local', defaultTileSymbol: '.', tilesetUrl: 'https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png',
+                    symbolMap: {
+                        '.': { name: "驿站土地/干草地", cssClassSuffix: "forest-floor-dirt", defaultInteract:[], defaultDesc: "铺满干草的地面或被踩实的土地。" },
+                        '#': { name: "马厩墙壁/栅栏", cssClassSuffix: "interior-wall", defaultInteract:[], defaultDesc: "马厩的木墙或围栏。" },
+                        'P': { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你来到了驿站。" },
+                        'Z': { name: "马夫/驿卒", cssClassSuffix: "npc-figure", defaultInteract:["交谈","购买马匹","休息"], defaultDesc: "负责照料马匹的马夫或驿站的差役。" },
+                        'H': { name: "马匹", cssClassSuffix: "horse-standing", defaultInteract:["骑乘","喂食"], defaultDesc: "一匹膘肥体壮的马。" },
+                        'F': { name: "草料槽/水槽", cssClassSuffix: "chest-wooden", defaultInteract:["添加草料/水"], defaultDesc: "给马匹喂食的槽。" },
+                        'C': { name: "马车/货车", cssClassSuffix: "cart-parked", defaultInteract:["检查马车","搭乘"], defaultDesc: "停放的马车或货车。" },
+                        'B': { name: "驿站建筑/客房入口", cssClassSuffix: "building-roof-brown", defaultInteract:["进入休息"], defaultDesc: "驿站主建筑或客房的入口。" }
+                    }
+                },
+                "bridge_guarded": {
+                    name: "守卫的桥梁", scale: 'local', defaultTileSymbol: '=', tilesetUrl: 'https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png',
+                    symbolMap: {
+                        '=': { name: "桥面", cssClassSuffix: "bridge-plank", defaultInteract:[], defaultDesc: "由木板或石头铺成的桥面。" },
+                        '~': { name: "河流/峡谷下方", cssClassSuffix: "water-surface", defaultInteract:[], defaultDesc: "桥下的水流或深邃的峡谷。" },
+                        'P': { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你正试图通过这座桥。" },
+                        'Z': { name: "桥梁守卫", cssClassSuffix: "npc-figure", defaultInteract:["交谈","出示通行证","战斗"], defaultDesc: "警惕的桥梁守卫。" },
+                        'T': { name: "桥头堡/瞭望塔", cssClassSuffix: "bridge-tower", defaultInteract:["进入","侦察"], defaultDesc: "桥两端的防御工事或瞭望塔。" },
+                        '#': { name: "桥栏/支撑结构", cssClassSuffix: "rock-small", defaultInteract:[], defaultDesc: "桥的栏杆或坚固的支撑结构。" }
+                    }
+                },
+                "portal_magic_gate": {
+                    name: "魔法传送门", scale: 'local', defaultTileSymbol: '.', tilesetUrl: 'https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png',
+                    symbolMap: {
+                        '.': { name: "异界地面", cssClassSuffix: "scifi-floor-metal", defaultInteract:[], defaultDesc: "传送门周围的地面散发着奇异的光芒。" },
+                        '#': { name: "能量屏障/支撑结构", cssClassSuffix: "force-field", defaultInteract:[], defaultDesc: "维持传送门稳定的能量场或实体结构。" },
+                        'P': { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你站在一个神秘的传送门前。" },
+                        'G': { name: "传送门核心", cssClassSuffix: "portal-active", defaultInteract:["激活传送门","进入传送门","研究符文"], defaultDesc: "闪耀着不稳定光芒的传送门核心区域。" },
+                        'Z': { name: "传送门守护者/异界生物", cssClassSuffix: "monster-figure", defaultInteract:["交谈","战斗"], defaultDesc: "守护传送门的存在或从另一端过来的生物。" },
+                        'S': { name: "控制台/符文石", cssClassSuffix: "scifi-console", defaultInteract:["尝试操作","解读符文"], defaultDesc: "用于控制传送门或刻有激活符文的石碑。" }
+                    }
+                },
+                "ruins_ancient_temple": {
+                    name: "古代神庙废墟", scale: 'local', defaultTileSymbol: '.', tilesetUrl: 'https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png',
+                    symbolMap: {
+                        '.': { name: "碎石地面", cssClassSuffix: "ruin-floor-broken", defaultInteract:[], defaultDesc: "布满碎石和杂草的残破地面。" },
+                        '#': { name: "倒塌的墙壁/石柱", cssClassSuffix: "ruin-wall-collapsed", defaultInteract:["攀爬","搜索"], defaultDesc: "断裂的石柱或倒塌的墙垣。" },
+                        'P': { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你正在探索这片古老的废墟。" },
+                        'Z': { name: "游荡的幽魂/寻宝者", cssClassSuffix: "monster-figure", defaultInteract:["战斗","交谈"], defaultDesc: "徘徊在废墟中的存在。" },
+                        'A': { name: "残破的祭坛/神像", cssClassSuffix: "ruin-altar-broken", defaultInteract:["调查","寻找线索"], defaultDesc: "曾经神圣但如今已残破不堪的祭坛或神像。" },
+                        'T': { name: "隐藏的宝箱/入口", cssClassSuffix: "chest-wooden", defaultInteract:["打开","进入"], defaultDesc: "被瓦砾掩盖的宝箱或通往地下的入口。" },
+                        'B': { name: "过度生长的藤蔓/树木", cssClassSuffix: "forest-bush", defaultInteract:["拨开藤蔓"], defaultDesc: "几乎将废墟吞噬的茂密植物。" }
+                    }
+                },
+                "library_study_hall": {
+                    name: "图书馆/研习厅", scale: 'local', defaultTileSymbol: '.', tilesetUrl: 'https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png',
+                    symbolMap: {
+                        '.': { name: "图书馆地板", cssClassSuffix: "interior-floor", defaultInteract:[], defaultDesc: "安静的木地板或石质地板。" },
+                        '#': { name: "高大书架", cssClassSuffix: "bookshelf-tall", defaultInteract:["查找书籍","攀爬 (不推荐)"], defaultDesc: "直抵天花板的书架，摆满了各种书籍。" },
+                        'P': { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你沉浸在知识的海洋中。" },
+                        'Z': { name: "图书管理员/学者", cssClassSuffix: "scholar-figure", defaultInteract:["询问","请求查阅禁书"], defaultDesc: "博学的管理员或正在埋头研究的学者。" },
+                        'T': { name: "阅览桌/书案", cssClassSuffix: "table-and-chairs", defaultInteract:["坐下阅读","研究卷轴"], defaultDesc: "供人阅读和研究的桌子。" },
+                        'S': { name: "珍贵卷轴/古籍", cssClassSuffix: "scroll-ancient", defaultInteract:["阅读 (需鉴定?)","抄录"], defaultDesc: "散发着古老气息的卷轴或厚重的魔法书。" },
+                        'G': { name: "厚重魔导书", cssClassSuffix: "grimoire-heavy", defaultInteract:["研读 (可能危险)"], defaultDesc: "一本蕴含强大力量的魔导书。" },
+                        'L': { name: "讲台/星象仪", cssClassSuffix: "lectern-ornate", defaultInteract:["发表演讲","观察星象"], defaultDesc: "用于演讲的讲台或精密的星象观测仪器。" }, // Could also be astrolabe-device
+                        'A': { name: "星盘/炼金设备", cssClassSuffix: "astrolabe-device", defaultInteract:["操作仪器", "进行实验"], defaultDesc: "用于占星或炼金的复杂装置。"}
+                    }
+                },
+                "manor_estate_grounds": {
+                    name: "庄园庭院", scale: 'local', defaultTileSymbol: '.', tilesetUrl: 'https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png',
+                    symbolMap: {
+                        '#': { name: "庄园建筑/高墙", cssClassSuffix: "building-exterior-grand", defaultInteract:[], defaultDesc: "庄园主建筑的一部分或高耸的围墙。" },
+                        '.': { name: "庄园草坪", cssClassSuffix: "outdoor-grass-manicured", defaultInteract:[], defaultDesc: "修剪整齐的草坪。" },
+                        'p': { name: "庄园小径", cssClassSuffix: "outdoor-path-gravel", defaultInteract:[], defaultDesc: "庄园内精致的石子小径。" },
+                        'P': { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你正在庄园的庭院中。" },
+                        'G': { name: "庭院景观", cssClassSuffix: "outdoor-feature-garden", defaultInteract:["欣赏景观"], defaultDesc: "一座喷泉、一尊雕像或精心修剪的装饰性灌木丛。" },
+                        'T': { name: "庭院树木", cssClassSuffix: "outdoor-tree-large", defaultInteract:["检查树木"], defaultDesc: "庭院中高大的观赏树木。" },
+                        'Z': { name: "庄园人员", cssClassSuffix: "npc-figure", defaultInteract:["询问","交谈"], defaultDesc: "庄园的仆人、园丁或守卫。" },
+                        'D': { name: "庄园大门/入口", cssClassSuffix: "building-entrance-grand", defaultInteract:["进入建筑","通过大门"], defaultDesc: "通往庄园主建筑的入口或庭院的气派大门。" }
+                    }
+                },
+                "country_map": {
+                    name: "国家地图", scale: 'regional', defaultTileSymbol: '.', tilesetUrl: 'https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png',
+                    symbolMap: {
+                        '#': { name: "山脉", cssClassSuffix: "mountain-green", defaultInteract: [], defaultDesc: "连绵的山脉。" },
+                        '.': { name: "平原/地区", cssClassSuffix: "grass-light", defaultInteract: [], defaultDesc: "广阔的平原或地区。" },
+                        'C': { name: "首都", cssClassSuffix: "location-capital", defaultInteract: ["查看详情"], defaultDesc: "国家的首都。" },
+                        'P': { name: "当前位置", cssClassSuffix: "location-player", defaultInteract: ["查看详情"], defaultDesc: "你目前所在的区域。" },
+                        'Z': { name: "其他城市/省份", cssClassSuffix: "location-city", defaultInteract: ["查看详情"], defaultDesc: "其他重要的城市或区域。" },
+                        'R': { name: "河流/水域", cssClassSuffix: "water-surface", defaultInteract: [], defaultDesc: "主要的河流或湖泊。" },
+                        '~': { name: "边界/水域", cssClassSuffix: "water-surface", defaultInteract: [], defaultDesc: "地图边界或水域。" }
+                    }
+                },
+                "continent_map": {
+                    name: "大陆地图", scale: 'continental', defaultTileSymbol: '.', tilesetUrl: 'https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png',
+                    symbolMap: {
+                        '.': { name: "陆地/平原", cssClassSuffix: "landmass", defaultInteract: ["勘察地形"], defaultDesc: "广阔的陆地或平原。" },
+                        '#': { name: "山脉", cssClassSuffix: "mountain-range", defaultInteract: [], defaultDesc: "高耸的山脉，难以逾越。" },
+                        '~': { name: "海洋/大型水域", cssClassSuffix: "water-deep", defaultInteract: [], defaultDesc: "广阔的海洋或大型湖泊。" },
+                        'F': { name: "森林/茂密植被区", cssClassSuffix: "mountain-green", defaultInteract: ["探索森林"], defaultDesc: "大片茂密的森林或植被区域。" },
+                        'S': { name: "沙漠/荒地", cssClassSuffix: "path-brown", defaultInteract: ["穿越沙漠"], defaultDesc: "干旱的沙漠或贫瘠的荒地。" },
+                        'P': { name: "玩家势力范围/首都", cssClassSuffix: "nation-player", defaultInteract: ["查看势力详情"], defaultDesc: "你的势力核心区域或首都。" },
+                        'N': { name: "其他国家/主要势力", cssClassSuffix: "nation-other", defaultInteract: ["查看外交关系"], defaultDesc: "其他主要国家或势力区域。" },
+                        'C': { name: "重要城市/据点", cssClassSuffix: "location-capital", defaultInteract: ["侦查城市"], defaultDesc: "大陆上的重要城市或战略据点。" },
+                    }
+                },
+                "galaxy_map": {
+                    name: "星系地图", scale: 'galactic', defaultTileSymbol: ' ', tilesetUrl: 'https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png',
+                    symbolMap: {
+                        ' ': { name: "真空/星际空间", cssClassSuffix: "space-empty", defaultInteract: ["扫描空间"], defaultDesc: "广阔的星际空间。" },
+                        '*': { name: "恒星", cssClassSuffix: "star-yellow", defaultInteract: ["分析恒星数据"], defaultDesc: "一颗普通的恒星。" },
+                        'P': { name: "玩家控制星系/主要行星", cssClassSuffix: "planet-player", defaultInteract: ["管理星系"], defaultDesc: "玩家控制的主要星系或行星。" },
+                        'O': { name: "其他星系/行星", cssClassSuffix: "planet-other", defaultInteract: ["侦查星系"], defaultDesc: "其他已知或未知的星系/行星。" },
+                        'N': { name: "星云/危险区域", cssClassSuffix: "nebula-hazard", defaultInteract: ["谨慎导航"], defaultDesc: "一片星云或已知的危险太空区域。" },
+                        'B': { name: "导航信标/空间站", cssClassSuffix: "nav-beacon", defaultInteract: ["连接信标网络", "停靠空间站"], defaultDesc: "一个导航信标或小型空间站。" },
+                        'G': { name: "星门/跳跃点", cssClassSuffix: "force-field", defaultInteract: ["启动星门","计算跳跃参数"], defaultDesc: "一个星门或超空间跳跃点（用能量场图标暂代）。" },
+                        'X': { name: "未知信号/异常空间", cssClassSuffix: "unknown", defaultInteract: ["调查异常"], defaultDesc: "侦测到未知信号源或空间异常现象。" }
+                    }
+                }
+            },
+            getContext(sceneId) { return this.contexts[sceneId] || this.contexts["town_generic"]; },
+            getTileDefinition(sceneContext, symbol, symbolDefinitionsFromLLM = {}) {
+            // --- DEBUGGING ---
+            if (symbol === 'P' || symbol === 'Z') {
+                console.log(`[getTileDefinition] Called for SYMBOL: ${symbol}`);
+                console.log(`  sceneContext.name: ${sceneContext ? sceneContext.name : 'undefined'}`);
+                console.log(`  sceneContext.defaultTileSymbol: ${sceneContext ? sceneContext.defaultTileSymbol : 'undefined'}`);
+                if (sceneContext && sceneContext.symbolMap) {
+                    console.log(`  sceneContext.symbolMap['${symbol}'] (direct lookup):`, JSON.parse(JSON.stringify(sceneContext.symbolMap[symbol] || {})));
+                    console.log(`  sceneContext.symbolMap['.'] (default tile in context):`, JSON.parse(JSON.stringify(sceneContext.symbolMap[sceneContext.defaultTileSymbol || '.'] || {})));
+                }
+            }
+            // --- END DEBUGGING ---
+
+            const llmDef = symbolDefinitionsFromLLM[symbol];
+            let contextDef = sceneContext.symbolMap[symbol]; // <--- 关键步骤1
+
+            // --- DEBUGGING ---
+            if (symbol === 'P' || symbol === 'Z') {
+                console.log(`  Initial contextDef for '${symbol}':`, JSON.parse(JSON.stringify(contextDef || {})));
+            }
+            // --- END DEBUGGING ---
+
+            if (!contextDef && symbol !== sceneContext.defaultTileSymbol) {
+                const defaultSymbolKey = sceneContext.defaultTileSymbol || '.';
+                contextDef = sceneContext.symbolMap[defaultSymbolKey]; // <--- 关键步骤2 (如果进入此分支)
+                // --- DEBUGGING ---
+                if (symbol === 'P' || symbol === 'Z') {
+                    console.log(`  '${symbol}' NOT found directly AND is NOT default. Falling back. contextDef is NOW for '${defaultSymbolKey}':`, JSON.parse(JSON.stringify(contextDef || {})));
+                }
+                // --- END DEBUGGING ---
+            } else if (!contextDef && symbol === sceneContext.defaultTileSymbol) {
+                const defaultSymbolKey = sceneContext.defaultTileSymbol || '.';
+                contextDef = sceneContext.symbolMap[defaultSymbolKey];
+                // --- DEBUGGING ---
+                if (symbol === 'P' || symbol === 'Z') { // Though P/Z are unlikely to be the default symbol
+                    console.log(`  '${symbol}' IS default symbol AND not found directly. contextDef is NOW for '${defaultSymbolKey}':`, JSON.parse(JSON.stringify(contextDef || {})));
+                }
+                // --- END DEBUGGING ---
+            }
+
+            const base = contextDef || { name: `(${symbol})`, cssClassSuffix: 'unknown', defaultInteract: [], defaultDesc: '', properties: {} };
+            // ... (rest of the function from previous correct attempt) ...
+            // Ensure you are using the version of the rest of the function
+            // from my previous message (the one that fixed the CSS merging).
+            let combined = { ...base };
+
+            if (llmDef) {
+                if (llmDef.name !== undefined) combined.name = llmDef.name;
+                if (llmDef.description !== undefined) combined.description = llmDef.description;
+                if (llmDef.css_class !== undefined) {
+                    combined.css_class_full = llmDef.css_class;
+                    combined.cssClassSuffix = undefined;
+                } else if (llmDef.css_class_suffix !== undefined) {
+                    combined.cssClassSuffix = llmDef.css_class_suffix;
+                    combined.css_class_full = undefined;
+                }
+                if (llmDef.default_interact !== undefined) combined.defaultInteract = llmDef.default_interact;
+                if (llmDef.properties !== undefined) combined.properties = { ...(base.properties || {}), ...llmDef.properties };
+            }
+            combined.description = (combined.description !== undefined && combined.description !== null && combined.description !== '') ? combined.description : (base.defaultDesc || '');
+            combined.name = (combined.name !== undefined && combined.name !== null && combined.name !== '') ? combined.name : `符号 ${symbol}`;
+            if (!combined.css_class_full && !combined.cssClassSuffix) {
+                combined.cssClassSuffix = 'unknown';
+            }
+            combined.defaultInteract = combined.defaultInteract || [];
+            combined.properties = combined.properties || {};
+            combined.scale = sceneContext.scale || 'local';
+            // --- DEBUGGING ---
+            if (symbol === 'P' || symbol === 'Z') {
+                console.log(`  Final combined for ${symbol}:`, JSON.parse(JSON.stringify(combined)));
+                console.log(`    Applied Suffix: ${combined.cssClassSuffix}, Applied Full: ${combined.css_class_full}`);
+            }
+            // --- END DEBUGGING ---
+            return combined;
+        }
+        };
+
+        const DataExtractor = {
+            extractAll(text) { const gameTextMatch = /<gametext>([\s\S]*)<\/gametext>/; const match = gameTextMatch.exec(text); if (!match || !match[1]) { console.error("数据格式错误: 缺少 <gametext> 标签"); return null; } const content = match[1]; return { main: this.extractMain(content), status: this.extractStatus(content), map: this.extractMapData(content), tasks: this.extractTasks(content), social: this.extractSocial(content), log: this.extractLog(content), options: this.extractOptions(content), character_stats: this.extractCharacterStats(content), inventory_assets: this.extractInventoryAssets(content), factions_diplomacy: this.extractFactionsDiplomacy(content) }; },
+            extractMain(text) { const m = /<main>([\s\S]*?)<\/main>/.exec(text); return m ? m[1].trim() : ""; },
+            extractStatus(text) { const m = /<status>([\s\S]*?)<\/status>/.exec(text); if (!m) return {}; const l = m[1].trim().split('\n'); const s = {}; l.forEach(i => { const p = i.split('|'); if (p.length >= 2) s[p[0].trim()] = p[1].trim(); }); return s; },
+                extractMapData(text) {
+            const mapMatch = /<map>([\s\S]*?)<\/map>/;
+            const match = mapMatch.exec(text);
+            if (!match || !match[1]) {
+                console.warn("Map data block not found in text:", text);
+                return null;
+            }
+
+            // Normalize newlines in the entire map block content ONCE, then trim the whole block
+            const mapContentNormalized = match[1].replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+            const mapContent = mapContentNormalized.trim(); // Trim after normalization
+
+            const mapData = { raw_map_array: [], instance_metadata: {}, symbol_definitions: {} };
+            // Split by the single, normalized newline character
+            const lines = mapContent.split('\n');
+            let currentSection = null;
+            let rawMapLines = [];
+
+            console.log("[extractMapData] Processing mapContent. Number of lines after normalization and split:", lines.length);
+            // Optional: For debugging, print first few normalized lines if needed:
+            // for(let i=0; i < Math.min(lines.length, 15); i++) { console.log(`  Line ${i}: [${lines[i]}]`); }
+
+            lines.forEach((line, index) => {
+                // line variable here should be relatively clean now.
+                // We still trim it for detecting section headers or for map content.
+                const trimmedLine = line.trim();
+
+                // Skip fully empty lines unless we are inside the raw_map section
+                // (though even in raw_map, an empty trimmedLine usually means an ignored line)
+                if (!trimmedLine && currentSection !== "raw_map") return;
+
+                if (trimmedLine.startsWith("SCENE_CONTEXT_ID:")) mapData.scene_context_id = trimmedLine.substring("SCENE_CONTEXT_ID:".length).trim();
+                else if (trimmedLine.startsWith("MAP_ID:")) mapData.id = trimmedLine.substring("MAP_ID:".length).trim();
+                else if (trimmedLine.startsWith("MAP_NAME:")) mapData.name = trimmedLine.substring("MAP_NAME:".length).trim();
+                else if (trimmedLine.startsWith("TILESET_HINT:")) mapData.tileset_hint = trimmedLine.substring("TILESET_HINT:".length).trim();
+                else if (trimmedLine.startsWith("DIMENSIONS:")) { const dims = trimmedLine.substring("DIMENSIONS:".length).trim().split('x'); if (dims.length === 2) { mapData.cols = parseInt(dims[0]); mapData.rows = parseInt(dims[1]); } }
+                else if (trimmedLine.startsWith("DEFAULT_TILE:")) mapData.default_tile = trimmedLine.substring("DEFAULT_TILE:".length).trim();
+                else if (trimmedLine === "RAW_MAP_START") {
+                    currentSection = "raw_map";
+                    console.log("[extractMapData] Entered RAW_MAP_START section at line index (in split lines):", index);
+                } else if (trimmedLine === "RAW_MAP_END") {
+                    if (rawMapLines.length > 0) {
+                        mapData.raw_map_array = rawMapLines.map(r_trimmed => r_trimmed.split(''));
+                        console.log("[extractMapData] Parsed RAW_MAP. Rows:", mapData.raw_map_array.length, "First row example:", mapData.raw_map_array[0] ? mapData.raw_map_array[0].join('') : "EMPTY");
+                    } else {
+                        console.warn("[extractMapData] RAW_MAP_END encountered but rawMapLines is empty.");
+                    }
+                    rawMapLines = []; // Reset for next potential map block
+                    currentSection = null;
+                } else if (trimmedLine === "INSTANCE_METADATA_START") {
+                    currentSection = "instance_metadata";
+                    console.log("[extractMapData] Entered INSTANCE_METADATA_START section at line", index);
+                } else if (trimmedLine === "INSTANCE_METADATA_END") {
+                    currentSection = null;
+                    console.log("[extractMapData] Exited INSTANCE_METADATA_START section. Found items:", Object.keys(mapData.instance_metadata).length);
+                } else if (trimmedLine === "SYMBOL_DEFINITIONS_START") {
+                    currentSection = "symbol_definitions";
+                    console.log("[extractMapData] Entered SYMBOL_DEFINITIONS_START section at line", index);
+                } else if (trimmedLine === "SYMBOL_DEFINITIONS_END") {
+                    currentSection = null;
+                    console.log("[extractMapData] Exited SYMBOL_DEFINITIONS_START section. Found items:", Object.keys(mapData.symbol_definitions).length);
+                } else { // This 'else' handles lines within sections
+                    if (currentSection === "raw_map") {
+                        // For raw map lines, use the trimmedLine because your map format
+                        // does not use leading/trailing spaces on map rows as significant.
+                        // If a line within RAW_MAP_START/END is entirely whitespace after an initial \r removal,
+                        // trimmedLine will be empty, and it won't be pushed. This is usually desired.
+                        if (trimmedLine) { // Only push if trimmedLine is not empty
+                            rawMapLines.push(trimmedLine);
+                        }
+                    } else if (currentSection === "instance_metadata" && trimmedLine) {
+                        const parts = trimmedLine.split('|');
+                        const coords = parts[0];
+                        if (parts.length >= 3) {
+                            try {
+                                let sym = parts[1];
+                                let id, instName, instDesc = "", instInteract = [], instProps = {};
+                                // This parsing logic is from your original 13.html, ensure it matches your data structure.
+                                if (parts.length === 7) { id = parts[2]; instName = parts[3]; instDesc = parts[4] || ""; if (parts[5] && parts[5].trim()) instInteract = JSON.parse(parts[5]); if (parts[6] && parts[6].trim()) instProps = JSON.parse(parts[6]); }
+                                else if (parts.length === 6) { id = `${sym}_${coords}`; instName = parts[2]; instDesc = parts[3] || ""; if (parts[4] && parts[4].trim()) instInteract = JSON.parse(parts[4]); if (parts[5] && parts[5].trim()) instProps = JSON.parse(parts[5]); }
+                                else if (parts.length === 5) { id = `${sym}_${coords}`; instName = parts[2]; instDesc = parts[3] || ""; if (parts[4] && parts[4].trim()) instInteract = JSON.parse(parts[4]); }
+                                else if (parts.length === 4) { if (/^[a-zA-Z0-9_.-]+$/.test(parts[2]) && parts[2].length < 30 && parts[2] !== sym) { id = parts[2]; instName = parts[3]; } else { id = `${sym}_${coords}`; instName = parts[2]; instDesc = parts[3] || ""; } }
+                                else if (parts.length === 3) { id = `${sym}_${coords}`; instName = parts[2]; }
+                                else { console.warn("INSTANCE_METADATA line has too few parts or unexpected format:", trimmedLine); id = `${sym}_${coords}`; instName = parts[2] || `Instance ${sym}@${coords}`; } // fallback name
+                                mapData.instance_metadata[coords] = { symbol_at_xy: sym, instance_id: id, name: instName, description: instDesc, interact: instInteract, properties: instProps };
+                            } catch(e) { console.error("Error parsing INSTANCE_METADATA line:", trimmedLine, e); }
+                        } else if (trimmedLine) { // Log if line is not empty but has too few parts
+                            console.warn("INSTANCE_METADATA line too short:", trimmedLine);
+                        }
+                    } else if (currentSection === "symbol_definitions" && trimmedLine) {
+                        const defParts = trimmedLine.match(/^(.+?):\s*(\{.*\})$/);
+                        if (defParts && defParts.length === 3) {
+                            try {
+                                const symbolKey = defParts[1].trim();
+                                const symbolDef = JSON.parse(defParts[2].trim());
+                                mapData.symbol_definitions[symbolKey] = symbolDef;
+                            }
+                            catch (e) { console.error("Error parsing SYMBOL_DEFINITIONS JSON:", trimmedLine, e); }
+                        } else {
+                            console.warn("Could not parse SYMBOL_DEFINITION line:", trimmedLine);
+                        }
+                    }
+                }
+            });
+
+            // If dimensions were not provided explicitly, derive from raw_map_array
+            if (mapData.raw_map_array && mapData.raw_map_array.length > 0 && (!mapData.rows || !mapData.cols)) {
+                mapData.rows = mapData.raw_map_array.length;
+                mapData.cols = mapData.raw_map_array[0] ? mapData.raw_map_array[0].length : 0;
+            }
+
+            // --- DEBUGGING LOGS (keep these for now) ---
+            if (mapData && mapData.raw_map_array) {
+                console.log(`[DataExtractor] mapData.raw_map_array has ${mapData.raw_map_array.length} rows (final).`);
+                if (mapData.raw_map_array.length > 5) { // Check if row 5 (index) exists
+                     console.log(`[DataExtractor] Row 5 content (final) (length ${mapData.raw_map_array[5] ? mapData.raw_map_array[5].length : 'N/A'}): [${mapData.raw_map_array[5] ? mapData.raw_map_array[5].join('') : 'ROW UNDEFINED'}]`);
+                    if (mapData.raw_map_array[5] && mapData.raw_map_array[5].length > 5) { // Check if column 5 (index) in row 5 exists
+                        const charAt5_5 = mapData.raw_map_array[5][5];
+                        console.log(`[DataExtractor] Checking rawMap[5][5] (final): Character is '${charAt5_5}' (Code: ${charAt5_5 ? charAt5_5.charCodeAt(0) : 'N/A'})`);
+                    } else {
+                        console.log(`[DataExtractor] rawMap[5] (final) does not have an element at index 5 or row 5 is too short.`);
+                    }
+                } else {
+                     console.log(`[DataExtractor] rawMap (final) does not have enough rows to check row index 5.`);
+                }
+                // To see the whole array for debugging:
+                // console.log("[DataExtractor] Full raw_map_array for UI:", JSON.parse(JSON.stringify(mapData.raw_map_array)));
+            } else {
+                console.log("[DataExtractor] mapData.raw_map_array is undefined or null (final).");
+            }
+            // --- END DEBUGGING LOGS ---
+            return mapData;
+        },
+            extractCharacterStats(text) { const m = /<character_stats>([\s\S]*?)<\/character_stats>/.exec(text); if (!m) return {}; const l = m[1].trim().split('\n'); const s = {}; l.forEach(i => { const p = i.split('|'); if (p.length >= 2) s[p[0].trim()] = p[1].trim(); }); return s; },
+            extractInventoryAssets(text) { const m = /<inventory_assets>([\s\S]*?)<\/inventory_assets>/.exec(text); if (!m) return { personal: [], faction: [], policies: [] }; const content = m[1].trim(); const data = { personal: [], faction: [], policies: [] }; let currentList = null; content.split('\n').forEach(line => { line = line.trim(); if (line === "PERSONAL_START") currentList = data.personal; else if (line === "PERSONAL_END") currentList = null; else if (line === "FACTION_START") currentList = data.faction; else if (line === "FACTION_END") currentList = null; else if (line === "POLICIES_START") currentList = data.policies; else if (line === "POLICIES_END") currentList = null; else if (currentList && line) { const p = line.split('|'); if (p.length >= 2) currentList.push({ name: p[0].trim(), value: p[1].trim() }); else if (p.length === 1 && p[0]) currentList.push({name: p[0].trim(), value: ""}); } }); return data; },
+            extractFactionsDiplomacy(text) { const m = /<factions_diplomacy>([\s\S]*?)<\/factions_diplomacy>/.exec(text); if (!m) return { internal: [], external: [] }; const content = m[1].trim(); const data = { internal: [], external: [] }; let currentList = null; content.split('\n').forEach(line => { line = line.trim(); if (line === "INTERNAL_FACTIONS_START") currentList = data.internal; else if (line === "INTERNAL_FACTIONS_END") currentList = null; else if (line === "EXTERNAL_FACTIONS_START") currentList = data.external; else if (line === "EXTERNAL_FACTIONS_END") currentList = null; else if (currentList && line) { const p = line.split('|'); if (p.length >= 2) {const details = {}; p[1].split(';').forEach(d_part => { const kv = d_part.split(':'); if(kv.length === 2) details[kv[0].trim()] = kv[1].trim(); }); currentList.push({ name: p[0].trim(), details: details });} else if (p.length === 1 && p[0].trim() !== "") { currentList.push({ name: p[0].trim(), details: { info: "无详细信息" } });} } }); return data; },
+            extractTasks(text) { const m = /<tasks>([\s\S]*?)<\/tasks>/.exec(text); if (!m || !m[1]) return []; const lines = m[1].trim().split('\n'); const tasks = []; let currentTask = null; lines.forEach(line => { line = line.trim(); if (!line) return; const parts = line.split('|'); if (parts.length >= 1) { if (parts.length >= 2) { if (currentTask) tasks.push(currentTask); currentTask = { title: parts[0].trim(), description: parts[1].trim(), status: (parts[2] || "未知").trim() }; } else if (parts.length === 1) { if (currentTask && currentTask.description === "" && currentTask.status === "未知") { currentTask.description = parts[0].trim(); } else if (currentTask && currentTask.status === "未知" && currentTask.description !== "") { currentTask.status = parts[0].trim(); } else { if (currentTask) tasks.push(currentTask); currentTask = { title: parts[0].trim(), description: "", status: "未知"}; } } } }); if (currentTask) tasks.push(currentTask); if (tasks.length === 0 && m[1].trim().includes('\n\n')) { console.warn("Using fallback task parsing for block format."); const taskBlocks = m[1].trim().split('\n\n'); taskBlocks.forEach(block => { const taskLines = block.trim().split('\n'); if (taskLines.length >= 1) { let title = taskLines[0].trim(); let description = taskLines.length > 1 ? taskLines[1].trim() : "无详细描述"; let status = taskLines.length > 2 ? taskLines[2].trim() : "未知"; const titleParts = title.split('|'); if (titleParts.length >= 2) { title = titleParts[0].trim(); description = titleParts[1].trim(); status = (titleParts[2] || status).trim(); } else { const descParts = description.split('|'); if (descParts.length >= 2) { description = descParts[0].trim(); status = descParts[1].trim(); } } tasks.push({ title, description, status }); } }); } return tasks; },
+            extractSocial(text) { const m = /<social>([\s\S]*?)<\/social>/.exec(text); if (!m || !m[1]) return []; const b = m[1].trim().split('\n\n'); const d = []; b.forEach(k => { const l = k.trim().split('\n'); const r = {}; l.forEach(n => { const p = n.split('|'); if (p.length >= 2) r[p[0].trim()] = p[1].trim(); }); if (Object.keys(r).length > 0) d.push(r); }); if (d.length === 0 && m[1].trim() && !m[1].trim().includes('|') && m[1].trim().toLowerCase() !== '暂无社交互动信息') { d.push({note: m[1].trim()});} return d; },
+            extractLog(text) { const m = /<log>([\s\S]*?)<\/log>/.exec(text); if (!m || !m[1]) return []; const l = m[1].trim().split('\n'); const g = []; l.forEach(n_line => { const n = n_line.trim(); if (!n) return; const p = n.split('|'); if (p.length >= 2) g.push({ date: p[0].trim(), message: p[1].trim() }); else if (p.length === 1 && p[0]) g.push({date: "记录", message: p[0].trim() }); }); return g; },
+            extractOptions(text) { const m = /<options>([\s\S]*?)<\/options>/.exec(text); if (!m || !m[1]) return []; const l = m[1].trim().split('\n'); const o = []; l.forEach(n => { if (n.trim()) o.push(n.trim()); }); return o; }
+        };
+
+         const UIUpdater = {
+            currentMapData: null, currentSceneContext: null, currentZoomLevel: 2.5,
+            updateAll(data) { if (!data) { console.error("UIUpdater.updateAll received null data."); return; } this.updateNarrative(data.main); this.updateStatus(data.status); this.updateMap(data.map); this.updateCharacterPanel(data.character_stats); this.updateInventoryPanel(data.inventory_assets); this.updateFactionsPanel(data.factions_diplomacy); this.updateTasks(data.tasks); this.updateSocial(data.social); this.updateLogs(data.log); this.updateOptions(data.options); },
+            updateNarrative(content) { const o = document.getElementById('main-output'); if (o) { o.innerHTML = content ? content.replace(/\n/g, '<br>') : "<p style='font-style:italic; color:var(--text-secondary);'>叙事加载中或无内容...</p>"; o.scrollTop = 0; } },
+            updateStatus(status) { if (!status) return; const statusMappings = { '日期': 'status-date', '国库': 'status-gold', '民心': 'status-morale', '稳定': 'status-stability', '军力': 'status-military', '警报': 'status-alerts'}; for (const key in status) { const elementId = statusMappings[key]; if (elementId) { const el = document.getElementById(elementId); if (el) { let value = status[key]; if ((key === '民心' || key === '稳定') && value && !value.endsWith('%')) { value += '%'; } el.textContent = value; if (key === '警报') { el.classList.remove('critical', 'blinking', 'warning', 'good'); if (value && value !== '无' && value !== '正常' && value !== '安全') { el.classList.add('critical', 'blinking'); } } } } } },
+            updateMap(mapData) { this.currentMapData = mapData; const mapGrid = document.getElementById('dynamic-tile-grid-map'); const mapThemeDisplay = document.getElementById('map-current-theme'); const mapOverlayTitle = document.getElementById('map-overlay-title'); const tileInfoContent = document.getElementById('tile-info-content'); if (!mapGrid || !mapThemeDisplay || !tileInfoContent || !mapOverlayTitle) { console.error("Map UI elements not found."); return; } mapGrid.innerHTML = '<p style="grid-column: 1 / -1; color: var(--text-secondary); text-align: center; padding:2em; font-style:italic;">地图加载中或无可用地图数据...</p>'; tileInfoContent.innerHTML = '<p style="color:var(--text-secondary); font-style:italic;">悬停地图地点查看详情。</p>'; if (!mapData || !mapData.scene_context_id || !mapData.raw_map_array || mapData.raw_map_array.length === 0) { const defaultMapName = mapData?.name || "未知区域"; mapThemeDisplay.textContent = defaultMapName; mapOverlayTitle.innerHTML = `<i class="fas fa-map-marked-alt"></i> ${defaultMapName}`; this.updateMapLegend(null, {}); console.warn("Map data is incomplete or missing raw_map_array."); return; } if (!mapData.cols || !mapData.rows) { mapData.rows = mapData.raw_map_array.length; mapData.cols = mapData.raw_map_array[0] ? mapData.raw_map_array[0].length : 0; if (mapData.cols === 0 && mapData.rows > 0) { mapGrid.innerHTML = '<p style="grid-column: 1 / -1; color:var(--text-secondary); text-align:center;">地图数据维度错误 (0列)。</p>'; return; } else if (mapData.cols === 0 && mapData.rows === 0) { return; } } mapGrid.innerHTML = ''; this.currentSceneContext = SceneContextManager.getContext(mapData.scene_context_id); const tilesetURLFromMapData = mapData.tileset_hint; const tilesetURLFromContext = this.currentSceneContext.tilesetUrl; const cssRoot = document.documentElement; const currentCSSTileset = getComputedStyle(cssRoot).getPropertyValue('--tileset-url').trim().replace(/^url\(['"]?|['"]?\)$/g, ''); let effectiveTilesetURL = tilesetURLFromMapData || tilesetURLFromContext || currentCSSTileset || 'https://via.placeholder.com/1x1/FF0000/FFFFFF?text=NO_TILESET'; if (effectiveTilesetURL !== currentCSSTileset) { cssRoot.style.setProperty('--tileset-url', `url('${effectiveTilesetURL}')`); console.log("Applied new tileset URL from map data/context:", effectiveTilesetURL); } else { console.log("Using current CSS tileset URL:", currentCSSTileset); } mapThemeDisplay.textContent = mapData.name || "未知区域"; mapOverlayTitle.innerHTML = `<i class="fas fa-map-marked-alt"></i> ${mapData.name || "区域地图"}`; const { cols, rows } = mapData; const rawMap = mapData.raw_map_array; mapGrid.style.gridTemplateColumns = `repeat(${cols}, var(--tile-size))`; mapGrid.style.gridTemplateRows = `repeat(${rows}, var(--tile-size))`; for (let r = 0; r < rows; r++) { for (let c = 0; c < cols; c++) { if (!rawMap[r] || c >= rawMap[r].length) { console.warn(`Map data error: Row ${r} missing or shorter than expected columns (${cols}). Skipping cell (${c},${r}).`); const errorTile = document.createElement('div'); errorTile.classList.add('map-tile', 'tile-unknown'); errorTile.style.outline = '1px solid red'; mapGrid.appendChild(errorTile); continue; } const tileSymbol = rawMap[r][c] || this.currentSceneContext.defaultTileSymbol || '.';
+            const tileDef = SceneContextManager.getTileDefinition(this.currentSceneContext, tileSymbol, mapData.symbol_definitions); const tileElement = document.createElement('div'); tileElement.classList.add('map-tile');
+            if (tileSymbol === 'Z') {
+    console.log(`[UIUpdater.updateMap] For 'Z', tileDef received:`, JSON.parse(JSON.stringify(tileDef)));
+    console.log(`  tileDef.cssClassSuffix: '${tileDef.cssClassSuffix}'`);
+    console.log(`  tileDef.css_class_full: '${tileDef.css_class_full}'`);
+}
+            if (tileDef.css_class_full) { tileElement.classList.add(tileDef.css_class_full); } else if (tileDef.cssClassSuffix && tileDef.cssClassSuffix !== 'unknown') { tileElement.classList.add(`tile-${tileDef.cssClassSuffix}`); } else { tileElement.classList.add('tile-unknown'); } tileElement.dataset.row = r; tileElement.dataset.col = c; tileElement.dataset.symbol = tileSymbol; const instanceMetaKey = `${c},${r}`; const instanceMeta = mapData.instance_metadata[instanceMetaKey]; if (instanceMeta) { tileElement.dataset.instanceId = instanceMeta.instance_id || `${tileSymbol}_${c},${r}`; if (instanceMeta.tile_id_override) { const overrideDef = SceneContextManager.getTileDefinition(this.currentSceneContext, instanceMeta.tile_id_override, mapData.symbol_definitions); tileElement.className = 'map-tile'; if (overrideDef.css_class_full) { tileElement.classList.add(overrideDef.css_class_full); } else if (overrideDef.cssClassSuffix && overrideDef.cssClassSuffix !== 'unknown') { tileElement.classList.add(`tile-${overrideDef.cssClassSuffix}`); } else { tileElement.classList.add('tile-unknown'); } } } tileElement.addEventListener('mouseover', (e) => { this.updateTileInfoPanelContent(e.currentTarget); }); tileElement.addEventListener('click', (e) => { this.handleTileInteraction(e.currentTarget, e); }); mapGrid.appendChild(tileElement); } } mapGrid.addEventListener('mouseleave', () => { this.updateTileInfoPanelContent(null); }); this.updateMapLegend(this.currentSceneContext, mapData.symbol_definitions); this.updateMapZoom(null, this.currentZoomLevel); },
+            updateTileInfoPanelContent(tileElement) {
+                const tileInfoContent = document.getElementById('tile-info-content');
+                if (!tileInfoContent ) return;
+                const propertyLabels = { 'Military': '军事实力', 'Stability': '稳定度', 'Morale': '民心', 'Culture': '文化', 'Assets': '特殊资产', 'Population': '人口', 'Trade': '贸易', 'Technology': '科技', 'Affiliation': '所属势力', 'title': '头衔', 'loyalty': '忠诚度', 'magic_power': '法力', 'political_influence': '政治影响力', 'material': '材质', 'status': '状态', 'condition': '状况' };
+                if (tileElement) {
+                    const r = parseInt(tileElement.dataset.row); const c = parseInt(tileElement.dataset.col); const symbol = tileElement.dataset.symbol; const instanceId = tileElement.dataset.instanceId; const instanceMetaKey = `${c},${r}`;
+                    if (!this.currentMapData || !this.currentSceneContext) { tileInfoContent.innerHTML = '<p style="color:var(--text-secondary); font-style:italic;">地图数据或上下文未加载。</p>'; return; }
+                    const instanceMeta = instanceId ? this.currentMapData.instance_metadata[instanceMetaKey] : null; const tileDef = SceneContextManager.getTileDefinition(this.currentSceneContext, symbol, this.currentMapData.symbol_definitions || {});
+                    let name = instanceMeta?.name || tileDef.name || "未知地点"; let description = instanceMeta?.description || tileDef.description || "无详细描述。";  let properties = { ...(tileDef.properties || {}), ...(instanceMeta?.properties || {}) };
+                    let html = `<div class="tile-name">${name}</div>`; html += `<p class="tile-description">${description}</p>`; const scale = tileDef.scale || 'local';
+                    if (Object.keys(properties).length > 0) {
+                        const useDetailedDisplay = scale !== 'local'; const sectionTitle = useDetailedDisplay ? "详细信息:" : "属性:"; const listStyle = useDetailedDisplay ? 'square' : 'disc';
+                        html += `<div style="margin-top: 0.8em; padding-top: 0.5em; border-top: 1px dashed var(--border-color);">`; html += `<strong style="color: var(--text-color-gold); font-family:var(--font-family-main);">${sectionTitle}</strong>`; html += `<ul style="padding-left: 1.2em; margin-top: 0.3em; font-size: 0.9em; font-family:var(--font-family-body); list-style-type: ${listStyle};">`;
+                        let propsFound = 0; for (const propKey in properties) { const label = propertyLabels[propKey] || propKey; const value = properties[propKey]; if (value !== undefined && value !== null && value !== "") { html += `<li><strong>${label}:</strong> ${value}</li>`; propsFound++; } }
+                        if (propsFound === 0) { html += `<li><span style="font-style:italic; color: var(--text-secondary);">无可用${useDetailedDisplay ? '详细数据':'属性'}。</span></li>`;}
+                        html += `</ul></div>`;
+                    }
+                    tileInfoContent.innerHTML = html;
+                } else { tileInfoContent.innerHTML = '<p style="color:var(--text-secondary); font-style:italic;">悬停地图地点查看详情。</p>'; }
+            },
+            handleTileInteraction(tileElement, clickEvent) {
+                const roomInteractionPanel = document.getElementById('tile-interaction-panel'); const panelTileName = document.getElementById('panel-tile-name'); const panelTileDetails = document.getElementById('panel-tile-details'); const tileInteractionActions = document.getElementById('tile-interaction-actions');
+                const propertyLabels = { 'Military': '军事实力', 'Stability': '稳定度', 'Morale': '民心', 'Culture': '文化', 'Assets': '特殊资产', 'Population': '人口', 'Trade': '贸易', 'Technology': '科技', 'Affiliation': '所属势力', 'title': '头衔', 'loyalty': '忠诚度', 'magic_power': '法力', 'political_influence': '政治影响力', 'material': '材质', 'status': '状态', 'condition': '状况' };
+                if (!roomInteractionPanel || !panelTileName || !panelTileDetails || !tileInteractionActions ) { console.error("Tile interaction panel elements missing."); return; }
+                if (!this.currentMapData || !this.currentSceneContext) { console.error("Map data or scene context not loaded for tile interaction."); roomInteractionPanel.classList.remove('visible'); return; }
+                const r = parseInt(tileElement.dataset.row); const c = parseInt(tileElement.dataset.col); const symbol = tileElement.dataset.symbol; const instanceId = tileElement.dataset.instanceId; const instanceMetaKey = `${c},${r}`;
+                const instanceMeta = instanceId ? this.currentMapData.instance_metadata[instanceMetaKey] : null; const tileDef = SceneContextManager.getTileDefinition(this.currentSceneContext, symbol, this.currentMapData.symbol_definitions);
+                const name = instanceMeta?.name || tileDef.name || "未知地点"; const description = instanceMeta?.description || tileDef.description || "无详细描述。"; const interactOptions = instanceMeta?.interact || tileDef.defaultInteract || []; const properties = { ...(tileDef.properties || {}), ...(instanceMeta?.properties || {}) }; const scale = tileDef.scale || 'local';
+                panelTileName.textContent = name; roomInteractionPanel.dataset.targetDisplayName = name; panelTileDetails.innerHTML = '';
+                let detailsHtml = `<p>${description}</p>`;
+                if (scale !== 'local' && Object.keys(properties).length > 0) {
+                    detailsHtml += `<div style="margin-top: 0.8em; padding-top: 0.5em; border-top: 1px dashed var(--border-color);">`; detailsHtml += `<strong style="color: var(--text-color-gold); font-family:var(--font-family-main);">状态详情:</strong>`; detailsHtml += `<ul style="padding-left: 1.2em; margin-top: 0.3em; font-size: 0.9em; font-family:var(--font-family-body); list-style-type: square;">`;
+                    let propsFound = 0; for (const propKey in properties) { const label = propertyLabels[propKey] || propKey; const value = properties[propKey]; if (value !== undefined && value !== null && value !== "") { detailsHtml += `<li><strong>${label}:</strong> ${value}</li>`; propsFound++; } }
+                    if (propsFound === 0) { detailsHtml += `<li><span style="font-style:italic; color: var(--text-secondary);">无可用详细数据。</span></li>`;}
+                    detailsHtml += `</ul></div>`;
+                }
+                panelTileDetails.innerHTML = detailsHtml; tileInteractionActions.innerHTML = '';
+                if (Array.isArray(interactOptions) && interactOptions.length > 0) {
+                    interactOptions.forEach(actionText => {
+                        const button = document.createElement('button'); let iconClass = 'fas fa-hand-point-right';
+                         if (typeof actionText === 'string') {
+                            if (actionText.match(/检查|查看|翻阅|探查|调查|瞻仰|搜索|详情/i)) iconClass = 'fas fa-search'; else if (actionText.match(/拾取|拿/i)) iconClass = 'fas fa-hand-paper'; else if (actionText.match(/打开|进入/i)) iconClass = 'fas fa-door-open'; else if (actionText.match(/攻击|战斗/i)) iconClass = 'fas fa-khanda'; else if (actionText.match(/对话|交谈|拜访|敲门|询问|盘查|打探/i)) iconClass = 'fas fa-comments'; else if (actionText.match(/购买|交易|浏览商品/i)) iconClass = 'fas fa-store'; else if (actionText.match(/出售|委托|修复|呈上|外交/i)) iconClass = 'fas fa-handshake'; else if (actionText.match(/学习|解读|研究/i)) iconClass = 'fas fa-book-reader'; else if (actionText.match(/休息|扎营/i)) iconClass = 'fas fa-campground'; else if (actionText.match(/添柴|祈求|使用/i)) iconClass = 'fas fa-fire'; else if (actionText.match(/贿赂|给予金钱/i)) iconClass = 'fas fa-coins'; else if (actionText.match(/移动|前往|迁都/i)) iconClass = 'fas fa-route';
+                            button.innerHTML = `<i class="${iconClass}"></i> ${actionText}`; button.dataset.action = actionText;
+                        } else { button.innerHTML = `<i class="fas fa-exclamation-triangle"></i> 无效操作`; button.disabled = true; }
+                        button.dataset.tileSymbol = symbol; button.dataset.tileX = c; button.dataset.tileY = r; if(instanceId) button.dataset.instanceId = instanceId;
+                        tileInteractionActions.appendChild(button);
+                    });
+                }
+                roomInteractionPanel.dataset.targetSymbol = symbol; roomInteractionPanel.dataset.targetX = c; roomInteractionPanel.dataset.targetY = r;
+                if(instanceId) roomInteractionPanel.dataset.targetInstanceId = instanceId; else delete roomInteractionPanel.dataset.targetInstanceId;
+                const positionInteractionPanel = (event) => { const pW = roomInteractionPanel.offsetWidth; const pH = roomInteractionPanel.offsetHeight; const vW = window.innerWidth; const vH = window.innerHeight; const m = 10; const o = 15; let iL = event.clientX + o; let iT = event.clientY + o; if (iL + pW + m > vW) iL = event.clientX - pW - o; if (iL < m) iL = m; if (iT + pH + m > vH) iT = event.clientY - pH - o; if (iT < m) iT = m; roomInteractionPanel.style.left = `${iL}px`; roomInteractionPanel.style.top = `${iT}px`; };
+                roomInteractionPanel.classList.add('visible'); positionInteractionPanel(clickEvent);
+            },
+            updateMapLegend(sceneContext, symbolDefinitionsFromLLM = {}) { const legendList = document.getElementById('map-legend-list'); if (!legendList) { console.error("Map legend list element not found."); return; } legendList.innerHTML = ''; if (!sceneContext && Object.keys(symbolDefinitionsFromLLM).length === 0) { legendList.innerHTML = '<li><p style="color: var(--text-secondary); font-style: italic;">图例数据不可用。</p></li>'; return; } const effectiveSceneContext = sceneContext || { symbolMap: {}, defaultTileSymbol: '.' }; const symbolKeys = new Set(); if(this.currentMapData && this.currentMapData.raw_map_array){ this.currentMapData.raw_map_array.flat().forEach(s => {if(s && s !== effectiveSceneContext.defaultTileSymbol && s !== 'P') symbolKeys.add(s);}); } const addedToLegend = new Set(); let itemsAdded = 0; symbolKeys.forEach(symbol => { const def = SceneContextManager.getTileDefinition(effectiveSceneContext, symbol, symbolDefinitionsFromLLM); if (def && def.name && !def.name.startsWith("未知") && !def.name.startsWith("符号") && !def.name.toLowerCase().includes("ground") && !def.name.toLowerCase().includes("floor") && !def.name.toLowerCase().includes("空地") && !def.name.toLowerCase().includes("地面") && !addedToLegend.has(def.name)) { const li = document.createElement('li'); const tileExample = document.createElement('span'); tileExample.classList.add('legend-tile-example'); let appliedClass = false; if (def.css_class_full) { tileExample.classList.add(def.css_class_full); appliedClass = true; } else if(def.cssClassSuffix && def.cssClassSuffix !== 'unknown') { tileExample.classList.add(`tile-${def.cssClassSuffix}`); appliedClass = true; } if (!appliedClass) { tileExample.classList.add('tile-unknown'); } li.appendChild(tileExample); const textNode = document.createTextNode(` ${def.name}`); li.appendChild(textNode); legendList.appendChild(li); addedToLegend.add(def.name); itemsAdded++; } }); if (itemsAdded === 0) { legendList.innerHTML = '<li><p style="color: var(--text-secondary); font-style: italic;">无特殊图例项。</p></li>'; } },
+            updateMapZoom(isZoomIn, newZoomLevel = null) { const mg=document.getElementById('dynamic-tile-grid-map');const zl=document.getElementById('map-zoom-level');if(!mg||!zl)return; let cs = this.currentZoomLevel; if (newZoomLevel !== null) { cs = newZoomLevel; } else if (isZoomIn !== null) { if(isZoomIn){cs=Math.min(5,cs+0.5);} else{cs=Math.max(1,cs-0.5);} } mg.style.transform = `scale(${cs})`; zl.textContent=`${Math.round(cs*100)}%`; this.currentZoomLevel = cs; },
+            updateCharacterPanel(stats) {
+                if (!stats) { stats = {}; console.warn("Character stats data missing, using empty object.");}
+                const setText = (id, value) => { const el = document.getElementById(id); if (el) { el.textContent = (value !== null && value !== undefined && String(value).trim() !== "") ? String(value) : '未知'; } };
+                setText('char-name', stats['姓名']); setText('char-title', stats['头衔']); setText('char-age', stats['年龄']);
+                const charBgEl = document.getElementById('char-background'); if (charBgEl) { const backgroundText = stats['背景']; charBgEl.innerHTML = (backgroundText !== null && backgroundText !== undefined && String(backgroundText).trim() !== "") ? String(backgroundText).replace(/\n/g, '<br>') : '无背景信息'; }
+                const attrList = document.getElementById('player-game-attributes');
+                if (attrList) {
+                    attrList.innerHTML = ''; let attributesFound = 0;
+                    const excludedKeys = [ '姓名', '头衔', '年龄', '背景', '特殊能力', '状态效果' ];
+                    for (const key in stats) { if (stats.hasOwnProperty(key) && !excludedKeys.includes(key)) { const value = stats[key]; if (value !== null && value !== undefined && String(value).trim() !== "") { const listItem = document.createElement('li'); listItem.innerHTML = `<strong>${key}:</strong> <span>${String(value)}</span>`; attrList.appendChild(listItem); attributesFound++; } } }
+                    if (attributesFound === 0) { attrList.innerHTML = "<li><p style='font-style:italic; color:var(--text-secondary);'>无其他属性信息。</p></li>"; }
+                }
+                const skillsList = document.getElementById('player-game-skills');
+                if (skillsList) {
+                    skillsList.innerHTML = ''; const skillsText = stats['特殊能力']; let skillsFound = 0;
+                    if (skillsText && String(skillsText).trim() !== "") { const skillArray = String(skillsText).split(/[；;]/); skillArray.forEach(skill => { const trimmedSkill = skill.trim(); if (trimmedSkill) { const listItem = document.createElement('li'); listItem.textContent = trimmedSkill; skillsList.appendChild(listItem); skillsFound++; } }); }
+                    if (skillsFound === 0) { skillsList.innerHTML = "<li><p style='font-style:italic; color:var(--text-secondary);'>无技能信息。</p></li>"; }
+                }
+                const effectsList = document.getElementById('player-status-effects-list');
+                if (effectsList) {
+                    effectsList.innerHTML = ''; const effectsText = stats['状态效果']; let effectsFound = 0;
+                    if (effectsText && String(effectsText).trim() !== "") { const effectArray = String(effectsText).split(/[；;]/); effectArray.forEach(eff => { const trimmedEffect = eff.trim(); if (trimmedEffect) { const listItem = document.createElement('li'); listItem.textContent = trimmedEffect; effectsList.appendChild(listItem); effectsFound++; } }); }
+                    if (effectsFound === 0) { effectsList.innerHTML = "<li><p style='font-style:italic; color:var(--text-secondary);'>当前无特殊状态。</p></li>"; }
+                }
+            },
+            updateInventoryPanel(data) { if (!data) { data = {faction: [], policies: [], personal: []}; console.warn("Inventory data missing, using empty object."); } const factionResList = document.getElementById('faction-resource-list'); if(factionResList){ factionResList.innerHTML = ''; (data.faction || []).forEach(item => factionResList.innerHTML += `<li><strong>${item.name}:</strong> <span>${item.value}</span></li>`); if(factionResList.children.length === 0) factionResList.innerHTML = "<li><p style='font-style:italic; color:var(--text-secondary);'>无帝国资源。</p></li>";} const policiesList = document.getElementById('faction-policies-list'); if(policiesList){ policiesList.innerHTML = ''; (data.policies || []).forEach(item => policiesList.innerHTML += `<li><strong>${item.name}:</strong> <span style="font-family:var(--font-family-body);">${item.value || '已推行'}</span></li>`); if(policiesList.children.length === 0) policiesList.innerHTML = "<li><p style='font-style:italic; color:var(--text-secondary);'>无当前国策。</p></li>";} const personalAssetsList = document.getElementById('player-personal-assets'); if(personalAssetsList){ personalAssetsList.innerHTML = ''; (data.personal || []).forEach(item => personalAssetsList.innerHTML += `<li><strong>${item.name}:</strong> <span>${item.value}</span></li>`); if(personalAssetsList.children.length === 0) personalAssetsList.innerHTML = "<li><p style='font-style:italic; color:var(--text-secondary);'>无个人资产。</p></li>";} },
+            updateFactionsPanel(data) { if (!data) { data = {internal: [], external: []}; console.warn("Factions data missing, using empty object.");} const internalList = document.getElementById('internal-factions-list'); if(internalList) { internalList.innerHTML = ''; (data.internal || []).forEach(f => { let detailsHtml = Object.entries(f.details || {}).map(([k,v]) => `<em>${k}:</em> ${v}`).join('; '); internalList.innerHTML += `<li><strong>${f.name}:</strong> <span style="font-family:var(--font-family-body);">${detailsHtml || "无详情"}</span></li>`; }); if(internalList.children.length === 0) internalList.innerHTML = "<li><p style='font-style:italic; color:var(--text-secondary);'>无内部派系信息。</p></li>";} const externalList = document.getElementById('external-factions-list'); if(externalList) { externalList.innerHTML = ''; (data.external || []).forEach(f => { let detailsHtml = Object.entries(f.details || {}).map(([k,v]) => `<em>${k}:</em> ${v}`).join('; '); externalList.innerHTML += `<li><strong>${f.name}:</strong> <span style="font-family:var(--font-family-body);">${detailsHtml || "无详情"}</span></li>`; }); if(externalList.children.length === 0) externalList.innerHTML = "<li><p style='font-style:italic; color:var(--text-secondary);'>无外部势力信息。</p></li>";} },
+            updateTasks(tasks) { const l = document.getElementById('tasks-list'); if (!l) return; tasks = tasks || []; l.innerHTML = ''; if (tasks.length === 0) { l.innerHTML = '<li class="task-item"><p style="color: var(--text-secondary); font-style: italic; font-family: var(--font-family-body);">当前无任务。</p></li>'; return; } tasks.forEach(t => { const i = document.createElement('li'); let s = 'neutral'; if (t.status) { const statusLower = String(t.status).toLowerCase(); if (statusLower.includes('紧急') || statusLower.includes('危险') || statusLower.includes('失败') || statusLower.includes('最高优先级')) s = 'critical'; else if (statusLower.includes('进行中') || statusLower.includes('可选') || statusLower.includes('警告') || statusLower.includes('注意') || statusLower.includes('重要')) s = 'warning'; else if (statusLower.includes('完成') || statusLower.includes('已解决')) s = 'good'; } i.classList.add('task-item'); i.innerHTML = `<div class="task-header"> <strong class="task-title">${t.title || "无标题任务"}</strong> <span class="task-status status-${s}">${t.status || "未知"}</span> </div> <small class="task-description">${t.description || "无详细描述"}</small>`; l.appendChild(i); }); },
+            updateSocial(socialData) { socialData = socialData || []; if (socialData.length > 0 && socialData[0].note) { /* console.log("Social Note:", socialData[0].note); */ } else if (socialData.length > 0) { /* console.log("Social Data Received (not displayed):", socialData); */ } },
+            updateLogs(logs) { const c = document.getElementById('log-content'); if (!c) return; logs = logs || []; c.innerHTML = ''; if (logs.length === 0) { c.innerHTML = '<p style="color: var(--text-secondary); font-style: italic; font-family: var(--font-family-body);">暂无历史记录。</p>'; return; } logs.forEach(l => { const p = document.createElement('p'); p.style.fontFamily = 'var(--font-family-body)'; p.innerHTML = `<b>${l.date || "记录"}:</b> ${l.message || "无内容"}`; c.appendChild(p); }); },
+            updateOptions(options) { const c = document.getElementById('llm-options'); if (!c) return; options = options || []; c.innerHTML = ''; if (options.length === 0) { c.innerHTML = '<p style="opacity:0.7;font-style:italic;text-align:center;width:100%;color: var(--text-secondary);font-family: var(--font-family-body);">暂无可用操作。</p>'; return;} options.forEach(o_text => { const o = String(o_text || "未定义操作").trim(); if (!o) return; const b = document.createElement('button'); b.textContent = o; b.addEventListener('click', function() { const i = document.getElementById('player-input'); if (i) i.value = o; }); c.appendChild(b); }); }
+        };
+
+        const GameController = {
+            sliderSaveTimeout: null,
+            init() {
+                this.populateThemeSelector();
+                this.loadSettings();
+                this.setupEventListeners();
+                setTimeout(() => {
+                    if (typeof GameController.processGameText === 'function') {
+                        GameController.processGameText(gameText);
+                    } else {
+                        console.error("GameController.processGameText is not defined at init timeout.");
+                    }
+                }, 100);
+                const tileInteractionPanel = document.getElementById('tile-interaction-panel');
+                if (tileInteractionPanel) {
+                    tileInteractionPanel.classList.remove('visible');
+                }
+            },
+            populateThemeSelector() {
+                const selector = document.getElementById('themeSelector');
+                if (!selector) return;
+                selector.innerHTML = ''; // Clear existing options
+                for (const themeId in themes) {
+                    const option = document.createElement('option');
+                    option.value = themeId;
+                    option.textContent = themes[themeId].name;
+                    selector.appendChild(option);
+                }
+            },
+            applyTheme(themeId) {
+                const theme = themes[themeId];
+                if (theme && theme.vars) {
+                    for (const varName in theme.vars) {
+                        document.documentElement.style.setProperty(varName, theme.vars[varName]);
+                    }
+                    document.documentElement.dataset.theme = themeId; // Optional: for CSS targeting if needed
+                    this.saveSetting('theme', themeId);
+                } else {
+                    console.warn(`Theme "${themeId}" not found or has no variables.`);
+                }
+            },
+            setupEventListeners() {
+                document.querySelectorAll('#side-nav button').forEach(button => { button.addEventListener('click', function() { const overlayId = this.dataset.overlayId; const panelId = this.dataset.panel; if (overlayId) { openOverlay(overlayId); } else if (panelId === 'main-console-panel') { document.querySelectorAll('.overlay-container.active').forEach(o => o.classList.remove('active')); document.getElementById('main-console-panel').classList.add('active'); document.querySelectorAll('#side-nav button').forEach(btn => btn.classList.remove('active')); this.classList.add('active'); const tileInteractionPanel = document.getElementById('tile-interaction-panel'); if (tileInteractionPanel && tileInteractionPanel.classList.contains('visible')) { tileInteractionPanel.classList.remove('visible'); } } }); });
+                document.querySelectorAll('.overlay-close-btn').forEach(button => { button.addEventListener('click', function() { const overlayIdToClose = this.dataset.overlayId || this.closest('.overlay-container')?.id; if (overlayIdToClose) { closeOverlay(overlayIdToClose); } }); });
+                document.querySelectorAll('button.overlay-trigger').forEach(button => { if (button.closest('#side-nav')) return; button.addEventListener('click', function(event) { const overlayIdToOpen = this.dataset.overlayId; if (overlayIdToOpen) { openOverlay(overlayIdToOpen); } event.stopPropagation(); }); });
+                const submitButton = document.getElementById('submit-input'); const inputField = document.getElementById('player-input');
+                if (submitButton && inputField) { const handleSubmit = () => { const inputText = inputField.value.trim(); if (inputText) { console.log(`Simulating send to LLM: ${inputText}`); if (typeof triggerSlash === 'function') { triggerSlash(`/send {{user}}决定:${inputText}|/trigger`).then(() => console.log("Input sent via triggerSlash")).catch(e => console.error("SEND error:", e)); } else { console.warn("triggerSlash function not defined. Input not sent to LLM."); } inputField.value = ''; const optionsContainer = document.getElementById('llm-options'); if (optionsContainer) optionsContainer.innerHTML = '<p style="opacity:0.7;font-style:italic;text-align:center;width:100%;color: var(--text-secondary);font-family: var(--font-family-body);">等待操作...</p>'; } }; submitButton.addEventListener('click', handleSubmit); inputField.addEventListener('keypress', (e) => { if (e.key === 'Enter') { e.preventDefault(); handleSubmit(); } }); }
+
+                const settingsOverlay = document.getElementById('settings-overlay');
+                if (settingsOverlay) {
+                    settingsOverlay.querySelectorAll('input[name="font_main"]').forEach(radioInput => {
+                        const optionLabel = radioInput.closest('.font-option');
+                        optionLabel.addEventListener('click', () => { if (!radioInput.checked) { radioInput.checked = true; radioInput.dispatchEvent(new Event('change', { bubbles: true })); } });
+                        radioInput.addEventListener('change', (e) => {
+                            if (e.target.checked) {
+                                const selectedFontValue = e.target.value;
+                                let fontFamily;
+                                switch(selectedFontValue) {
+                                    case 'Cinzel': fontFamily = "'Cinzel', 'Noto Sans SC', serif"; break;
+                                    case 'NotoSansSC_Header': fontFamily = "'Noto Sans SC', 'Cinzel', sans-serif"; break;
+                                    case 'XiangcuiDazijitiW35': fontFamily = "'XiangcuiDazijitiW35', 'Noto Sans SC', serif"; break;
+                                    case 'HouZunSongTi': fontFamily = "'HouZunSongTi', 'Noto Sans SC', serif"; break;
+                                    default: fontFamily = "'Cinzel', 'Noto Sans SC', serif";
+                                }
+                                document.documentElement.style.setProperty('--font-family-main', fontFamily);
+                                settingsOverlay.querySelectorAll('input[name="font_main"]').forEach(r => r.closest('.font-option').classList.remove('active'));
+                                optionLabel.classList.add('active');
+                                this.saveSetting('fontFamilyMainValue', selectedFontValue);
+                                this.saveSetting('fontFamilyMainString', fontFamily);
+                                this.showSaveStatus(settingsOverlay);
+                            }
+                        });
+                    });
+                    settingsOverlay.querySelectorAll('input[name="font_body"]').forEach(radioInput => {
+                        const optionLabel = radioInput.closest('.font-option');
+                        optionLabel.addEventListener('click', () => { if (!radioInput.checked) { radioInput.checked = true; radioInput.dispatchEvent(new Event('change', { bubbles: true })); } });
+                        radioInput.addEventListener('change', (e) => {
+                            if (e.target.checked) {
+                                const selectedFontValue = e.target.value;
+                                let fontFamily;
+                                switch(selectedFontValue) {
+                                    case 'NotoSansSC_Body': fontFamily = "'Noto Sans SC', 'Cinzel', sans-serif"; break;
+                                    case 'Cinzel_Body': fontFamily = "'Cinzel', 'Noto Sans SC', serif"; break;
+                                    case 'NanoOldSong-A': fontFamily = "'NanoOldSong-A', 'Noto Sans SC', sans-serif"; break;
+                                    case 'FusionPixel': fontFamily = "'Fusion Pixel 8px Proportional zh_hans', 'Noto Sans SC', sans-serif"; break;
+                                    default: fontFamily = "'Noto Sans SC', 'Cinzel', sans-serif";
+                                }
+                                document.documentElement.style.setProperty('--font-family-body', fontFamily);
+                                settingsOverlay.querySelectorAll('input[name="font_body"]').forEach(r => r.closest('.font-option').classList.remove('active'));
+                                optionLabel.classList.add('active');
+                                this.saveSetting('fontFamilyBodyValue', selectedFontValue);
+                                this.saveSetting('fontFamilyBodyString', fontFamily);
+                                this.showSaveStatus(settingsOverlay);
+                            }
+                        });
+                    });
+
+                    const fontSizeSlider = document.getElementById('fontSizeSlider');
+                    const fontSizeValueSpan = settingsOverlay.querySelector('.font-size-value');
+                    if (fontSizeSlider && fontSizeValueSpan) {
+                        fontSizeSlider.addEventListener('input', () => {
+                            const newSize = `${fontSizeSlider.value}px`;
+                            fontSizeValueSpan.textContent = newSize;
+                            document.documentElement.style.setProperty('--font-size-main', newSize);
+                            this.saveSetting('fontSize', newSize);
+                            if (this.sliderSaveTimeout) clearTimeout(this.sliderSaveTimeout);
+                            this.sliderSaveTimeout = setTimeout(() => this.showSaveStatus(settingsOverlay), 500);
+                        });
+                    }
+
+                    const themeSelector = document.getElementById('themeSelector');
+                    if (themeSelector) {
+                        themeSelector.addEventListener('change', (e) => {
+                            this.applyTheme(e.target.value);
+                            this.showSaveStatus(settingsOverlay);
+                        });
+                    }
+                }
+
+                const tileInteractionPanel = document.getElementById('tile-interaction-panel');
+                if (tileInteractionPanel) {
+                    const closeBtn = tileInteractionPanel.querySelector('.close-btn');
+                    if (closeBtn) { closeBtn.addEventListener('click', () => { tileInteractionPanel.classList.remove('visible'); }); }
+                    const actionsContainer = tileInteractionPanel.querySelector('#tile-interaction-actions');
+                    if (actionsContainer) {
+                        actionsContainer.addEventListener('click', (e) => {
+                            const button = e.target.closest('button[data-action]');
+                            if (button && !button.disabled) {
+                                const action = button.dataset.action;
+                                const panel = button.closest('#tile-interaction-panel');
+                                const targetDisplayName = panel.dataset.targetDisplayName || "未知对象";
+                                let commandText = `/send {{user}}决定对${targetDisplayName}执行行动：${action}|/trigger`;
+                                if (typeof triggerSlash === 'function') {
+                                    triggerSlash(commandText)
+                                        .catch(error => console.error(`瓦片交互失败 (${action} on ${targetDisplayName}):`, error));
+                                } else { console.warn("triggerSlash undefined. Tile interaction not sent."); }
+                                panel.classList.remove('visible');
+                            }
+                        });
+                    }
+                    document.addEventListener('click', (e) => { if (tileInteractionPanel.classList.contains('visible') && !tileInteractionPanel.contains(e.target) && !e.target.closest('.map-tile')) { tileInteractionPanel.classList.remove('visible'); } }, true);
+                }
+                const zoomInBtn = document.getElementById('map-zoom-in'); const zoomOutBtn = document.getElementById('map-zoom-out');
+                if(zoomInBtn) zoomInBtn.addEventListener('click', () => UIUpdater.updateMapZoom(true));
+                if(zoomOutBtn) zoomOutBtn.addEventListener('click', () => UIUpdater.updateMapZoom(false));
+                document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { const activeOverlay = document.querySelector('.overlay-container.active'); const tilePanelVisible = document.getElementById('tile-interaction-panel')?.classList.contains('visible'); if (tilePanelVisible) { document.getElementById('tile-interaction-panel').classList.remove('visible'); } else if (activeOverlay && activeOverlay.id !== 'main-menu-overlay') { closeOverlay(activeOverlay.id); } else if (activeOverlay && activeOverlay.id === 'main-menu-overlay') { closeOverlay('main-menu-overlay'); } else if (!activeOverlay) { openOverlay('main-menu-overlay'); } } });
+            },
+            processGameText(text) { const d = DataExtractor.extractAll(text); if (d) UIUpdater.updateAll(d); else { console.error("无法解析游戏数据:", text); const o = document.getElementById('main-output'); if(o)o.innerHTML = "<p style='color: var(--critical-color); font-style:italic;'>错误：无法解析来自时空管理局的数据。</p>";} },
+            saveSetting(key, value) { try { localStorage.setItem(`historiaSettings_${key}`, value); } catch (e) { console.warn("无法保存设置:", e); } },
+            loadSettings() {
+                try {
+                    // Theme
+                    const savedTheme = localStorage.getItem('historiaSettings_theme') || 'default';
+                    this.applyTheme(savedTheme);
+                    const themeSelector = document.getElementById('themeSelector');
+                    if (themeSelector) themeSelector.value = savedTheme;
+
+                    // Font Size
+                    const fs = localStorage.getItem('historiaSettings_fontSize') || '16px';
+                    document.documentElement.style.setProperty('--font-size-main', fs);
+                    const fss = document.getElementById('fontSizeSlider'); const fsv = document.querySelector('#settings-overlay .font-size-value');
+                    if(fss)fss.value=parseInt(fs)||16; if(fsv)fsv.textContent=fs;
+
+                    // Main Font
+                    const ff_main_val = localStorage.getItem('historiaSettings_fontFamilyMainValue') || 'Cinzel';
+                    const ff_main_str = localStorage.getItem('historiaSettings_fontFamilyMainString') || "'Cinzel', 'Noto Sans SC', serif";
+                    document.documentElement.style.setProperty('--font-family-main', ff_main_str);
+                    document.querySelectorAll('#settings-overlay input[name="font_main"]').forEach(r => r.closest('.font-option').classList.remove('active'));
+                    const actMainFontRadio = document.querySelector(`#settings-overlay input[name="font_main"][value="${ff_main_val}"]`);
+                    if(actMainFontRadio){ actMainFontRadio.checked=true; actMainFontRadio.closest('.font-option').classList.add('active');}
+                    else { (document.querySelector(`#settings-overlay input[name="font_main"][value="Cinzel"]`) || document.querySelector(`#settings-overlay input[name="font_main"]`))?.closest('.font-option').classList.add('active'); }
+
+
+                    // Body Font
+                    const ff_body_val = localStorage.getItem('historiaSettings_fontFamilyBodyValue') || 'NotoSansSC_Body';
+                    const ff_body_str = localStorage.getItem('historiaSettings_fontFamilyBodyString') || "'Noto Sans SC', 'Cinzel', sans-serif";
+                    document.documentElement.style.setProperty('--font-family-body', ff_body_str);
+                    document.querySelectorAll('#settings-overlay input[name="font_body"]').forEach(r => r.closest('.font-option').classList.remove('active'));
+                    const actBodyFontRadio = document.querySelector(`#settings-overlay input[name="font_body"][value="${ff_body_val}"]`);
+                    if(actBodyFontRadio){ actBodyFontRadio.checked=true; actBodyFontRadio.closest('.font-option').classList.add('active');}
+                    else { (document.querySelector(`#settings-overlay input[name="font_body"][value="NotoSansSC_Body"]`) || document.querySelector(`#settings-overlay input[name="font_body"]`))?.closest('.font-option').classList.add('active');}
+
+                } catch(e) { console.warn("无法加载设置:",e); }
+            },
+            showSaveStatus(overlayElement) { const s = overlayElement ? overlayElement.querySelector('.save-status') : document.querySelector('#settings-overlay .save-status'); if (s) { s.classList.add('show'); setTimeout(() => { s.classList.remove('show'); }, 1500); } }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            GameController.init();
+            const mainConsoleButton = document.querySelector('#side-nav button[data-panel="main-console-panel"]');
+            if (mainConsoleButton) {
+                 document.querySelectorAll('.overlay-container.active').forEach(o => o.classList.remove('active'));
+                 document.getElementById('main-console-panel').classList.add('active');
+                 document.querySelectorAll('#side-nav button').forEach(btn => btn.classList.remove('active'));
+                 mainConsoleButton.classList.add('active');
+            }
+        });
+    </script>
+</body>
+</html>
+```

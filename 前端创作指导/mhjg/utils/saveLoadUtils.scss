@@ -1,0 +1,222 @@
+@use '../styles/variables.scss' as *;
+
+// 读档对话框样式
+.mhjg-load-save-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  padding: $spacing-lg;
+
+  .mhjg-load-save-dialog {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: $radius-lg;
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.5),
+      0 0 40px rgba(139, 92, 246, 0.2);
+    width: 100%;
+    max-width: 600px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    .dialog-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: $spacing-lg;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(139, 92, 246, 0.1);
+
+      .dialog-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: $color-primary;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+
+      .dialog-close-btn {
+        background: transparent;
+        border: none;
+        color: $color-text-dim;
+        cursor: pointer;
+        padding: $spacing-xs;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: $radius-sm;
+        transition: all 0.2s ease;
+
+        &:hover {
+          color: $color-text-main;
+          background: rgba(255, 255, 255, 0.1);
+        }
+
+        svg {
+          width: 20px;
+          height: 20px;
+        }
+      }
+    }
+
+    .dialog-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: $spacing-lg;
+
+      .save-list {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-md;
+
+        .save-item {
+          width: 100%;
+          text-align: left;
+          padding: $spacing-md;
+          border: 1px dashed rgba(139, 92, 246, 0.3);
+          border-radius: $radius-md;
+          background: rgba(30, 41, 59, 0.5);
+          color: $color-text-main;
+          cursor: pointer;
+          transition: all 0.3s ease;
+
+          &:hover {
+            background: rgba(139, 92, 246, 0.15);
+            border-color: rgba(139, 92, 246, 0.5);
+            transform: translateX(4px);
+          }
+
+          .save-summary {
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: $spacing-xs;
+            color: $color-text-main;
+          }
+
+          .save-meta {
+            font-size: 11px;
+            color: $color-text-muted;
+            opacity: 0.7;
+          }
+        }
+      }
+    }
+  }
+}
+
+// 阅读模式对话框样式
+.mhjg-review-story-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(8px);
+  padding: $spacing-lg;
+
+  .mhjg-review-story-dialog {
+    background: linear-gradient(135deg, rgba(30, 41, 59, 0.98) 0%, rgba(15, 23, 42, 0.98) 100%);
+    border: 1px solid rgba(139, 92, 246, 0.3);
+    border-radius: $radius-lg;
+    box-shadow:
+      0 20px 60px rgba(0, 0, 0, 0.5),
+      0 0 40px rgba(139, 92, 246, 0.2);
+    width: 100%;
+    max-width: 900px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+
+    .dialog-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: $spacing-lg;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      background: rgba(139, 92, 246, 0.1);
+
+      .dialog-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: $color-primary;
+        margin: 0;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+      }
+
+      .dialog-close-btn {
+        background: transparent;
+        border: none;
+        color: $color-text-dim;
+        cursor: pointer;
+        padding: $spacing-xs;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: $radius-sm;
+        transition: all 0.2s ease;
+
+        &:hover {
+          color: $color-text-main;
+          background: rgba(255, 255, 255, 0.1);
+        }
+
+        svg {
+          width: 20px;
+          height: 20px;
+        }
+      }
+    }
+
+    .dialog-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: $spacing-lg;
+
+      .story-list {
+        display: flex;
+        flex-direction: column;
+        gap: $spacing-lg;
+
+        .story-item {
+          padding: $spacing-lg;
+          border: 1px solid rgba(139, 92, 246, 0.2);
+          border-radius: $radius-md;
+          background: rgba(30, 41, 59, 0.3);
+
+          .story-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: $spacing-md;
+            font-size: 11px;
+            color: $color-text-muted;
+            opacity: 0.7;
+            padding-bottom: $spacing-sm;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+          }
+
+          .story-content {
+            font-size: 14px;
+            line-height: 1.8;
+            color: $color-text-main;
+            white-space: pre-wrap;
+            font-family: $font-serif;
+          }
+        }
+      }
+    }
+  }
+}
+

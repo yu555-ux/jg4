@@ -1,0 +1,158 @@
+// Design Tokens & Variables for MHJG (Mystic Hearth Inn Game)
+
+// Google Fonts Import
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Outfit:wght@200;300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+
+// Colors - Fantasy Tavern Theme (Premium Palette)
+// Primary - Golden Amber (Luxury, Warmth, Wealth)
+$color-primary: hsl(38, 92%, 50%); // #f59e0b
+$color-primary-light: hsl(43, 96%, 56%); // #fbbf24
+$color-primary-dark: hsl(32, 95%, 44%); // #d97706
+$color-primary-glow: hsla(38, 92%, 50%, 0.6);
+
+// Secondary - Mystic Violet (Magic, Mystery, Void)
+$color-secondary: hsl(263, 70%, 50%); // #6d28d9
+$color-secondary-light: hsl(267, 75%, 63%); // #8b5cf6
+$color-secondary-dark: hsl(265, 83%, 34%); // #4c1d95
+$color-secondary-glow: hsla(263, 70%, 50%, 0.6);
+
+// Accent Colors - Elemental & Status
+$color-accent-indigo: hsl(238, 83%, 66%); // Arcane
+$color-accent-cyan: hsl(189, 94%, 43%); // Ice/Spirit
+$color-accent-emerald: hsl(158, 64%, 52%); // Nature/Success
+$color-accent-rose: hsl(343, 81%, 56%); // Blood/Danger
+$color-accent-amber: hsl(38, 92%, 50%); // Earth/Gold
+
+// Backgrounds - Deep & Immersive
+$color-bg-deep: hsl(224, 71%, 4%); // #020617
+$color-bg-card: hsla(222, 47%, 11%, 0.6);
+$color-bg-overlay: hsla(222, 47%, 11%, 0.8);
+$color-surface: hsla(217, 33%, 17%, 0.4);
+
+// Typography
+$color-text-main: hsl(210, 40%, 98%);
+$color-text-muted: hsl(215, 20%, 65%);
+$color-text-dim: hsl(215, 16%, 47%);
+$color-text-highlight: #ffffff;
+
+// Borders
+$color-border: hsla(217, 33%, 17%, 0.5);
+$color-border-light: hsla(210, 40%, 98%, 0.1);
+$color-border-glow: hsla(38, 92%, 50%, 0.3);
+
+// Fonts
+$font-title: 'Cinzel Decorative', cursive;
+$font-body: "Kingnammm Maiyuan 2", 'Outfit', sans-serif;
+$font-serif: 'Playfair Display', serif;
+$font-fantasy: 'Cinzel Decorative', cursive;
+
+// Spacing
+$spacing-xs: 4px;
+$spacing-sm: 8px;
+$spacing-md: 16px;
+$spacing-lg: 24px;
+$spacing-xl: 32px;
+$spacing-xxl: 48px;
+$spacing-giant: 80px;
+
+// Radius
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 16px;
+$radius-xl: 24px;
+$radius-full: 9999px;
+
+// Shadows - High End Glows
+$shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+$shadow-md:
+  0 4px 6px -1px rgb(0 0 0 / 0.1),
+  0 2px 4px -2px rgb(0 0 0 / 0.1);
+$shadow-lg:
+  0 10px 15px -3px rgb(0 0 0 / 0.1),
+  0 4px 6px -4px rgb(0 0 0 / 0.1);
+$shadow-xl:
+  0 20px 25px -5px rgb(0 0 0 / 0.1),
+  0 8px 10px -6px rgb(0 0 0 / 0.1);
+$shadow-glow-gold: 0 0 20px $color-primary-glow;
+$shadow-glow-purple: 0 0 20px $color-secondary-glow;
+$shadow-inner-glow: inset 0 0 20px hsla(0, 0%, 100%, 0.05);
+
+// Gradients
+$gradient-bg: radial-gradient(circle at 50% 0%, #1e1b4b 0%, #020617 100%);
+$gradient-card: linear-gradient(145deg, hsla(217, 33%, 17%, 0.6) 0%, hsla(222, 47%, 11%, 0.4) 100%);
+$gradient-glass: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.01) 100%);
+$gradient-gold-text: linear-gradient(to bottom, #fffbeb 0%, #fcd34d 50%, #f59e0b 100%);
+
+// Mixins
+@mixin glass-panel {
+  background: rgba(2, 6, 23, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.36);
+}
+
+@mixin glass-card {
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.01) 100%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+  &:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+}
+
+@mixin text-gradient-gold {
+  background: linear-gradient(to bottom, #fffbeb 0%, #fcd34d 50%, #d97706 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: $color-primary; // Fallback
+}
+
+@mixin text-gradient-purple {
+  background: linear-gradient(
+    to bottom,
+    #f5f3ff 0%,
+    $color-secondary-light 45%,
+    $color-secondary 70%,
+    $color-secondary-dark 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: $color-secondary; // Fallback
+}
+
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin scrollbar {
+  &::-webkit-scrollbar {
+    width: 12px; // 增粗滚动条，从6px改为12px
+    height: 12px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.2);
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.8); // 改为白色，提高可见性
+    border-radius: 3px;
+    transition: background 0.3s;
+
+    &:hover {
+      background: rgba(255, 255, 255, 1); // hover时完全白色
+    }
+  }
+}

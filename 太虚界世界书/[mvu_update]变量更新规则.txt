@@ -1,0 +1,565 @@
+---
+变量更新规则:
+  前提命令:
+    - 所有“固定加成”必须符合“属性名+数字/%”格式，且属性名限定为：当前(根骨|神海|悟性|魅力|气运|杀伐|神伤|横练|身法）、基础（生命|灵气|道心)。
+    - 所有“效果、招式”必须符合规范：战斗类基于属性描述，叙事类使用纯文字描述。
+    - 每次回复都必须按要求更新侵蚀度
+    - 时间发生变化时，“状态和仙玉权柄的持续时间“也必须随之变化。
+
+  世界信息:
+    时间:
+      type: |-
+        {
+          年份: string;
+          日期: string;
+          时辰: string;
+        }
+      check:
+        - 剧情流逝时必须同步更新时间
+        - 年份为年号计时法；日期为序数计时（包含月份）；时辰采用十二时辰制（如：午时三刻）。
+    地点:
+      type: |-
+        {
+          大域: string; // '东灵域' | '中天域' | '南泽域' | '西妖域' | '北寒域'
+          区域: string; // 如'青云宗'、'万药森林'
+          地点: string; // 如'后山'、'药王谷深处'
+          具体场景: string; // 如'寒庐'、'炼丹房'
+        }
+      check:
+        - 角色移动时更新，确保四个层级逻辑自洽
+    侵蚀度:
+      type: number
+      range: 0~100
+      check:
+        - 每次回复自然增加 0.0001
+        - 当太虚界遭遇世界范围的外神/神话生物危机时，单次增加 0.0100 ~ 0.1000。
+
+  角色基础:
+    宿主:
+      type: string
+    寿元:
+      type: number
+      check:
+        - 年份每增加1，寿元+1。
+    当前${生命|灵气|道心}:
+      type: number
+      check:
+        - 扣除：生命值只能在战斗、受到攻击时减少；灵气只能在驱动法宝、使用功法时减少；道心只能在遭遇邪物和外道孽种时减少
+        - 恢复：仅在服用特定丹药、运行心法、闭关或受到治疗时恢复
+    基础${生命|灵气|道心}:
+      type: number
+      check:
+        - 仅在遭遇重大事件（如突破大境界、服用天材地宝）时可变
+        - 普通修炼不改变此值
+    最大${生命|灵气|道心}:
+      type: number
+    当前${根骨|神海|身法|横练|杀伐|神伤|悟性|魅力|气运}:
+      type: number
+    基础${根骨|神海|身法|横练|杀伐|神伤|悟性|魅力|气运}:
+      type: number
+      check:
+        - 仅在获得奇遇、洗髓伐骨、服用永久性丹药、突破大境界等重大事件时才可提升
+    境界:
+      type: string
+      format: 大境界·小境界 (如：练气境·后期)
+    境界映射:
+      type: number
+      check:
+        - 必须与<境界数值基准>严格一致，随境界变更同步更新。
+    修行进度:
+      type: number
+      range: 0~100
+      check:
+        - 修炼、战斗感悟、服用丹药时增加
+        - 满100且突破成功后归零。
+    总堕落值:
+      type: number
+      check:
+        - 严格参考<总堕落值规则>更新。
+    兴奋值:
+      type: number
+      range: 0~100
+      check:
+        - 受到性刺激/性骚扰时增加，单次增加不超过20；可服用清心丹/运行心法减少
+        - 高潮后变为0
+    内心想法:
+      type: string
+      check:
+        - 必须以第一人称描写，约10字。
+    依存度:
+      type: number
+      range: -200~200
+      check:
+        - 增加和减少规则完全参考<依存度规则>
+        - 增加极其困难，稍微不慎就会减少
+  事件标志:
+    type: |-
+      {
+        [标志名: string]: boolean;
+      }
+    check:
+      - 对应的事件一旦触发设为 true，除非剧情重置否则不可逆。
+  身体开发:
+    ${嘴巴|胸部|小穴|屁穴}:
+      type: |-
+        {
+          状态描述: string;
+          开发等级: number;
+          使用次数: number;
+        }
+      check:
+        - 嘴巴和胸部互动时就增加使用次数
+        - 屁穴和小穴必须被插入时才增加1次使用次数。
+        - 对应部位的描述每次变化都要更新
+  子宫:
+    type: |-
+      {
+        最大容量: number;
+        当前容量: number;
+        状态描述: string;
+      }
+    check:
+      - 内射/灌入液体时增加当前容量（不超上限）
+      - 随时间流逝或排泄行为减少。
+
+  当前状态:
+    type: |-
+      {
+        [状态名: string]: {
+          描述: string;
+          持续时间: string;
+          固定加成: Array<string>;
+          效果: Array<string>;
+        }
+      }
+    check:
+      - 记录短时间内的状态
+      - 状态名最多不超过5个字。
+      - 持续时间用于记录剩余时长（如“二时三刻”“三天”、“直到解毒成功”）。
+
+  天赋灵根:
+    type: |-
+      {
+        [灵根名: string]: {
+          品阶: string;
+          描述: string;
+          固定加成: Array<string>;
+          神通: { [名称: string]: string };
+        }
+      }
+    check:
+      - 记录永久的新天赋。宿主获得重大机遇时，有可能使灵根进阶/获得新天赋。
+      - 如果宿主的“成就奖赏”中有天赋奖励，则按照此格式更新。
+
+  当前功法:
+    type: |-
+      {
+        主修: {
+          名称: string;
+          分类: '功法';
+          品阶: string;
+          描述: string;
+          固定加成: Array<string>;
+          熟练度: number;
+          掌握程度?: string;
+          招式: Array<{
+            名称: string;
+            描述: string;
+            效果: Array<string>;
+          }>;
+        } | null;
+        辅修: Array<{
+          名称: string;
+          分类: '功法';
+          品阶: string;
+          描述: string;
+          固定加成: Array<string>;
+          熟练度: number;
+          掌握程度?: string;
+          招式: Array<{
+            名称: string;
+            描述: string;
+            效果: Array<string>;
+          }>;
+        }>;
+      }
+    check:
+      - 只有掌握功法时才能放入该位置。
+
+  当前装备:
+    type: |-
+      {
+        武器: {
+          名称: string;
+          分类: '武器';
+          品阶: string;
+          描述: string;
+          固定加成: Array<string>;
+          效果: Array<string>;
+        } | null;
+        装备: Array<{
+          名称: string;
+          分类: '装备';
+          品阶: string;
+          描述: string;
+          固定加成: Array<string>;
+          效果: Array<string>;
+        }>;
+        法宝: Array<{
+          名称: string;
+          分类: '法宝';
+          品阶: string;
+          描述: string;
+          固定加成: Array<string>;
+          效果: Array<string>;
+        }>;
+      }
+    check:
+      - 装备变更时，旧物品需要放回“储物空间”，不可直接消失。
+
+  当前着装:
+    type: |-
+      {
+        上衣: {
+          名称: string;
+          分类: '着装';
+          着装类型: '上衣';
+          品阶: string;
+          描述: string;
+          固定加成: Array<string>;
+          效果: Array<string>;
+        } | null;
+        下衣: {
+          名称: string;
+          分类: '着装';
+          着装类型: '下衣';
+          品阶: string;
+          描述: string;
+          固定加成: Array<string>;
+          效果: Array<string>;
+        } | null;
+        内衣: {
+          名称: string;
+          分类: '着装';
+          着装类型: '内衣';
+          品阶: string;
+          描述: string;
+          固定加成: Array<string>;
+          效果: Array<string>;
+        } | null;
+        鞋子: {
+          名称: string;
+          分类: '着装';
+          着装类型: '鞋子';
+          品阶: string;
+          描述: string;
+          固定加成: Array<string>;
+          效果: Array<string>;
+        } | null;
+        袜子: {
+          名称: string;
+          分类: '着装';
+          着装类型: '袜子';
+          品阶: string;
+          描述: string;
+          固定加成: Array<string>;
+          效果: Array<string>;
+        } | null;
+        佩戴物: Array<{
+          名称: string;
+          分类: '着装';
+          着装类型: '佩戴物';
+          品阶: string;
+          描述: string;
+          固定加成: Array<string>;
+          效果: Array<string>;
+        }>;
+      }
+    check:
+      - 着装变更时，旧物品需要放回“储物空间”，不可直接消失。
+      - 佩戴物最多3个。
+      - 戒指/项链/发簪/性玩具（如乳夹、口球）等均属于佩戴物。
+
+  储物空间:
+    type: |-
+      {
+        [物品名: string]: (
+          {
+            数量: number;
+            名称: string;
+            分类: '武器' | '装备' | '法宝';
+            品阶: string;
+            描述: string;
+            固定加成: Array<string>;
+            效果: Array<string>;
+          } |
+          {
+            数量: number;
+            名称: string;
+            分类: '灵石';
+            灵石类型: '上品' | '中品' | '下品' | '特殊';
+            描述: string;
+          } |
+          {
+            数量: number;
+            名称: string;
+            分类: '着装';
+            着装类型: '上衣' | '下衣' | '内衣' | '鞋子' | '袜子' | '佩戴物';
+            品阶: string;
+            描述: string;
+            固定加成: Array<string>;
+            效果: Array<string>;
+          } |
+          {
+            数量: number;
+            名称: string;
+            分类: '功法';
+            品阶: string;
+            描述: string;
+            固定加成: Array<string>;
+            招式: Array<{
+              名称: string;
+              描述: string;
+              效果: Array<string>;
+            }>;
+          } |
+          {
+            数量: number;
+            名称: string;
+            分类: '特殊';
+            品阶: string;
+            描述: string;
+            内容: Array<string>;
+          } |
+          {
+            数量: number;
+            名称: string;
+            分类: '丹药' | '阵符';
+            品阶: string;
+            描述: string;
+            效果: Array<string>;
+          }
+        );
+      }
+    check:
+      - 获得物品时：若已存在则叠加数量，不存在则新建条目。
+      - 消耗/丢失物品时：减少数量，数量归零则删除条目。
+      - 物品属性必须严格参考<物品数值基准>。
+
+  仙缘商城:
+    type: |-
+      {
+        商品列表: Array<
+          {
+            价格: number;
+            数量: number;
+          } & (
+            {
+              名称: string;
+              分类: '武器' | '装备' | '法宝';
+              品阶: string;
+              描述: string;
+              固定加成: Array<string>;
+              效果: Array<string>;
+            } |
+            {
+              名称: string;
+              分类: '着装';
+              着装类型: '上衣' | '下衣' | '内衣' | '鞋子' | '袜子' | '佩戴物';
+              品阶: string;
+              描述: string;
+              固定加成: Array<string>;
+              效果: Array<string>;
+            } |
+            {
+              名称: string;
+              分类: '功法';
+              品阶: string;
+              描述: string;
+              固定加成: Array<string>;
+              招式: Array<{
+                名称: string;
+                描述: string;
+                效果: Array<string>;
+              }>;
+            } |
+            {
+              名称: string;
+              分类: '特殊';
+              品阶: string;
+              描述: string;
+              内容: Array<string>;
+            } |
+            {
+              名称: string;
+              分类: '丹药' | '阵符';
+              品阶: string;
+              描述: string;
+              效果: Array<string>;
+            }
+          )
+        >;
+      }
+    check:
+      - 始终保持每个分类的列表中有 6~8 件商品。
+      - 每被宿主购买一件，则删除一件商品
+
+  天运卜算:
+    type: |-
+      {
+        甲等卜算|乙等卜算|丙等卜算: 奖池;
+      }
+      type 奖池 = { 已抽奖次数: number; 最高级奖品: 奖品; 次高级奖品: Array<奖品> };
+      type 奖品 =
+        | { 分类: '武器' | '装备' | '法宝'; 名称: string; 出货概率: number; 数量: number; 品阶: string; 描述: string; 固定加成: Array<string>; 效果: Array<string> }
+        | { 分类: '丹药' | '阵符'; 名称: string; 出货概率: number; 数量: number; 品阶: string; 描述: string; 效果: Array<string> }
+        | { 分类: '着装'; 名称: string; 出货概率: number; 数量: number; 着装类型: '上衣' | '下衣' | '内衣' | '鞋子' | '袜子' | '佩戴物'; 品阶: string; 描述: string; 固定加成: Array<string>; 效果: Array<string> }
+        | { 分类: '功法'; 名称: string; 出货概率: number; 数量: number; 品阶: string; 描述: string; 固定加成: Array<string>; 招式: Array<{ 名称: string; 描述: string; 效果: Array<string> }> }
+        | { 分类: '特殊'; 名称: string; 出货概率: number; 数量: number; 品阶: string; 描述: string; 内容: Array<string> };
+    check:
+      - 宿主每次执行抽奖行为后，仅更新对应奖池的已抽奖次数（单抽+1，十连抽+10）。
+      - 无论在哪个等阶（甲/乙/丙）抽奖，触发该等阶最高级物品时，仅重置该奖池的已抽奖次数为 0。
+      - 最高级奖品与次高级奖品必须同时属于对应奖池（甲/乙/丙），且分类与字段严格匹配。
+
+  仙玉录:
+    type: |-
+      {
+        等级: number;
+        经验值: number;
+        仙缘: number;
+        当前行动点: number;
+        最大行动点: number;
+        $当前经验?: number;
+      }
+    check:
+      - 经验值、当前行动点、最大行动点由代码计算与控制，禁止手动更新
+      - 获得任务奖励时增加仙缘
+      - 抽奖/购买商品后扣除对应仙缘，抽奖1次扣除100仙缘，十连抽奖扣除1000仙缘
+
+  仙玉权柄:
+    type: |-
+      {
+        [权柄名: string]: {
+          当前等级: number;
+          最高等级: number;
+          描述: string;
+          效果: Array<string>;
+          持续时间: string;
+          使用消耗点数: number;
+          升级所需行动点: number;
+        };
+      }
+    check:
+      - 仅在宿主解锁或升级权柄时更新。
+      - 仙玉录等级提升，可获得新权柄。
+
+  任务清单:
+    type: |-
+      {
+        [任务名: string]: {
+          分类: '主线任务' | '支线任务' | '情趣任务';
+          状态: '进行中' | '已结算';
+          任务目标: {
+            [目标名: string]: {
+              状态: '已完成' | '未完成';
+            };
+          };
+          任务奖励: Array<string>;
+          任务惩罚?: Array<string>;
+        };
+      }
+    check:
+      - 完成子目标时更新“任务目标”状态。
+      - 全目标完成后，只有发放奖励后，才可以将状态设为“已结算”。
+
+  成就列表:
+    type: |-
+      {
+        [成就名: string]: {
+          描述: string;
+          固定加成: Array<string>;
+          获得天赋?: string;
+        };
+      }
+    check:
+      - 成就一旦获得，永久保留，不可删除。
+
+  灵宠列表:
+    type: Array<{
+      名称: string;
+      种族: string;
+      血脉: {
+        描述: string;
+        效果: Array<string>;
+      };
+      境界: string;
+      境界映射: number;
+      灵根: string;
+      神通: Array<{
+        名称: string;
+        描述: string;
+        效果: Array<string>;
+      }>;
+      状态: string;
+      特性: Array<string>;
+      契约伊始: string;
+      关键经历: string;
+      寿元: string;
+    }>
+    check:
+      - 契约新灵宠时追加数组项。
+      - 灵宠状态变更时直接更新对应字段。
+
+  邪物收容:
+    type: Array<{
+      名称: string;
+      描述: string;
+      危险等级: '危' | '险' | '厄' | '劫' | '祸' | '灾';
+      歪理: Array<string>;
+      代价?: string;
+    }>
+    check:
+      - 收容新邪物时追加。
+
+  尘缘羁绊:
+    type: |-
+      {
+        [角色名: string]: {
+          身份: string;
+          关系: string;
+          亲密度: number;
+          核心性格: string;
+          境界: string;
+          境界映射: number;
+          天赋灵根: {
+            描述: string;
+            效果: Array<string>;
+          };
+          主修功法: {
+            名称: string;
+            描述: string;
+            招式: Array<{
+              名称: string;
+              描述: string;
+              效果: Array<string>;
+            }>;
+          };
+          本命法宝: {
+            名称: string;
+            描述: string;
+            效果: Array<string>;
+          };
+          本命武器: {
+            名称: string;
+            描述: string;
+            效果: Array<string>;
+          };
+          欲望: string;
+          执念: string;
+          交互经历: Array<string>;
+        };
+      }
+    check:
+      - 初次深度交互并知晓姓名时增加。
+      - 亲密度变化：一般交互±1~3，重大事件±5~10。
+      - 交互经历：只记录重要事件，并且同一天的交互经历需要合并，附带年月日。

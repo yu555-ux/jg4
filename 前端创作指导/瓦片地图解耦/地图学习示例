@@ -1,0 +1,305 @@
+<ruleofmap>
+**地图数据整体结构：**
+<map>
+SCENE_CONTEXT_ID: [场景上下文ID]
+MAP_NAME: [地图的描述性名称]
+DIMENSIONS: [列数]x[行数]
+DEFAULT_TILE: [可选：如果此地图的默认地块不是场景上下文中的默认地块，请指定一个字符，例如 '.']
+RAW_MAP_START
+[地图原始字符数组，每行代表地图的一行]
+RAW_MAP_END
+INSTANCE_METADATA_START
+[可选：针对地图上特定位置的实例元数据]
+[格式：列,行|在该位置的符号|实例唯一ID|实例名称|实例描述|JSON交互选项数组|JSON属性对象]
+INSTANCE_METADATA_END
+SYMBOL_DEFINITIONS_START
+[可选：此地图实例特有的符号定义或对场景上下文中符号的覆盖]
+[格式：符号字符: {JSON对象}]
+SYMBOL_DEFINITIONS_END
+</map>
+详细说明：
+SCENE_CONTEXT_ID (必需):
+这非常重要！它决定了地图中所有符号的基础图块集、默认含义和整体氛围。你选择的ID将作为解释RAW_MAP_ARRAY中符号的第一层依据。
+你必须从以下列表中选择一个最符合当前游戏情境的ID。选择后，请参考下面 “预定义场景上下文符号列表” 部分，了解该场景下各个符号的默认含义和推荐的CSS视觉样式（cssClassSuffix）。
+town_generic (通用城镇)
+forbidden_city_throne_room (宫殿)
+dungeon_level_1 (地牢)
+forest_path (森林)
+tavern_inn (酒馆旅店)
+market_square_outdoor (市场广场)
+generic_interior_room (通用室内房间)
+manor_estate_grounds (庄园庭院)
+training_ground (训练场/校场)
+temple_generic (神殿/宗教场所)
+workshop_blacksmith (铁匠铺)
+desert_oasis (沙漠绿洲)
+snowy_mountain_pass (雪山隘口)
+swamp_marsh (沼泽湿地)
+volcanic_caldera (火山口边缘)
+beach_coastline (沙滩海岸)
+docks_harbor (码头/港口)
+stable_驿站 (马厩/驿站)
+bridge_guarded (守卫的桥梁)
+portal_magic_gate (魔法传送门)
+ruins_ancient_temple (古代神庙废墟)
+library_study_hall (图书馆/研习厅)
+country_map (国家/区域地图)
+continent_map (大陆地图 - 规模宏大)
+galaxy_map (星系地图 - 太空尺度)
+根据当前的游戏剧情或玩家请求，选择最合适的场景上下文。
+MAP_NAME (必需):
+为这个具体地图实例起一个描述性的中文名称。
+DIMENSIONS (必需):
+格式为 列数x行数。例如 15x10。
+局部场景：7x7 至 9x9。大规模地图：可更大，建议不超过15x10。
+DEFAULT_TILE (可选):
+如果此地图中大部分“空白”或“地面”区域的符号不同于所选 SCENE_CONTEXT_ID 中定义的默认符号（见下文列表），你可以在这里指定一个新的默认符号字符。
+RAW_MAP_START / RAW_MAP_END (必需):
+地图的视觉表示。
+使用的符号应首先基于所选 SCENE_CONTEXT_ID 预定义符号列表中的含义。 其视觉样式将由代码根据预定义列表中的 cssClassSuffix 自动应用。
+如果一个符号在此地图中需要有不同于预定义列表中的含义（名称、描述）或默认交互，你必须在 SYMBOL_DEFINITIONS 部分为该符号提供一个特定于此地图的定义。
+务必包含一个 'P' 字符代表玩家的起始位置。
+INSTANCE_METADATA_START / INSTANCE_METADATA_END (可选):
+定义特定坐标点的特殊实例。
+格式：列,行|符号|ID|名称|描述|JSON交互数组|JSON属性对象
+SYMBOL_DEFINITIONS_START / SYMBOL_DEFINITIONS_END (可选):
+用于特定地图的符号含义定制化。请不要在此处指定 css_class_suffix。
+使用此部分来：
+定义全新的符号的含义：如果 RAW_MAP_ARRAY 中使用了某个字符，而这个字符在所选的 SCENE_CONTEXT_ID 的预定义符号列表中没有，你必须在这里定义它的 name, description, 和可选的 default_interact。
+覆盖或特化现有符号的含义：如果一个符号在预定义列表中有定义，但在当前这个特定的地图实例中，你希望它代表不同的东西（不同的name或description），或者具有不同的default_interact，那么你必须在这里为该符号提供一个新的定义。
+格式：符号字符: {JSON对象}
+JSON对象键:
+"name": (字符串) 此符号类型在此特定地图上的通用名称。
+"description": (字符串) 此符号类型在此特定地图上的通用描述。如果此符号的外观应显著不同于 SCENE_CONTEXT_ID 中同名符号的默认外观，请在此描述中说明其特殊外观。
+"default_interact": (JSON数组，可选) 此符号类型在此特定地图上的默认交互选项。
+示例：
+#: { "name": "校场围栏", "description": "高大坚固的木质围栏，将校场与外界隔开。" }
+W: { "name": "军械/物资区", "description": "临时堆放的武器、马具或补给品。此处的物资堆看起来比常规军械库的更简陋和临时。" } (描述中暗示外观差异)
+符号解释的层次结构 (重要！)：
+最优先：INSTANCE_METADATA (名称、描述、交互、属性将覆盖所有下层定义)
+其次：本地图的 SYMBOL_DEFINITIONS (名称、描述、默认交互将覆盖下层定义。代码将根据 SCENE_CONTEXT_ID 和符号本身选择cssClassSuffix，但如果描述中暗示了显著的外观差异，处理逻辑可能会应用特殊样式。)
+最后：SCENE_CONTEXT_ID 的预定义符号列表中的定义 (名称、描述、cssClassSuffix、默认交互)
+预定义场景上下文符号列表 (SCENE_CONTEXT_ID Symbol Maps):
+请在选择了 SCENE_CONTEXT_ID 后，参考下面对应场景的符号列表来绘制 RAW_MAP_ARRAY。
+代码将根据此列表中的 cssClassSuffix 来决定瓦片的默认视觉样式。
+如果你需要在特定地图中修改某个符号的名称、描述或默认交互，请在 SYMBOL_DEFINITIONS 中进行覆盖，但不要在 SYMBOL_DEFINITIONS 中加入 css_class_suffix 字段。
+town_generic (通用城镇)
+#: { name: "障碍物", cssClassSuffix: "rock-small", defaultInteract:[], defaultDesc: "无法通行的障碍物。" }
+.: { name: "草地", cssClassSuffix: "grass-dark", defaultInteract:[], defaultDesc: "一片普通的草地。" } (此场景默认瓦片)
+C: { name: "普通房屋", cssClassSuffix: "building-roof-brown", defaultInteract:["敲门"], defaultDesc: "一栋普通的民居。" }
+P: { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你在这里。" }
+Z: { name: "城镇居民", cssClassSuffix: "npc-figure", defaultInteract:["交谈"], defaultDesc: "一位城镇居民。" }
+K: { name: "商店", cssClassSuffix: "shop-awning", defaultInteract:["进入商店"], defaultDesc: "一家挂着招牌的商店。" }
+W: { name: "水井", cssClassSuffix: "chest-wooden", defaultInteract:["查看水井"], defaultDesc: "一口石头砌成的水井。" }
+forbidden_city_throne_room (宫殿)
+#: { name: "烛台/宫灯", cssClassSuffix: "palace-decoration", defaultInteract: [], defaultDesc: "华丽的烛台或宫灯照亮宫殿。" }
+.: { name: "宫殿地面", cssClassSuffix: "palace-stone-floor", defaultInteract: [], defaultDesc: "光滑如镜的金砖。" } (此场景默认瓦片)
+C: { name: "宫殿结构", cssClassSuffix: "palace-interior-wall", defaultInteract: ["检查结构"], defaultDesc: "宏伟的宫殿梁柱或墙壁。" }
+P: { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract: [], defaultDesc: "尊贵的你。" }
+Z: { name: "大臣/侍卫", cssClassSuffix: "npc-figure", defaultInteract: ["交谈"], defaultDesc: "一位身着官服的大臣或肃立的侍卫。" }
+dungeon_level_1 (地牢)
+#: { name: "墙壁/落石", cssClassSuffix: "dungeon-wall-brick", defaultInteract:[], defaultDesc: "粗糙的砖石墙壁或落石。" }
+.: { name: "地牢地面", cssClassSuffix: "dungeon-floor-stone", defaultInteract:[], defaultDesc: "冰冷潮湿的石头地面。" } (此场景默认瓦片)
+C: { name: "牢房门", cssClassSuffix: "dungeon-cell-door", defaultInteract:["检查门锁"], defaultDesc: "一扇生锈的牢房门。" }
+P: { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你的位置。" }
+Z: { name: "囚犯/残骸", cssClassSuffix: "npc-figure", defaultInteract:["检查"], defaultDesc: "一个蜷缩的身影或一堆白骨。" }
+M: { name: "怪物", cssClassSuffix: "monster-figure", defaultInteract:["战斗"], defaultDesc: "一个潜伏的怪物！" }
+T: { name: "宝箱", cssClassSuffix: "treasure-box", defaultInteract:["打开宝箱"], defaultDesc: "一个普通的木制宝箱。" }
+forest_path (森林)
+#: { name: "茂密树木", cssClassSuffix: "forest-dense-tree", defaultInteract:[], defaultDesc: "茂密的树木，无法通过。" }
+.: { name: "林间土地", cssClassSuffix: "forest-floor-dirt", defaultInteract:[], defaultDesc: "覆盖着落叶的泥土小径。" } (此场景默认瓦片)
+C: { name: "树干", cssClassSuffix: "forest-tree-trunk", defaultInteract:["检查树木"], defaultDesc: "一颗粗壮的树干。" }
+P: { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你正走在林间。" }
+Z: { name: "林地生物", cssClassSuffix: "npc-figure", defaultInteract:["观察"], defaultDesc: "一只小动物或林地居民。" }
+W: { name: "溪流", cssClassSuffix: "water-surface", defaultInteract:["查看水流"], defaultDesc: "一条清澈的溪流。" }
+B: { name: "灌木丛", cssClassSuffix: "forest-bush", defaultInteract:["搜索灌木丛"], defaultDesc: "一簇茂密的灌木。" }
+T: { name: "宝箱", cssClassSuffix: "chest-wooden", defaultInteract:["打开宝箱"], defaultDesc: "一个普通的木制宝箱。"}
+M: { name: "怪物", cssClassSuffix: "monster-figure", defaultInteract:["战斗"], defaultDesc: "潜伏的危险！"}
+tavern_inn (酒馆旅店)
+#: { name: "酒馆墙壁", cssClassSuffix: "interior-wall", defaultInteract:[], defaultDesc: "酒馆的木质或石制墙壁。" }
+B: { name: "吧台", cssClassSuffix: "bar-counter", defaultInteract:["点酒","与酒保交谈"], defaultDesc: "一个厚实的吧台，摆满了酒瓶和杯子。" }
+.: { name: "酒馆地板", cssClassSuffix: "interior-floor", defaultInteract:[], defaultDesc: "被踩得发亮的木地板或粗糙石板。" } (此场景默认瓦片)
+P: { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你走进了喧闹的酒馆。" }
+C: { name: "桌椅", cssClassSuffix: "table-and-chairs", defaultInteract:["找个位置坐下","检查桌子"], defaultDesc: "一张普通的木制桌子和几把椅子。" }
+F: { name: "壁炉", cssClassSuffix: "fireplace", defaultInteract:["取暖","添柴"], defaultDesc: "一个燃烧着火焰的石头壁炉。" }
+Z: { name: "酒保/顾客", cssClassSuffix: "npc-figure", defaultInteract:["点单","打听消息","交谈"], defaultDesc: "忙碌的酒保或形形色色的顾客。" }
+D: { name: "房门", cssClassSuffix: "interior-door", defaultInteract:["开门","离开"], defaultDesc: "通往其他房间的门或酒馆的出口。" }
+S: { name: "楼梯", cssClassSuffix: "interior-stairs", defaultInteract:["上楼","下楼"], defaultDesc: "通往楼上或楼下的楼梯。" }
+market_square_outdoor (市场广场)
+.: { name: "广场地面", cssClassSuffix: "outdoor-ground-paved", defaultInteract:[], defaultDesc: "被踩实的泥土或石板广场。" } (此场景默认瓦片)
+P: { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你穿梭在热闹的市场中。" }
+K: { name: "市场摊位", cssClassSuffix: "market-stall", defaultInteract:["浏览商品","购买"], defaultDesc: "摆满各色商品的摊位。" }
+Z: { name: "摊主/顾客", cssClassSuffix: "npc-figure", defaultInteract:["询价","交谈"], defaultDesc: "吆喝的摊主或挑选商品的顾客。" }
+F: { name: "广场设施", cssClassSuffix: "outdoor-feature-stone", defaultInteract:["查看","休息"], defaultDesc: "广场中央的喷泉、雕像或公告板。" }
+#: { name: "市场周边建筑", cssClassSuffix: "building-exterior-generic", defaultInteract:[], defaultDesc: "市场周围的店铺或房屋。" }
+generic_interior_room (通用室内房间)
+#: { name: "房间墙壁", cssClassSuffix: "interior-wall", defaultInteract:[], defaultDesc: "房间的普通墙壁。" }
+.: { name: "房间地板", cssClassSuffix: "interior-floor", defaultInteract:[], defaultDesc: "房间的普通地板。" } (此场景默认瓦片)
+P: { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你在这个房间里。" }
+F: { name: "室内家具", cssClassSuffix: "interior-furniture-generic", defaultInteract:["检查家具"], defaultDesc: "一件普通的家具，如桌子、椅子或柜子。" }
+D: { name: "房门/窗户", cssClassSuffix: "interior-door", defaultInteract:["开门","查看窗外"], defaultDesc: "一扇普通的门或一扇窗户。" }
+T: { name: "容器/物品堆", cssClassSuffix: "interior-container-generic", defaultInteract:["打开","检查物品"], defaultDesc: "一个箱子、书架上的物品堆或其他可交互物件。" }
+Z: { name: "人物", cssClassSuffix: "npc-figure", defaultInteract:["交谈"], defaultDesc: "房间里的另一个人。" }
+manor_estate_grounds (庄园庭院)
+#: { name: "庄园建筑/高墙", cssClassSuffix: "building-exterior-grand", defaultInteract:[], defaultDesc: "庄园主建筑的一部分或高耸的围墙。" }
+.: { name: "庄园草坪", cssClassSuffix: "outdoor-grass-manicured", defaultInteract:[], defaultDesc: "修剪整齐的草坪。" } (此场景默认瓦片)
+p: { name: "庄园小径", cssClassSuffix: "outdoor-path-gravel", defaultInteract:[], defaultDesc: "庄园内精致的石子小径。" }
+P: { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你正在庄园的庭院中。" }
+G: { name: "庭院景观", cssClassSuffix: "outdoor-feature-garden", defaultInteract:["欣赏景观"], defaultDesc: "一座喷泉、一尊雕像或精心修剪的装饰性灌木丛。" }
+T: { name: "庭院树木", cssClassSuffix: "outdoor-tree-large", defaultInteract:["检查树木"], defaultDesc: "庭院中高大的观赏树木。" }
+Z: { name: "庄园人员", cssClassSuffix: "npc-figure", defaultInteract:["询问","交谈"], defaultDesc: "庄园的仆人、园丁或守卫。" }
+D: { name: "庄园大门/入口", cssClassSuffix: "building-entrance-grand", defaultInteract:["进入建筑","通过大门"], defaultDesc: "通往庄园主建筑的入口或庭院的气派大门。" }
+training_ground (训练场/校场)
+.: { name: "平整地面", cssClassSuffix: "forest-floor-dirt", defaultInteract:[], defaultDesc: "被反复踩踏而变得坚实的平整地面，适合操练。" } (此场景默认瓦片)
+#: { name: "围栏/障碍", cssClassSuffix: "rock-small", defaultInteract:[], defaultDesc: "训练场的边界围栏或固定的训练障碍物。" }
+P: { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你正在训练场上。" }
+Z: { name: "士兵/教官", cssClassSuffix: "npc-figure", defaultInteract:["交谈","挑战","请教"], defaultDesc: "正在操练的士兵或严厉的教官。" }
+M: { name: "训练假人/靶子", cssClassSuffix: "training-dummy", defaultInteract:["攻击训练","检查靶子"], defaultDesc: "用于练习攻击的稻草人或木制靶子。" }
+W: { name: "武器架", cssClassSuffix: "weapon-rack", defaultInteract:["查看武器","拾取练习武器"], defaultDesc: "摆放着各类练习用武器的架子。" }
+T: { name: "箭塔/瞭望台", cssClassSuffix: "watchtower-small", defaultInteract:["登上瞭望"], defaultDesc: "训练场边缘的简易箭塔或瞭望台。" }
+F: { name: "篝火/休息区", cssClassSuffix: "fireplace", defaultInteract:["休息","取暖"], defaultDesc: "供士兵们休息和取暖的篝火区域。" }
+S: { name: "沙坑/障碍跑道", cssClassSuffix: "path-brown", defaultInteract:["进行体能训练"], defaultDesc: "用于体能训练的沙坑或设有障碍的跑道区。" }
+temple_generic (神殿/宗教场所)
+.: { name: "神殿地砖", cssClassSuffix: "palace-stone-floor", defaultInteract:[], defaultDesc: "庄严肃穆的石制地砖。" } (此场景默认瓦片)
+#: { name: "神殿墙壁/石柱", cssClassSuffix: "palace-interior-wall", defaultInteract:[], defaultDesc: "刻有神圣图案的墙壁或高耸的石柱。" }
+P: { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你来到了这处神圣之地。" }
+Z: { name: "祭司/信徒", cssClassSuffix: "priest-figure", defaultInteract:["交谈","祈祷","寻求指引"], defaultDesc: "虔诚的祭司或正在祈祷的信徒。" }
+A: { name: "祭坛", cssClassSuffix: "altar-stone", defaultInteract:["查看祭坛","献上祭品"], defaultDesc: "用于举行仪式的石制祭坛。" }
+S: { name: "神像/圣物", cssClassSuffix: "statue-holy", defaultInteract:["瞻仰","研究铭文"], defaultDesc: "受人敬拜的神像或蕴含力量的圣物。" }
+D: { name: "神殿大门", cssClassSuffix: "temple-door-grand", defaultInteract:["进入/离开"], defaultDesc: "通往神殿内部或外部的厚重门扉。" }
+C: { name: "长椅/蒲团", cssClassSuffix: "table-and-chairs", defaultInteract:["坐下休息","冥想"], defaultDesc: "供信徒使用的长椅或蒲团。" }
+F: { name: "圣火/长明灯", cssClassSuffix: "fireplace", defaultInteract:["感受神圣火焰"], defaultDesc: "永不熄灭的圣火或长明灯。" }
+workshop_blacksmith (铁匠铺)
+.: { name: "工坊地面", cssClassSuffix: "dungeon-floor-stone", defaultInteract:[], defaultDesc: "布满煤灰和金属碎屑的石质地面。" } (此场景默认瓦片)
+#: { name: "工坊墙壁", cssClassSuffix: "dungeon-wall-brick", defaultInteract:[], defaultDesc: "简陋但坚固的墙壁。" }
+P: { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你走进了叮当作响的铁匠铺。" }
+Z: { name: "铁匠", cssClassSuffix: "npc-figure", defaultInteract:["交谈","购买装备","委托锻造"], defaultDesc: "正在忙碌的铁匠。" }
+F: { name: "锻炉", cssClassSuffix: "forge-active", defaultInteract:["查看火焰","添煤"], defaultDesc: "燃烧着熊熊烈火的锻炉。" }
+A: { name: "铁砧", cssClassSuffix: "anvil-metal", defaultInteract:["检查铁砧"], defaultDesc: "厚重的金属铁砧。" }
+W: { name: "武器/工具架", cssClassSuffix: "weapon-display-rack", defaultInteract:["浏览商品"], defaultDesc: "挂满或摆放着打造好的武器和工具。" }
+T: { name: "淬火槽", cssClassSuffix: "water-surface", defaultInteract:["查看"], defaultDesc: "用于给炽热金属降温的水槽。" }
+M: { name: "材料堆", cssClassSuffix: "rock-small", defaultInteract:["检查材料"], defaultDesc: "堆放的金属锭、煤炭等原材料。" }
+desert_oasis (沙漠绿洲)
+s: { name: "沙地", cssClassSuffix: "sand-dune", defaultInteract:[], defaultDesc: "一望无际的沙地。" } (此场景默认瓦片)
+P: { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你在酷热的沙漠中。" }
+W: { name: "水池/泉眼", cssClassSuffix: "water-surface", defaultInteract:["取水","休息"], defaultDesc: "沙漠中珍贵的泉水。" }
+T: { name: "棕榈树/耐旱植物", cssClassSuffix: "palm-tree", defaultInteract:["寻找荫凉"], defaultDesc: "稀疏的耐旱植物，提供少许荫凉。" }
+#: { name: "岩石/沙丘", cssClassSuffix: "rock-small", defaultInteract:[], defaultDesc: "巨大的岩石或高耸的沙丘。" }
+Z: { name: "沙漠旅人/生物", cssClassSuffix: "npc-figure", defaultInteract:["交谈","观察"], defaultDesc: "罕见的沙漠居民或生物。" }
+C: { name: "废弃帐篷/遗骸", cssClassSuffix: "ruin-debris-small", defaultInteract:["搜索"], defaultDesc: "前人留下的痕迹或不幸者的遗骸。" }
+snowy_mountain_pass (雪山隘口)
+s: { name: "积雪地面", cssClassSuffix: "snow-drift", defaultInteract:[], defaultDesc: "厚厚的积雪覆盖着地面。" } (此场景默认瓦片)
+#: { name: "山壁/冰岩", cssClassSuffix: "mountain-peak", defaultInteract:[], defaultDesc: "陡峭的山壁或覆盖着坚冰的岩石。" }
+P: { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你艰难地跋涉在雪山之中。" }
+Z: { name: "雪地生物/隐士", cssClassSuffix: "npc-figure", defaultInteract:["追踪","交谈"], defaultDesc: "适应了严寒的生物或隐居于此的怪人。" }
+C: { name: "冰洞入口/避风处", cssClassSuffix: "cave-entrance-ice", defaultInteract:["进入探索","躲避风雪"], defaultDesc: "一个可能的冰洞入口或可以暂时避风的岩石凹陷。" }
+T: { name: "耐寒松柏", cssClassSuffix: "forest-dense-tree", defaultInteract:[], defaultDesc: "稀疏的耐寒树木。" }
+swamp_marsh (沼泽湿地)
+m: { name: "泥沼/浅水", cssClassSuffix: "swamp-water", defaultInteract:[], defaultDesc: "难以行走的泥沼或漂浮着腐殖质的浅水。" } (此场景默认瓦片)
+P: { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你小心翼翼地在沼泽中前进。" }
+#: { name: "茂密芦苇/红树林", cssClassSuffix: "swamp-reeds", defaultInteract:[], defaultDesc: "难以看清深处的茂密植物。" }
+T: { name: "枯树/浮木", cssClassSuffix: "forest-tree-trunk", defaultInteract:["攀爬观察"], defaultDesc: "倒在沼泽中的枯树或漂浮的木头，可能是唯一的立足点。" }
+Z: { name: "沼泽生物/迷失者", cssClassSuffix: "monster-figure", defaultInteract:["战斗","帮助"], defaultDesc: "危险的沼泽生物或迷失在其中的人。" }
+H: { name: "安全小径/木板路", cssClassSuffix: "path-brown", defaultInteract:[], defaultDesc: "前人搭建的相对安全的小路或木板。" }
+volcanic_caldera (火山口边缘)
+.: { name: "火山岩地面", cssClassSuffix: "volcanic-rock-ground", defaultInteract:[], defaultDesc: "冷却凝固的火山岩地面，布满裂隙。" } (此场景默认瓦片)
+#: { name: "峭壁/凝固岩浆", cssClassSuffix: "rock-small", defaultInteract:[], defaultDesc: "火山口的陡峭内壁或形态奇特的凝固岩浆。" }
+P: { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你来到了炽热的火山口。" }
+L: { name: "岩浆池/裂口", cssClassSuffix: "lava-pool", defaultInteract:["靠近观察 (危险!)"], defaultDesc: "翻滚着致命高温的岩浆池或深不见底的裂口。" }
+S: { name: "硫磺喷口/烟雾", cssClassSuffix: "smoke-vent", defaultInteract:["小心避开"], defaultDesc: "散发着刺鼻气味的硫磺喷口，烟雾缭绕。" }
+Z: { name: "火焰元素/耐热生物", cssClassSuffix: "monster-figure", defaultInteract:["战斗"], defaultDesc: "生活在极端环境中的生物。" }
+beach_coastline (沙滩海岸)
+s: { name: "沙滩", cssClassSuffix: "sand-beach", defaultInteract:[], defaultDesc: "柔软的沙滩，散落着贝壳。" } (此场景默认瓦片)
+~: { name: "海水/海浪", cssClassSuffix: "water-surface", defaultInteract:["游泳","冲浪"], defaultDesc: "不断拍打着岸边的海水。" }
+P: { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你漫步在沙滩上。" }
+#: { name: "礁石/峭壁", cssClassSuffix: "rock-small", defaultInteract:["攀爬"], defaultDesc: "海岸边的礁石。" }
+T: { name: "椰子树/海岸植被", cssClassSuffix: "coconut-tree", defaultInteract:["摘椰子"], defaultDesc: "生长在海岸边的树木。" }
+C: { name: "螃蟹/海鸟", cssClassSuffix: "npc-figure", defaultInteract:["捕捉"], defaultDesc: "沙滩上的小生物。" }
+D: { name: "沉船残骸/漂流物", cssClassSuffix: "ruin-shipwreck-part", defaultInteract:["搜索残骸"], defaultDesc: "被海浪冲上岸的破旧船板或漂流物。" }
+docks_harbor (码头/港口)
+.: { name: "码头地面/木板", cssClassSuffix: "path-brown", defaultInteract:[], defaultDesc: "由厚木板铺成的码头地面，有些湿滑。" } (此场景默认瓦片)
+~: { name: "海水/港池", cssClassSuffix: "water-surface", defaultInteract:[], defaultDesc: "停泊船只的水域。" }
+P: { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你来到了繁忙的码头。" }
+Z: { name: "水手/商人/渔夫", cssClassSuffix: "npc-figure", defaultInteract:["交谈","打听消息","雇佣"], defaultDesc: "码头上形形色色的人们。" }
+S: { name: "停泊的船只", cssClassSuffix: "ship-docked", defaultInteract:["登船","检查货物"], defaultDesc: "一艘停泊在码头的船只。" }
+C: { name: "货物堆/仓库入口", cssClassSuffix: "crates-stacked", defaultInteract:["检查货物","进入仓库"], defaultDesc: "堆放的货物或通往仓库的门。" }
+O: { name: "起重机/吊臂", cssClassSuffix: "crane-wooden", defaultInteract:["操作 (如果可能)"], defaultDesc: "用于装卸货物的木制起重机。" }
+B: { name: "灯塔/航标", cssClassSuffix: "lighthouse-small", defaultInteract:[], defaultDesc: "指引船只的灯塔或航标。" }
+stable_驿站 (马厩/驿站)
+.: { name: "驿站土地/干草地", cssClassSuffix: "forest-floor-dirt", defaultInteract:[], defaultDesc: "铺满干草的地面或被踩实的土地。" } (此场景默认瓦片)
+#: { name: "马厩墙壁/栅栏", cssClassSuffix: "interior-wall", defaultInteract:[], defaultDesc: "马厩的木墙或围栏。" }
+P: { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你来到了驿站。" }
+Z: { name: "马夫/驿卒", cssClassSuffix: "npc-figure", defaultInteract:["交谈","购买马匹","休息"], defaultDesc: "负责照料马匹的马夫或驿站的差役。" }
+H: { name: "马匹", cssClassSuffix: "horse-standing", defaultInteract:["骑乘","喂食"], defaultDesc: "一匹膘肥体壮的马。" }
+F: { name: "草料槽/水槽", cssClassSuffix: "chest-wooden", defaultInteract:["添加草料/水"], defaultDesc: "给马匹喂食的槽。" }
+C: { name: "马车/货车", cssClassSuffix: "cart-parked", defaultInteract:["检查马车","搭乘"], defaultDesc: "停放的马车或货车。" }
+B: { name: "驿站建筑/客房入口", cssClassSuffix: "building-roof-brown", defaultInteract:["进入休息"], defaultDesc: "驿站主建筑或客房的入口。" }
+bridge_guarded (守卫的桥梁)
+=: { name: "桥面", cssClassSuffix: "bridge-plank", defaultInteract:[], defaultDesc: "由木板或石头铺成的桥面。" } (此场景默认瓦片)
+~: { name: "河流/峡谷下方", cssClassSuffix: "water-surface", defaultInteract:[], defaultDesc: "桥下的水流或深邃的峡谷。" }
+P: { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你正试图通过这座桥。" }
+Z: { name: "桥梁守卫", cssClassSuffix: "npc-figure", defaultInteract:["交谈","出示通行证","战斗"], defaultDesc: "警惕的桥梁守卫。" }
+T: { name: "桥头堡/瞭望塔", cssClassSuffix: "bridge-tower", defaultInteract:["进入","侦察"], defaultDesc: "桥两端的防御工事或瞭望塔。" }
+#: { name: "桥栏/支撑结构", cssClassSuffix: "rock-small", defaultInteract:[], defaultDesc: "桥的栏杆或坚固的支撑结构。" }
+portal_magic_gate (魔法传送门)
+.: { name: "异界地面", cssClassSuffix: "scifi-floor-metal", defaultInteract:[], defaultDesc: "传送门周围的地面散发着奇异的光芒。" } (此场景默认瓦片)
+#: { name: "能量屏障/支撑结构", cssClassSuffix: "force-field", defaultInteract:[], defaultDesc: "维持传送门稳定的能量场或实体结构。" }
+P: { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你站在一个神秘的传送门前。" }
+G: { name: "传送门核心", cssClassSuffix: "portal-active", defaultInteract:["激活传送门","进入传送门","研究符文"], defaultDesc: "闪耀着不稳定光芒的传送门核心区域。" }
+Z: { name: "传送门守护者/异界生物", cssClassSuffix: "monster-figure", defaultInteract:["交谈","战斗"], defaultDesc: "守护传送门的存在或从另一端过来的生物。" }
+S: { name: "控制台/符文石", cssClassSuffix: "scifi-console", defaultInteract:["尝试操作","解读符文"], defaultDesc: "用于控制传送门或刻有激活符文的石碑。" }
+ruins_ancient_temple (古代神庙废墟)
+.: { name: "碎石地面", cssClassSuffix: "ruin-floor-broken", defaultInteract:[], defaultDesc: "布满碎石和杂草的残破地面。" } (此场景默认瓦片)
+#: { name: "倒塌的墙壁/石柱", cssClassSuffix: "ruin-wall-collapsed", defaultInteract:["攀爬","搜索"], defaultDesc: "断裂的石柱或倒塌的墙垣。" }
+P: { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你正在探索这片古老的废墟。" }
+Z: { name: "游荡的幽魂/寻宝者", cssClassSuffix: "monster-figure", defaultInteract:["战斗","交谈"], defaultDesc: "徘徊在废墟中的存在。" }
+A: { name: "残破的祭坛/神像", cssClassSuffix: "ruin-altar-broken", defaultInteract:["调查","寻找线索"], defaultDesc: "曾经神圣但如今已残破不堪的祭坛或神像。" }
+T: { name: "隐藏的宝箱/入口", cssClassSuffix: "chest-wooden", defaultInteract:["打开","进入"], defaultDesc: "被瓦砾掩盖的宝箱或通往地下的入口。" }
+B: { name: "过度生长的藤蔓/树木", cssClassSuffix: "forest-bush", defaultInteract:["拨开藤蔓"], defaultDesc: "几乎将废墟吞噬的茂密植物。" }
+library_study_hall (图书馆/研习厅)
+.: { name: "图书馆地板", cssClassSuffix: "interior-floor", defaultInteract:[], defaultDesc: "安静的木地板或石质地板。" } (此场景默认瓦片)
+#: { name: "高大书架", cssClassSuffix: "bookshelf-tall", defaultInteract:["查找书籍"], defaultDesc: "直抵天花板的书架，摆满了各种书籍。" }
+P: { name: "玩家", cssClassSuffix: "player-avatar", defaultInteract:[], defaultDesc: "你沉浸在知识的海洋中。" }
+Z: { name: "图书管理员/学者", cssClassSuffix: "scholar-figure", defaultInteract:["询问","请求查阅禁书"], defaultDesc: "博学的管理员或正在埋头研究的学者。" }
+T: { name: "阅览桌/书案", cssClassSuffix: "table-and-chairs", defaultInteract:["坐下阅读","研究卷轴"], defaultDesc: "供人阅读和研究的桌子。" }
+S: { name: "珍贵卷轴/古籍", cssClassSuffix: "scroll-ancient", defaultInteract:["阅读 (需鉴定?)","抄录"], defaultDesc: "散发着古老气息的卷轴或厚重的魔法书。" }
+L: { name: "讲台/星象仪", cssClassSuffix: "lectern-ornate", defaultInteract:["发表演讲","观察星象"], defaultDesc: "用于演讲的讲台或精密的星象观测仪器。" }
+country_map (国家/区域地图) (内容同前)
+continent_map (大陆地图 - 规模宏大) (内容同前)
+galaxy_map (星系地图 - 太空尺度) (内容同前)
+示例（大校场 - 飞骑集结，按照你的期望格式）：
+<map>
+SCENE_CONTEXT_ID: training_ground
+MAP_NAME: 大校场 - 飞骑集结
+DIMENSIONS: 13x9
+DEFAULT_TILE: .
+RAW_MAP_START
+#############
+#WWWW.WWWW.W#
+#WZZZ.ZZZW.W#
+#WZZZ.ZZZW.W#
+#WZZZ.ZZZW.W#
+#....P......#
+#...........#
+#F.........T#
+#############
+RAW_MAP_END
+INSTANCE_METADATA_START
+5,5|P|player_feng_zhi|冯至|你，大汉大将军，正在检阅部队。|["对韩越下达指令","亲自检查士兵装备","等待运输舰队"]|{"统御力":"极高"}
+4,3|Z|han_yue|左将军韩越|你的得力部下，负责“风行”“雷走”二营。神情肃穆，等待你的进一步指令。|["交谈","询问部队细节"]|{"忠诚度":92,"军事能力":"卓越","当前状态":"待命"}
+2,2|W|weapon_rack_NW|风行营军械区|风行营士兵临时堆放的备用武器和少量坐骑嚼料。|["检查军械"]|{"物资":"标准配备"}
+7,2|W|weapon_rack_NE|雷走营军械区|雷走营士兵临时堆放的备用武器和少量坐骑嚼料。|["检查军械"]|{"物资":"标准配备"}
+1,7|F|assembly_flag|集结军旗|大汉军旗与大将军帅旗在此飘扬。|["靠近军旗"]|{"象征":"军魂"}
+11,7|T|logistics_area|后勤物资点|临时搭建的后勤点，堆放着即将为部队补充的箭矢和简易修复工具。|["检查物资"]|{"状态":"准备就绪"}
+INSTANCE_METADATA_END
+SYMBOL_DEFINITIONS_START
+#: { "name": "校场围栏", "description": "高大坚固的木质围栏，将校场与外界隔开。" }
+.: { "name": "校场地面", "description": "被无数军士踩踏得无比坚实的黄土地面。" }
+P: { "name": "冯至", "description": "你站在这里，如山岳般镇压全场。" }
+Z: { "name": "飞骑兵阵列/韩越", "description": "精锐的飞骑兵，或他们的指挥官韩越，军容严整，士气高昂。" }
+W: { "name": "军械/物资区", "description": "临时堆放的武器、马具或补给品。" }
+F: { "name": "军旗区域", "description": "飘扬的军旗，象征着军队的荣耀与使命。" }
+T: { "name": "后勤点", "description": "临时的后勤补给区域。" }
+SYMBOL_DEFINITIONS_END
+</map>
+</ruleofmap>

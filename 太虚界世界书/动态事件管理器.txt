@@ -1,0 +1,57 @@
+@@preprocessing
+<%_
+/* === 变量声明区域 === */
+if (typeof fallValue === 'undefined') var fallValue = getvar('stat_data.角色基础.总堕落值', { defaults: 0 });
+if (typeof erosion === 'undefined') var erosion = getvar('stat_data.世界信息.侵蚀度', { defaults: 0 });
+if (typeof locationInfo === 'undefined') var locationInfo = getvar('stat_data.世界信息.地点', { defaults: { 区域: '' } });
+if (typeof currentRegion === 'undefined') var currentRegion = locationInfo.大域 || '';
+if (typeof currentArea === 'undefined') var currentArea = locationInfo.区域 || '';
+if (typeof progress === 'undefined') var progress = getvar('stat_data.角色基础.修行进度', { defaults: 0 });
+
+if (typeof vaginaInfo === 'undefined') var vaginaInfo = getvar('stat_data.身体开发.小穴.开发等级', { defaults: { 开发等级: 0 } });
+if (typeof hasAwakened === 'undefined') var hasAwakened = getvar('stat_data.事件标志.九阴极寒体觉醒', { defaults: false });
+if (typeof hasGhostStory === 'undefined') var hasGhostStory = getvar('stat_data.事件标志.青云宗诡话', { defaults: false });
+
+/* 新增：日期变量，用于灵气潮汐判断 */
+if (typeof currentDate === 'undefined') var currentDate = getvar('stat_data.世界信息.时间.日期', { defaults: '正月初一' });
+_%>
+
+<%_ /* === 逻辑1：九阴极寒体觉醒 === */ _%>
+<%_ if (fallValue >= 500 && vaginaInfo >= 3 && hasAwakened === false) { _%>
+<%- await getwi(null, '事件_九阴极寒体觉醒') %>
+<%_ } _%>
+
+<%_ /* === 逻辑2：青云宗诡话 === */ _%>
+<%_ if (fallValue > 400 && erosion > 30 && currentArea.includes('青云宗') && hasGhostStory === false) { _%>
+<%- await getwi(null, '事件_青云宗诡话') %>
+<%_ } _%>
+
+<%_ /* === 逻辑2.5：中天域世界书激活 === */ _%>
+<%_ if (currentRegion === '中天域') { _%>
+<%_ await activewi(null, '[太虚界]中天域', true); _%>
+<%_ } _%>
+
+<%_ /* === 逻辑2.6：其他大域世界书激活 === */ _%>
+<%_ if (currentRegion === '东灵域') { _%>
+<%_ await activewi(null, '[太虚界]东灵域', true); _%>
+<%_ } _%>
+<%_ if (currentRegion === '南泽域') { _%>
+<%_ await activewi(null, '[太虚界]南泽域', true); _%>
+<%_ } _%>
+<%_ if (currentRegion === '西妖域') { _%>
+<%_ await activewi(null, '[太虚界]西妖域', true); _%>
+<%_ } _%>
+<%_ if (currentRegion === '北寒域') { _%>
+<%_ await activewi(null, '[太虚界]北寒域', true); _%>
+<%_ } _%>
+
+<%_ /* === 逻辑3：境界突破指南 === */ _%>
+<%_ if (progress >= 100) { _%>
+<%- await getwi(null, '事件_境界突破指南') %>
+<%_ } _%>
+
+<%_ /* === 逻辑4：灵气潮汐（新增） === */ _%>
+<%_ /* 每年三月全月及四月初一触发 */ _%>
+<%_ if (currentDate.includes('三月') || currentDate.includes('四月初一')) { _%>
+灵气潮汐事件触发
+<%_ } _%>

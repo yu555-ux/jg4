@@ -1,0 +1,361 @@
+@import '../../styles/variables.scss';
+
+.mhjg-modal-build {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: $spacing-xl;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+
+    // Phone landscape: reduce outer padding so content fits
+    @media (max-height: 520px) and (orientation: landscape) {
+        padding: $spacing-md;
+    }
+
+    &.open {
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    .modal-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.7);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+    }
+
+    .modal-window {
+        position: relative;
+        width: 100%;
+        max-width: 1536px;
+        aspect-ratio: 16 / 9;
+        max-height: 90vh;
+        @include glass-panel;
+        border-radius: $radius-xl;
+        display: flex;
+        flex-direction: column;
+        animation: scaleIn 0.3s ease;
+        overflow: hidden;
+        
+        @media (max-width: 1024px) {
+            max-width: 95%;
+            max-height: 90vh;
+            aspect-ratio: auto;
+        }
+        
+        @media (max-width: 768px) {
+            max-width: 100%;
+            max-height: 100vh;
+            border-radius: 0;
+        }
+    }
+
+    .modal-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: $spacing-xl;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        background: linear-gradient(90deg, rgba(251, 191, 36, 0.05) 0%, transparent 100%);
+        
+        @media (max-width: 768px) {
+            padding: $spacing-md;
+            flex-wrap: wrap;
+            gap: $spacing-sm;
+        }
+        
+        @media (max-width: 480px) {
+            padding: $spacing-sm;
+        }
+
+        @media (max-height: 520px) and (orientation: landscape) {
+            padding: $spacing-sm $spacing-md;
+        }
+
+        .modal-header-left {
+            display: flex;
+            align-items: center;
+            gap: $spacing-md;
+        }
+
+        .modal-icon {
+            padding: $spacing-md;
+            background: rgba(251, 191, 36, 0.1);
+            border-radius: $radius-lg;
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            color: $color-primary;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            svg {
+                width: 24px;
+                height: 24px;
+            }
+        }
+
+        .modal-title-group {
+            .modal-title {
+                font-size: 32px;
+                font-weight: bold;
+                color: rgba(251, 191, 36, 0.9);
+                font-family: $font-fantasy;
+                letter-spacing: 0.1em;
+                text-shadow: 0 0 10px rgba(251, 191, 36, 0.5);
+                margin-bottom: 4px;
+
+                @media (max-height: 520px) and (orientation: landscape) {
+                    font-size: 18px;
+                    margin-bottom: 0;
+                }
+            }
+
+            .modal-subtitle {
+                color: rgba(251, 191, 36, 0.6);
+                font-family: monospace;
+                font-size: 14px;
+
+                @media (max-height: 520px) and (orientation: landscape) {
+                    display: none;
+                }
+            }
+        }
+
+        .modal-close {
+            display: flex;
+            align-items: center;
+            gap: $spacing-sm;
+            background: transparent;
+            border: none;
+            color: $color-text-muted;
+            cursor: pointer;
+            padding: $spacing-sm $spacing-md;
+            border-radius: $radius-md;
+            transition: all 0.3s ease;
+
+            &:hover {
+                background: rgba(255, 255, 255, 0.1);
+                color: $color-text-highlight;
+                border-color: rgba(255, 255, 255, 0.2);
+
+                .close-text {
+                    text-decoration: underline;
+                }
+            }
+
+            .close-text {
+                font-size: 10px;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                font-weight: bold;
+            }
+
+            svg {
+                width: 24px;
+                height: 24px;
+            }
+        }
+    }
+
+    .modal-content {
+        flex: 1;
+        overflow-y: auto;
+        padding: $spacing-xl;
+        @include scrollbar;
+        
+        @media (max-width: 768px) {
+            padding: $spacing-md;
+        }
+        
+        @media (max-width: 480px) {
+            padding: $spacing-sm;
+        }
+
+        @media (max-height: 520px) and (orientation: landscape) {
+            padding: $spacing-md;
+        }
+    }
+
+    .facilities-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: $spacing-xl;
+        
+        @media (max-width: 1024px) {
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: $spacing-lg;
+        }
+        
+        @media (max-width: 768px) {
+            grid-template-columns: 1fr;
+            gap: $spacing-md;
+        }
+        
+        @media (max-width: 480px) {
+            gap: $spacing-sm;
+        }
+
+        @media (max-height: 520px) and (orientation: landscape) {
+            grid-template-columns: repeat(2, minmax(260px, 1fr));
+            gap: $spacing-md;
+        }
+    }
+
+    .facility-card {
+        padding: $spacing-lg;
+        transition: all 0.3s ease;
+
+        @media (max-height: 520px) and (orientation: landscape) {
+            padding: $spacing-md;
+        }
+
+        &:hover {
+            border-color: rgba(251, 191, 36, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .facility-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: $spacing-md;
+        }
+
+        .facility-name {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: $color-text-main;
+            @include text-gradient-gold;
+            margin: 0;
+        }
+
+        .facility-level {
+            display: flex;
+            align-items: center;
+            gap: $spacing-sm;
+
+            .level-bars {
+                display: flex;
+                gap: 4px;
+            }
+
+            .level-bar {
+                width: 8px;
+                height: 24px;
+                border-radius: 2px;
+                border: 1px solid rgba(0, 0, 0, 0.5);
+                transform: skewX(-10deg);
+                transition: all 0.3s ease;
+
+                &.level-bar-filled {
+                    background: $color-primary;
+                    box-shadow: 0 0 8px rgba(251, 191, 36, 0.6);
+                }
+
+                &.level-bar-empty {
+                    background: rgba(30, 41, 59, 1);
+                }
+            }
+
+            .level-text {
+                font-size: 12px;
+                color: $color-text-dim;
+                text-transform: uppercase;
+                margin-left: $spacing-sm;
+                font-weight: bold;
+                letter-spacing: 0.1em;
+            }
+        }
+
+        .facility-description {
+            color: $color-text-muted;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: $spacing-lg;
+            min-height: 60px;
+
+            p {
+                margin: 0;
+            }
+        }
+
+        .facility-upgrade-btn {
+            width: 100%;
+            padding: $spacing-md;
+            border-radius: $radius-md;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: $spacing-sm;
+            font-size: 14px;
+            font-weight: 600;
+
+            &:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+            }
+
+            svg {
+                width: 18px;
+                height: 18px;
+            }
+        }
+    }
+
+    .facility-placeholder {
+        aspect-ratio: 1;
+        border: 2px dashed rgba(251, 191, 36, 0.3);
+        border-radius: $radius-xl;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: $spacing-xl;
+        color: $color-text-dim;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        background: rgba(251, 191, 36, 0.05);
+        min-height: 200px;
+
+        &:hover {
+            border-color: rgba(251, 191, 36, 0.5);
+            color: rgba(251, 191, 36, 0.9);
+            background: rgba(251, 191, 36, 0.1);
+            transform: translateY(-4px);
+            box-shadow: $shadow-md, 0 0 20px rgba(251, 191, 36, 0.2);
+        }
+
+        .placeholder-icon {
+            font-size: 48px;
+            margin-bottom: $spacing-sm;
+            opacity: 0.3;
+            font-weight: 300;
+            transition: all 0.3s ease;
+        }
+
+        &:hover .placeholder-icon {
+            opacity: 0.6;
+            transform: scale(1.1);
+        }
+
+        .placeholder-text {
+            font-family: $font-fantasy;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            opacity: 0.6;
+            transition: all 0.3s ease;
+        }
+
+        &:hover .placeholder-text {
+            opacity: 1;
+        }
+    }
+}
+

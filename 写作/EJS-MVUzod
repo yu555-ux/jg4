@@ -1,0 +1,520 @@
+EJS实战模板库
+
+本文件包含所有真实可运行的EJS代码模板
+AI创作EJS代码时，必须严格基于这些模板，不允许创新
+
+## 重要原则
+
+### 铁律1：只能用这些模板
+- 所有代码必须基于本文件的模板
+- 不允许"优化"或"改进"
+- 不允许使用模板外的函数
+- 不确定就拒绝
+
+### 铁律2：函数白名单（仅限以下）
+
+**变量操作**：
+- `getvar(key, options)` - 读取变量
+- `setvar(key, value, options)` - 设置变量
+- `incvar(key, value, options)` - 增加变量
+- `decvar(key, value, options)` - 减少变量
+
+**世界书操作**：
+- `getwi(null, '条目名')` - 加载条目（必须有await，必须用null）
+- `activewi(null, '条目名', true)` - 激活条目（必须配合@@preprocessing）
+
+**调试输出**：
+- `console.log()` `console.warn()` `console.error()`
+- `toastr.info()` `toastr.success()` `toastr.warning()` `toastr.error()`
+
+**禁止使用（会报错）**：
+- `require()` `import` `export`
+- `fs` `path` 等Node.js模块
+- `fetch()` `XMLHttpRequest` 等网络请求
+- `setTimeout()` `setInterval()` 等定时器
+- `JSON.parse()` `JSON.stringify()`（除非特殊说明）
+- 任何不在白名单的函数
+
+### 铁律3：MVU变量路径规则
+
+读取MVU变量**必须**有`stat_data.`前缀，例如`getvar('stat_data.角色.好感度')`
+
+错误示例：
+```javascript
+getvar('角色.好感度')           // 缺stat_data
+```
+
+### 铁律4：防重复声明
+
+所有变量声明必须：
+```javascript
+if (typeof 变量名 === 'undefined') var 变量名 = getvar(..., { defaults: 默认值 });
+```
+
+- 必须用`typeof`检查
+- 必须用`var`（不能用`const`或`let`）
+- 变量名要唯一（建议加角色名前缀）
+
+---
+
+## 代码模板库
+
+### 模板1：标准单变量多阶段控制器
+
+**适用场景**：根据单个数值变量（如好感度）加载不同阶段
+
+**真实案例**：美玲
+
+```javascript
+<%_
+if (typeof goodwill === 'undefined') var goodwill = getvar('stat_data.关系系统.好感度', { defaults: 0 });
+if (typeof relationship === 'undefined') var relationship = getvar('stat_data.关系系统.关系状态', { defaults: '陌生人' });
+_%>
+
+<%_ if (goodwill >= 0 && goodwill <= 25) { _%>
+<%- await getwi(null, '美玲_阶段01_陌生接触期') %>
+<%_ } else if (goodwill >= 26 && goodwill <= 50) { _%>
+<%- await getwi(null, '美玲_阶段02_暧昧拉扯期') %>
+<%_ } else if (goodwill >= 51 && goodwill <= 75) { _%>
+<%- await getwi(null, '美玲_阶段03_告白前夜期') %>
+<%_ } else if (goodwill >= 76 && relationship === '恋人') { _%>
+<%- await getwi(null, '美玲_阶段04_恋人阶段') %>
+<%- await getwi(null, '美玲_NSFW档案') %>
+<%_ } else if (goodwill >= 76) { _%>
+<%- await getwi(null, '美玲_阶段03_告白前夜期') %>
+<%_ } else { _%>
+<%- await getwi(null, '美玲_阶段01_陌生接触期') %>
+<%_ } _%>
+```
+
+**使用说明**：
+- 第一个`<%_`块：声明所有变量
+- 用`if/else if/else`判断阶段
+- 每个阶段用`<%- await getwi(null, '条目名') %>`加载
+- 可以在一个阶段加载多个条目（如恋人阶段加载NSFW档案）
+- 数值判断从小到大或从大到小都可以，根据逻辑决定
+
+**配置要求**：
+- 控制器条目：永久激活（蓝灯），顺序100
+- 被加载的阶段条目：禁用
+
+---
+
+### 模板2：关系状态优先型多阶段控制器
+
+**适用场景**：特殊关系状态（如老婆、女友）优先于数值判断
+
+**真实案例**：夏莉
+
+```javascript
+<%_
+if (typeof xialiAo === 'undefined') var xialiAo = getvar('stat_data.傲娇系统.傲', { defaults: 100 });
+if (typeof xialiRelation === 'undefined') var xialiRelation = getvar('stat_data.世界信息.关系状态', { defaults: '同学' });
+if (typeof aoCount === 'undefined') var aoCount = xialiAo;
+_%>
+
+<%_ if (xialiRelation === '准备告白' || xialiRelation === '准备结婚') { _%>
+
+<%_ } else if (xialiRelation === '老婆') { _%>
+  <%- await getwi(null, '夏莉_阶段12_老婆阶段') %>
+
+<%_ } else if (xialiRelation === '女友') { _%>
+  <%- await getwi(null, '夏莉_阶段11_女友阶段') %>
+
+<%_ } else if (aoCount > 90) { _%>
+  <%- await getwi(null, '夏莉_阶段01_极度傲娇期') %>
+
+<%_ } else if (aoCount > 80) { _%>
+  <%- await getwi(null, '夏莉_阶段02_傲娇壁垒期') %>
+
+<%_ } else if (aoCount > 70) { _%>
+  <%- await getwi(null, '夏莉_阶段03_傲娇松动期') %>
+
+<%_ } else if (aoCount > 60) { _%>
+  <%- await getwi(null, '夏莉_阶段04_开始动摇期') %>
+
+<%_ } else if (aoCount > 50) { _%>
+  <%- await getwi(null, '夏莉_阶段05_情感觉醒期') %>
+
+<%_ } else if (aoCount > 40) { _%>
+  <%- await getwi(null, '夏莉_阶段06_等待期') %>
+
+<%_ } else if (aoCount > 30) { _%>
+  <%- await getwi(null, '夏莉_阶段07_催促期') %>
+
+<%_ } else if (aoCount > 20) { _%>
+  <%- await getwi(null, '夏莉_阶段08_忍耐极限期') %>
+
+<%_ } else if (aoCount > 10) { _%>
+  <%- await getwi(null, '夏莉_阶段09_表白决心期') %>
+
+<%_ } else if (aoCount >= 1) { _%>
+  <%- await getwi(null, '夏莉_阶段10_表白进行时') %>
+
+<%_ } else if (aoCount === 0 && xialiRelation === '同学') { _%>
+*夏莉最近总是欲言又止，眼神里藏着什么想说又不敢说的话...*
+*她似乎在等待着什么契机，等待着勇气的那一刻...*
+
+<%_ } else if (aoCount === 0) { _%>
+  <%- await getwi(null, '夏莉_阶段11_女友阶段') %>
+<%_ } _%>
+```
+
+**使用说明**：
+- 关系状态判断在最前面
+- 可以有空分支（如准备告白状态不加载任何条目）
+- 可以在某个分支直接输出文本（如傲值0的描述）
+- 数值判断从大到小
+
+**配置要求**：
+- 控制器条目：永久激活（蓝灯），顺序100
+- 被加载的阶段条目：禁用
+
+---
+
+### 模板3：嵌套加载型控制器（阶段+附加内容）
+
+**适用场景**：每个阶段都需要加载额外内容（如外貌、NSFW档案等）
+
+**真实案例**：虎秋（敌意阶段+形态外貌）
+
+```javascript
+<%
+if (typeof huqiuHostility === 'undefined') var huqiuHostility = getvar('stat_data.龙虎系统.敌意', { defaults: 100 });
+if (typeof huqiuRelation === 'undefined') var huqiuRelation = getvar('stat_data.龙虎系统.关系状态', { defaults: '天敌' });
+if (typeof huqiuForm === 'undefined') var huqiuForm = getvar('stat_data.虎秋状态.当前形态', { defaults: '半虎形态' });
+if (typeof hostilityValue === 'undefined') var hostilityValue = huqiuHostility;
+%>
+
+<% if (huqiuRelation === '伴侣') { %>
+  <%- await getwi(null, '虎秋_阶段08_伴侣阶段') %>
+  <%- await getwi(null, '虎秋_NSFW档案') %>
+  <% if (huqiuForm === '纯虎') { %>
+    <%- await getwi(null, '虎秋_外貌_纯虎形态') %>
+  <% } else if (huqiuForm === '人形') { %>
+    <%- await getwi(null, '虎秋_外貌_人形态') %>
+  <% } else { %>
+    <%- await getwi(null, '虎秋_外貌_半虎形态') %>
+  <% } %>
+
+<% } else if (huqiuRelation === '恋人') { %>
+  <%- await getwi(null, '虎秋_阶段07_恋人阶段') %>
+  <%- await getwi(null, '虎秋_NSFW档案') %>
+  <% if (huqiuForm === '纯虎') { %>
+    <%- await getwi(null, '虎秋_外貌_纯虎形态') %>
+  <% } else if (huqiuForm === '人形') { %>
+    <%- await getwi(null, '虎秋_外貌_人形态') %>
+  <% } else { %>
+    <%- await getwi(null, '虎秋_外貌_半虎形态') %>
+  <% } %>
+
+<% } else if (hostilityValue >= 90) { %>
+  <%- await getwi(null, '虎秋_阶段01_纯粹敌对期') %>
+  <% if (huqiuForm === '纯虎') { %>
+    <%- await getwi(null, '虎秋_外貌_纯虎形态') %>
+  <% } else if (huqiuForm === '人形') { %>
+    <%- await getwi(null, '虎秋_外貌_人形态') %>
+  <% } else { %>
+    <%- await getwi(null, '虎秋_外貌_半虎形态') %>
+  <% } %>
+
+<% } else if (hostilityValue >= 70) { %>
+  <%- await getwi(null, '虎秋_阶段02_战斗疲态期') %>
+  <% if (huqiuForm === '纯虎') { %>
+    <%- await getwi(null, '虎秋_外貌_纯虎形态') %>
+  <% } else if (huqiuForm === '人形') { %>
+    <%- await getwi(null, '虎秋_外貌_人形态') %>
+  <% } else { %>
+    <%- await getwi(null, '虎秋_外貌_半虎形态') %>
+  <% } %>
+
+<% } else { %>
+  <%- await getwi(null, '虎秋_阶段06_傲娇转化期') %>
+  <% if (huqiuForm === '纯虎') { %>
+    <%- await getwi(null, '虎秋_外貌_纯虎形态') %>
+  <% } else if (huqiuForm === '人形') { %>
+    <%- await getwi(null, '虎秋_外貌_人形态') %>
+  <% } else { %>
+    <%- await getwi(null, '虎秋_外貌_半虎形态') %>
+  <% } %>
+<% } %>
+```
+
+**使用说明**：
+- 每个阶段分支内部还有子判断
+- 先加载阶段人设，再加载外貌/NSFW档案
+- 嵌套的if判断缩进清晰
+- 注意：这个案例用`<%`而不是`<%_`，因为需要保持换行
+
+**配置要求**：
+- 控制器条目：永久激活（蓝灯），顺序100
+- 被加载的所有条目：禁用
+
+---
+
+### 模板4：动态关键词控制器（@@preprocessing）
+
+**适用场景**：根据条件输出关键词，让酒馆激活对应的绿灯条目
+
+**真实案例**：蒋精卫场景控制器
+
+```javascript
+@@preprocessing
+<%
+if (typeof tradeCount === 'undefined') var tradeCount = getvar('stat_data.交易次数', { defaults: 40 });
+if (typeof currentScene === 'undefined') var currentScene = getvar('stat_data.当前场景', { defaults: '学校教室' });
+if (typeof dayOfWeek === 'undefined') var dayOfWeek = getvar('stat_data.星期', { defaults: '星期三' });
+if (typeof timeOfDay === 'undefined') var timeOfDay = getvar('stat_data.时间段', { defaults: '上午' });
+%>
+
+<%_ if (currentScene === '学校天台' && timeOfDay === '中午' && dayOfWeek !== '星期六' && dayOfWeek !== '星期日') { _%>
+天台交易场景触发
+<%_ } _%>
+
+<%_ if ((currentScene.endsWith('家客厅') || currentScene.endsWith('家卧室')) && dayOfWeek === '星期六' && timeOfDay === '下午') { _%>
+{{user}}家交易场景触发
+<%_ } _%>
+
+<%_ if (currentScene === '地铁上' && (timeOfDay === '傍晚' || timeOfDay === '晚上')) { _%>
+地铁偷看场景触发
+<%_ } _%>
+
+<%_ if (currentScene === '学校走廊' && (timeOfDay === '上午' || timeOfDay === '下午' || timeOfDay === '中午')) { _%>
+学校走廊场景触发
+<%_ } _%>
+
+<%_ if (tradeCount >= 1 && tradeCount <= 20) { _%>
+初期关系阶段触发
+<%_ } else if (tradeCount >= 21 && tradeCount <= 50) { _%>
+中期关系阶段触发
+<%_ } else if (tradeCount >= 51 && tradeCount <= 100) { _%>
+后期关系阶段触发
+<%_ } else if (tradeCount > 100) { _%>
+深入期关系阶段触发
+<%_ } _%>
+```
+
+**使用说明**：
+- **必须**在开头添加`@@preprocessing`装饰器
+- 输出的文本就是关键词
+- 可以用`&&`（与）、`||`（或）、`!==`（不等于）组合条件
+- 可以用`.endsWith()`、`.includes()`等字符串方法
+- 每个if判断输出不同的关键词
+
+**配置要求**：
+- 控制器条目：永久激活（蓝灯），顺序100
+- 被激活的条目：关键词（绿灯），关键词设置为输出的文本（如"天台交易场景触发"）
+
+---
+
+### 模板5：日期判断控制器
+
+**适用场景**：根据日期加载活动/事件
+
+**真实案例**：夏莉动态活动控制器
+
+```javascript
+<%_
+if (typeof currentDate === 'undefined') var currentDate = getvar('stat_data.世界信息.当前日期', { defaults: '2025年10月19日' });
+if (typeof xialiRelation === 'undefined') var xialiRelation = getvar('stat_data.世界信息.关系状态', { defaults: '同学' });
+_%>
+
+<%_ if (xialiRelation === '准备告白') { _%>
+<%- await getwi(null, '夏莉_特殊场景_0傲告白') %>
+<%_ } else if (xialiRelation === '准备结婚') { _%>
+<%- await getwi(null, '夏莉_特殊场景_结婚誓言') %>
+<%_ } _%>
+
+<%_ if (currentDate.includes('10月25日') || currentDate.includes('10月27日') || currentDate.includes('10月28日')) { _%>
+<%- await getwi(null, '大型活动_学园祭') %>
+<%_ } else if (currentDate.includes('11月8日') || currentDate.includes('11月11日')) { _%>
+<%- await getwi(null, '大型活动_运动会') %>
+<%_ } else if (currentDate.includes('12月9日') || currentDate.includes('12月10日') || currentDate.includes('12月11日')) { _%>
+<%- await getwi(null, '大型活动_修学旅行') %>
+<%_ } else if (currentDate.includes('12月23日') || currentDate.includes('12月24日') || currentDate.includes('12月25日')) { _%>
+<%- await getwi(null, '大型活动_圣诞活动') %>
+<%_ } _%>
+```
+
+**使用说明**：
+- 用`.includes()`检查日期字符串
+- 可以用`||`连接多个日期
+- 可以同时判断多个条件（如关系状态和日期）
+- 不同的判断块可以并列（不用else）
+
+**配置要求**：
+- 控制器条目：永久激活（蓝灯），顺序100
+- 被加载的活动条目：禁用
+
+---
+
+### 模板6：简单状态栏（@@render_after）
+
+**适用场景**：在消息下方显示变量状态
+
+**代码模板**：
+
+```javascript
+@@render_after
+<%_
+if (typeof hp === 'undefined') var hp = getvar('stat_data.角色.生命值', { defaults: 100 });
+if (typeof mp === 'undefined') var mp = getvar('stat_data.角色.魔力值', { defaults: 50 });
+if (typeof affection === 'undefined') var affection = getvar('stat_data.角色.好感度', { defaults: 0 });
+_%>
+
+---
+**角色状态**
+生命值: <%= hp %>/100 | 魔力值: <%= mp %>/100 | 好感度: <%= affection %>
+```
+
+**使用说明**：
+- **必须**在开头添加`@@render_after`装饰器
+- 读取变量后直接用`<%= 变量名 %>`输出
+- 可以用Markdown格式（如`**粗体**`、`---分割线`）
+- 显示在每条消息下方
+
+**配置要求**：
+- 条目：永久激活（蓝灯），顺序900（在最后显示）
+
+---
+
+## 特殊写法说明
+
+### print() vs <%-
+
+有两种输出getwi的方式：
+
+**方式1（推荐）**：
+```javascript
+<%- await getwi(null, '条目名') %>
+```
+
+**方式2（部分旧代码）**：
+```javascript
+<% print(await getwi(null, '条目名')) %>
+```
+
+两种都可以用，但**推荐用方式1**（`<%-`）
+
+---
+
+## AI创作流程
+
+### 1. 判断需求属于哪个模板
+
+根据用户需求，判断使用哪个模板：
+- 单变量多阶段 → 模板1
+- 关系状态优先 → 模板2
+- 需要嵌套加载 → 模板3
+- 动态关键词 → 模板4
+- 日期判断 → 模板5
+- 状态栏 → 模板6
+
+### 2. 复制对应模板
+
+直接复制模板代码，**不要改动结构**
+
+### 3. 填空修改
+
+只修改以下内容：
+- 变量名（如`xialiAo`改为`角色Affection`）
+- 变量路径（如`stat_data.傲娇系统.傲`）
+- 条件值（如`> 90`改为`>= 80`）
+- 条目名（如`夏莉_阶段01`改为`角色_阶段01`）
+
+**不允许修改**：
+- `if/else`结构
+- `<%_`、`_%>`标签
+- `await getwi(null, ...)`写法
+- `typeof`检查和`var`声明
+
+### 4. 遇到模板无法满足的需求
+
+**立即拒绝**，告诉用户：
+
+"这个需求超出了EJS实战模板的能力范围
+
+当前EJS模板支持：
+1. 多阶段人设控制器（根据变量加载不同阶段）
+2. 动态关键词控制器（根据条件激活绿灯条目）
+3. 日期判断控制器（根据日期加载活动）
+4. 简单状态栏（显示变量）
+
+你的需求：[用户需求]
+需要的功能：[说明需要什么]
+
+这在当前的EJS模板中无法实现，因为：
+- [具体原因]
+
+建议：
+1. 简化需求到上述模板能覆盖的范围
+2. 或使用其他工具（如酒馆的正则表达式、STscript等）"
+
+---
+
+## 常见错误示例
+
+### 错误1：使用非白名单函数
+
+```javascript
+// 错误
+const data = JSON.parse(getvar('stat_data.数据'));
+const arr = getvar('stat_data.列表').filter(x => x > 0);
+
+// 正确：不要用这些函数
+```
+
+### 错误2：创新写法
+
+```javascript
+// 错误：自己发明的写法
+const stages = {
+  0: '阶段01',
+  50: '阶段02',
+  100: '阶段03'
+};
+print(await getwi(null, stages[affection]));
+
+// 正确：用模板的if/else
+if (affection >= 100) {
+  print(await getwi(null, '阶段03'));
+} else if (affection >= 50) {
+  print(await getwi(null, '阶段02'));
+} else {
+  print(await getwi(null, '阶段01'));
+}
+```
+
+### 错误3：stat_data路径错误
+
+```javascript
+// 错误
+var affection = getvar('角色.好感度');
+var affection = getvar('stat_data.角色.好感度');
+
+// 正确
+if (typeof affection === 'undefined') var affection = getvar('stat_data.角色.好感度', { defaults: 0 });
+```
+
+### 错误4：没有防重复声明
+
+```javascript
+// 错误
+const affection = getvar('stat_data.角色.好感度', { defaults: 0 });
+
+// 正确
+if (typeof affection === 'undefined') var affection = getvar('stat_data.角色.好感度', { defaults: 0 });
+```
+
+---
+
+## 总结
+
+1. **只能用模板**：所有代码必须基于6个模板
+2. **只能用白名单函数**：getvar、setvar、incvar、decvar、getwi、activewi
+3. **严格填空**：只修改变量名、路径、条件值、条目名
+4. **做不到就拒绝**：不在模板范围内的需求必须拒绝
+5. **防重复声明**：所有变量用typeof + var
+6. **stat_data规则**：MVU变量必须有stat_data.
+
+记住：**真实可运行 > 看起来优雅**

@@ -1,0 +1,473 @@
+# yaml-language-server: $schema=https://testingcf.jsdelivr.net/gh/StageDog/tavern_sync/dist/schema/character.zh.json
+头像: 头像
+版本: ""
+作者: 青空莉想做舞台少女的狗
+备注: ""
+
+第一条消息:
+  - 文件: 第一条消息\0
+  - 文件: 第一条消息\1
+
+角色描述: ""
+
+锚点: {}
+
+世界书名称: 与角色卡名称相同
+条目:
+  - 名称: C+C第一人称文风
+    启用: true
+    激活策略:
+      类型: 蓝灯
+    插入位置:
+      类型: 指定深度
+      角色: 系统
+      深度: 0
+      顺序: 14720
+    激活概率: 100
+    递归:
+      不可被其他条目激活: true
+      不可激活其他条目: true
+    文件: 世界书\文风
+
+  - 名称: 交错频道
+    启用: true
+    激活策略:
+      类型: 蓝灯
+    插入位置:
+      类型: 指定深度
+      角色: 系统
+      深度: 0
+      顺序: 14720
+    激活概率: 100
+    递归:
+      不可被其他条目激活: true
+      不可激活其他条目: true
+    文件: 世界书\交错频道
+
+  - 名称: ===变量开始===
+    启用: false
+    激活策略:
+      类型: 向量化
+    插入位置:
+      类型: 角色定义之前
+      顺序: 14720
+    激活概率: 100
+    递归:
+      不可被其他条目激活: false
+      不可激活其他条目: false
+    内容: ""
+
+  - 名称: "[initvar]变量初始化勿开"
+    启用: false
+    激活策略:
+      类型: 蓝灯
+    插入位置:
+      类型: 角色定义之前
+      顺序: 14720
+    激活概率: 100
+    递归:
+      不可被其他条目激活: true
+      不可激活其他条目: true
+    文件: 世界书\变量\initvar
+
+  - 名称: 变量列表
+    启用: true
+    激活策略:
+      类型: 蓝灯
+    插入位置:
+      类型: 指定深度
+      角色: 系统
+      深度: 0
+      顺序: 14720
+    激活概率: 100
+    递归:
+      不可被其他条目激活: true
+      不可激活其他条目: true
+    文件: 世界书\变量\变量列表
+
+  - 名称: "[mvu_update]变量更新规则"
+    启用: true
+    激活策略:
+      类型: 蓝灯
+    插入位置:
+      类型: 指定深度
+      角色: 系统
+      深度: 0
+      顺序: 14720
+    激活概率: 100
+    递归:
+      不可被其他条目激活: true
+      不可激活其他条目: true
+    文件: 世界书\变量\变量更新规则
+
+  - 名称: "[mvu_update]变量输出格式"
+    启用: true
+    激活策略:
+      类型: 蓝灯
+    插入位置:
+      类型: 指定深度
+      角色: 系统
+      深度: 0
+      顺序: 14720
+    激活概率: 100
+    递归:
+      不可被其他条目激活: true
+      不可激活其他条目: true
+    文件: 世界书\变量\变量输出格式
+
+  - 名称: ===变量结束===
+    启用: false
+    激活策略:
+      类型: 向量化
+    插入位置:
+      类型: 角色定义之前
+      顺序: 14720
+    激活概率: 100
+    递归:
+      不可被其他条目激活: false
+      不可激活其他条目: false
+    内容: ""
+
+  - 名称: ===角色开始===
+    启用: false
+    激活策略:
+      类型: 向量化
+    插入位置:
+      类型: 角色定义之前
+      顺序: 14720
+    激活概率: 100
+    递归:
+      不可被其他条目激活: false
+      不可激活其他条目: false
+    内容: ""
+
+  - 名称: 角色详情
+    启用: true
+    激活策略:
+      类型: 蓝灯
+    插入位置:
+      类型: 角色定义之后
+      顺序: 14720
+    激活概率: 100
+    递归:
+      不可被其他条目激活: true
+      不可激活其他条目: true
+    文件: 世界书\角色\角色详情
+
+  - 名称: 角色阶段
+    启用: true
+    激活策略:
+      类型: 蓝灯
+    插入位置:
+      类型: 指定深度
+      角色: 系统
+      深度: 0
+      顺序: 14720
+    激活概率: 100
+    递归:
+      不可被其他条目激活: false
+      不可激活其他条目: false
+    文件: 世界书\角色\角色阶段
+
+  - 名称: ===角色结束===
+    启用: false
+    激活策略:
+      类型: 向量化
+    插入位置:
+      类型: 角色定义之前
+      顺序: 14720
+    激活概率: 100
+    递归:
+      不可被其他条目激活: false
+      不可激活其他条目: false
+    内容: ""
+
+  - 名称: ===立即事件开始===
+    启用: false
+    激活策略:
+      类型: 向量化
+    插入位置:
+      类型: 角色定义之前
+      顺序: 14720
+    激活概率: 100
+    递归:
+      不可被其他条目激活: false
+      不可激活其他条目: false
+    内容: ""
+
+  - 名称: 冲动啊，请平息吧
+    启用: true
+    激活策略:
+      类型: 绿灯
+      关键字:
+        - 【【冲动啊，请平息吧】】
+    插入位置:
+      类型: 指定深度
+      角色: 系统
+      深度: 0
+      顺序: 14720
+    激活概率: 100
+    递归:
+      不可被其他条目激活: true
+      不可激活其他条目: true
+    特殊效果:
+      黏性: 5
+      冷却: 9999
+    文件: 世界书\立即事件\冲动啊，请平息吧
+
+  - 名称: 理性啊，请不要冻结
+    启用: true
+    激活策略:
+      类型: 绿灯
+      关键字:
+        - 【【理性啊，请不要冻结】】
+    插入位置:
+      类型: 指定深度
+      角色: 系统
+      深度: 0
+      顺序: 14720
+    激活概率: 100
+    递归:
+      不可被其他条目激活: true
+      不可激活其他条目: true
+    特殊效果:
+      黏性: 5
+      冷却: 9999
+    文件: 世界书\立即事件\理性啊，请不要冻结
+
+  - 名称: ===立即事件结束===
+    启用: false
+    激活策略:
+      类型: 向量化
+    插入位置:
+      类型: 角色定义之前
+      顺序: 14720
+    激活概率: 100
+    递归:
+      不可被其他条目激活: false
+      不可激活其他条目: false
+    内容: ""
+
+扩展字段:
+  正则:
+    - 正则名称: "[不发送]去除变量更新"
+      id: 2d2018ae-c085-4916-af05-6830110a8293
+      启用: true
+      查找表达式: /<update(?:variable)?>(?:(?!.*<\/update(?:variable)?>).*$|.*<\/update(?:variable)?>)/gsi
+      内容: ""
+      来源:
+        用户输入: true
+        AI输出: true
+      作用于:
+        仅格式显示: false
+        仅格式提示词: true
+
+    - 正则名称: "[折叠]变量更新中"
+      id: ea96523f-a1cc-4634-b9d2-f28531adca6c
+      启用: true
+      查找表达式: /<update(?:variable)?>(?!.*<\/update(?:variable)?>)\s*(.*)\s*$/gsi
+      内容: |-
+        <details>
+        <summary>变量更新中{{random::.::..::...}}</summary>
+        $1
+        </details>
+      来源:
+        用户输入: true
+        AI输出: true
+      作用于:
+        仅格式显示: true
+        仅格式提示词: false
+
+    - 正则名称: "[折叠]完整变量更新"
+      id: 06dec31f-c0a9-456c-8b88-1f9176a73039
+      启用: true
+      查找表达式: /<update(?:variable)?>\s*(.*)\s*<\/update(?:variable)?>/gsi
+      内容: |-
+        <details>
+        <summary>变量更新情况</summary>
+        $1
+        </details>
+      来源:
+        用户输入: true
+        AI输出: true
+      作用于:
+        仅格式显示: true
+        仅格式提示词: false
+
+    - 正则名称: "[不发送]界面占位符"
+      id: 8bc36f21-d97b-420f-87e1-dacb7484f92a
+      启用: true
+      查找表达式: <StatusPlaceholderImpl/>
+      内容: ""
+      来源:
+        用户输入: false
+        AI输出: true
+      作用于:
+        仅格式显示: false
+        仅格式提示词: true
+
+    - 正则名称: "[界面]美化状态栏"
+      id: 65bd44f0-0098-4d54-a07d-9deced287d96
+      启用: true
+      查找表达式: <StatusPlaceHolderImpl/>
+      内容: |-
+        <style>
+        /* 在这里写你的CSS样式 */
+        .status-bar {
+          font-size: 14px;
+          color: #ff69b4;
+          border: 1px solid #ff69b4;
+          padding: 5px;
+          border-radius: 8px;
+        }
+        </style>
+        <div class="status-bar">
+        💖 白娅当前依存度: {{format_message_variable::stat_data.白娅.依存度}}
+        </div>
+      来源:
+        用户输入: false
+        AI输出: true
+      作用于:
+        仅格式显示: true
+        仅格式提示词: false
+
+    - 正则名称: "[界面]前端界面状态栏"
+      id: b50d0bed-ff40-4a25-9ada-14feb4283324
+      启用: false
+      查找表达式: <StatusPlaceHolderImpl/>
+      内容: |-
+        ```
+        <head><script type="module">import{createPinia as e,defineStore as t}from'https://testingcf.jsdelivr.net/npm/pinia/+esm';import{useLocalStorage as a,watchDebounced as n}from'https://testingcf.jsdelivr.net/npm/@vueuse/core/+esm';var l={426:(e,t)=>{t.A=(e,t)=>{const a=e.__vccOpts||e;for(const[e,n]of t)a[e]=n;return a}}},c={};function s(e){var t=c[e];if(void 0!==t)return t.exports;var a=c[e]={exports:{}};return l[e](a,a.exports,s),a.exports}s.n=e=>{var t=e&&e.__esModule?()=>e.default:()=>e;return s.d(t,{a:t}),t},s.d=(e,t)=>{for(var a in t)s.o(t,a)&&!s.o(e,a)&&Object.defineProperty(e,a,{enumerable:!0,get:t[a]})},s.o=(e,t)=>Object.prototype.hasOwnProperty.call(e,t);const o=Vue,r=_;var d=s.n(r);const i=z,m=i.z.object({世界:i.z.object({当前时间:i.z.string(),当前地点:i.z.string(),近期事务:i.z.record(i.z.string().describe('事务名'),i.z.string().describe('事务描述'))}),白娅:i.z.object({依存度:i.z.coerce.number().transform(e=>_.clamp(e,0,100)),着装:i.z.record(i.z.enum(['上装','下装','内衣','袜子','鞋子','饰品']),i.z.string().describe('服装描述')),称号:i.z.record(i.z.string().describe('称号名'),i.z.object({效果:i.z.string(),自我评价:i.z.string()}))}).transform(e=>{const t=e.依存度<20?'消极自毁':e.依存度<40?'渴求注视':e.依存度<60?'暗中靠近':e.依存度<80?'忐忑相依':'柔软依存';return e.称号=_(e.称号).entries().takeRight(Math.ceil(e.依存度/10)).fromPairs().value(),{...e,$依存度阶段:t}}),主角:i.z.object({物品栏:i.z.record(i.z.string().describe('物品名'),i.z.object({描述:i.z.string(),数量:i.z.coerce.number()})).transform(e=>_.pickBy(e,({数量:e})=>e>0))})}),p=t('data',errorCatched(()=>{const e=getCurrentMessageId(),t=(0,o.ref)(m.parse(_.get(getVariables({type:'message',message_id:e}),'stat_data',{})));return n(t,a=>{const n=m.parse(a);_.isEqual(n,a)||(t.value=n),updateVariablesWith(e=>(_.set(e,'stat_data',n),e),{type:'message',message_id:e})},{deep:!0,debounce:500}),{data:t}})),u={class:'char-layout'},v={class:'section-head'},k={class:'title-grid'},f={class:'title-name'},E={class:'title-effect'},b={class:'title-quote'},y={key:0,class:'title-box'},V={class:'attire-list'},g={class:'attire-slot'},B=(0,o.defineComponent)({__name:'CharacterPanel',setup(e){const t=p();return(e,a)=>((0,o.openBlock)(),(0,o.createElementBlock)('div',u,[(0,o.createElementVNode)('div',v,(0,o.toDisplayString)((0,o.unref)(t).data.白娅.$依存度阶段),1),(0,o.createElementVNode)('div',k,[((0,o.openBlock)(!0),(0,o.createElementBlock)(o.Fragment,null,(0,o.renderList)((0,o.unref)(t).data.白娅.称号,(e,t)=>((0,o.openBlock)(),(0,o.createElementBlock)('div',{key:t,class:'title-box'},[(0,o.createElementVNode)('span',f,(0,o.toDisplayString)(t),1),(0,o.createElementVNode)('div',E,(0,o.toDisplayString)(e.效果),1),(0,o.createElementVNode)('div',b,'"'+(0,o.toDisplayString)(e.自我评价)+'"',1)]))),128)),(0,o.unref)(d()).isEmpty((0,o.unref)(t).data.白娅.称号)?((0,o.openBlock)(),(0,o.createElementBlock)('div',y,[...a[0]||(a[0]=[(0,o.createElementVNode)('span',{class:'title-name'},'无称号',-1),(0,o.createElementVNode)('div',{class:'title-effect'},'当前没有生效的称号',-1),(0,o.createElementVNode)('div',{class:'title-quote'},'"..."',-1)])])):(0,o.createCommentVNode)('v-if',!0)]),a[1]||(a[1]=(0,o.createElementVNode)('div',{class:'section-head'},'着装记录',-1)),(0,o.createElementVNode)('div',V,[((0,o.openBlock)(!0),(0,o.createElementBlock)(o.Fragment,null,(0,o.renderList)((0,o.unref)(t).data.白娅.着装,(e,t)=>((0,o.openBlock)(),(0,o.createElementBlock)('div',{key:t,class:'attire-item'},[(0,o.createElementVNode)('span',g,'【'+(0,o.toDisplayString)(t)+'】',1),(0,o.createTextVNode)(' '+(0,o.toDisplayString)(e),1)]))),128))])]))}});var N=s(426);const D=(0,N.A)(B,[['__scopeId','data-v-1faf526a']]),S={class:'dependency-strip'},C={class:'dependency-track'},h={class:'dependency-value'},I={class:'dependency-controls'},j=['disabled'],x=['disabled'],A=(0,o.defineComponent)({__name:'DependencyBar',setup(e){const t=p();function a(e){t.data.白娅.依存度=t.data.白娅.依存度+e}return(e,n)=>((0,o.openBlock)(),(0,o.createElementBlock)('div',S,[n[2]||(n[2]=(0,o.createElementVNode)('span',{class:'dependency-label'},'依存度',-1)),(0,o.createElementVNode)('div',C,[(0,o.createElementVNode)('div',{class:'dependency-fill',style:(0,o.normalizeStyle)({width:(0,o.unref)(t).data.白娅.依存度+'%'})},null,4)]),(0,o.createElementVNode)('span',h,(0,o.toDisplayString)((0,o.unref)(t).data.白娅.依存度)+'%',1),(0,o.createElementVNode)('div',I,[(0,o.createElementVNode)('button',{class:'dependency-button',disabled:(0,o.unref)(t).data.白娅.依存度<=0,type:'button',onClick:n[0]||(n[0]=e=>a(-1))},' - ',8,j),(0,o.createElementVNode)('button',{class:'dependency-button',disabled:(0,o.unref)(t).data.白娅.依存度>=100,type:'button',onClick:n[1]||(n[1]=e=>a(1))},' + ',8,x)])]))}}),w=(0,N.A)(A,[['__scopeId','data-v-a9be40f6']]),M={key:0,class:'inventory-grid'},L={class:'item-icon'},P={class:'item-detail'},F={class:'item-name'},O={class:'item-desc'},q={class:'item-count'},T={key:1,class:'empty-state'},R=(0,o.defineComponent)({__name:'InventoryPanel',setup(e){const t=p();function a(e){return e.includes('手机')||e.includes('电话')?'PH':e.includes('钥匙')?'KY':e.includes('钱')||e.includes('币')?'$$':e.includes('证')||e.includes('卡')?'ID':e.includes('糖')||e.includes('药')?'RX':e.includes('创可贴')||e.includes('绷带')?'+':e.substring(0,2).toUpperCase()}return(e,n)=>((0,o.openBlock)(),(0,o.createElementBlock)('div',null,[n[0]||(n[0]=(0,o.createElementVNode)('div',{class:'section-head'},'物品清单',-1)),(0,o.unref)(d()).isEmpty((0,o.unref)(t).data.主角.物品栏)?((0,o.openBlock)(),(0,o.createElementBlock)('div',T,'背包空空如也...')):((0,o.openBlock)(),(0,o.createElementBlock)('div',M,[((0,o.openBlock)(!0),(0,o.createElementBlock)(o.Fragment,null,(0,o.renderList)((0,o.unref)(t).data.主角.物品栏,(e,t)=>((0,o.openBlock)(),(0,o.createElementBlock)('div',{key:t,class:'item-row'},[(0,o.createElementVNode)('div',L,(0,o.toDisplayString)(a(t)),1),(0,o.createElementVNode)('div',P,[(0,o.createElementVNode)('span',F,(0,o.toDisplayString)(t),1),(0,o.createElementVNode)('span',O,(0,o.toDisplayString)(e.描述),1)]),(0,o.createElementVNode)('span',q,'x'+(0,o.toDisplayString)(e.数量),1)]))),128))]))]))}}),U=(0,N.A)(R,[['__scopeId','data-v-e7bef0ea']]),W={class:'tabs'},G=['aria-expanded','onClick'],H=(0,o.defineComponent)({__name:'TabNav',props:(0,o.mergeModels)({tabs:{}},{modelValue:{required:!0},modelModifiers:{}}),emits:['update:modelValue'],setup(e){const t=e,a=(0,o.useModel)(e,'modelValue');return(e,n)=>((0,o.openBlock)(),(0,o.createElementBlock)('nav',W,[((0,o.openBlock)(!0),(0,o.createElementBlock)(o.Fragment,null,(0,o.renderList)(t.tabs,e=>((0,o.openBlock)(),(0,o.createElementBlock)('button',{key:e.id,class:(0,o.normalizeClass)(['tab-button',{active:a.value===e.id}]),'aria-expanded':a.value===e.id,onClick:t=>{return n=e.id,void(a.value=a.value===n?null:n);var n}},(0,o.toDisplayString)(e.label),11,G))),128))]))}}),K=(0,N.A)(H,[['__scopeId','data-v-5a789b20']]),X={class:'world-section'},Y={class:'meta-row'},J={class:'event-list'},Q={class:'event-title'},Z={class:'event-desc'},ee={key:0,class:'event-badge'},te=(0,o.defineComponent)({__name:'WorldSection',setup(e){const t=p(),a=(0,o.computed)(()=>{const e=t.data.世界.当前时间.match(/(\d{4}-\d{2}-\d{2})/);return e?e[1]:t.data.世界.当前时间.split(' ')[0]||'未知'}),n=(0,o.computed)(()=>{const e=t.data.世界.当前时间.match(/(\d{2}:\d{2})/);return e?e[1]:t.data.世界.当前时间.split(' ')[1]||'未知'});return(e,l)=>((0,o.openBlock)(),(0,o.createElementBlock)('div',X,[(0,o.createElementVNode)('div',Y,[(0,o.createElementVNode)('span',null,'DATE: '+(0,o.toDisplayString)((0,o.unref)(a)),1),(0,o.createElementVNode)('span',null,'TIME: '+(0,o.toDisplayString)((0,o.unref)(n)),1),(0,o.createElementVNode)('span',null,'LOC: '+(0,o.toDisplayString)((0,o.unref)(t).data.世界.当前地点),1)]),(0,o.createElementVNode)('div',J,[((0,o.openBlock)(!0),(0,o.createElementBlock)(o.Fragment,null,(0,o.renderList)((0,o.unref)(t).data.世界.近期事务,(e,t)=>((0,o.openBlock)(),(0,o.createElementBlock)('div',{key:t,class:'event-badge'},[(0,o.createElementVNode)('span',Q,(0,o.toDisplayString)(t),1),(0,o.createElementVNode)('span',Z,(0,o.toDisplayString)(e),1)]))),128)),(0,o.unref)(d()).isEmpty((0,o.unref)(t).data.世界.近期事务)?((0,o.openBlock)(),(0,o.createElementBlock)('div',ee,[...l[0]||(l[0]=[(0,o.createElementVNode)('span',{class:'event-title'},'暂无事务',-1),(0,o.createElementVNode)('span',{class:'event-desc'},'当前没有进行中的事务',-1)])])):(0,o.createCommentVNode)('v-if',!0)])]))}}),ae=(0,N.A)(te,[['__scopeId','data-v-93bfdc64']]),ne={class:'card'},le={key:0,class:'content-area'},ce={key:0,class:'tab-pane active'},se={key:1,class:'tab-pane active'},oe=(0,o.defineComponent)({__name:'App',setup(e){const t=[{id:'白娅',label:'角色情报'},{id:'主角',label:'持有物品'}],n=a('status_bar:active_tab',null);return(e,a)=>((0,o.openBlock)(),(0,o.createElementBlock)('div',ne,[(0,o.createVNode)(ae),(0,o.createVNode)(w),(0,o.createVNode)(K,{modelValue:(0,o.unref)(n),'onUpdate:modelValue':a[0]||(a[0]=e=>(0,o.isRef)(n)?n.value=e:null),tabs:t},null,8,['modelValue']),(0,o.unref)(n)?((0,o.openBlock)(),(0,o.createElementBlock)('div',le,['白娅'===(0,o.unref)(n)?((0,o.openBlock)(),(0,o.createElementBlock)('div',ce,[(0,o.createVNode)(D)])):'主角'===(0,o.unref)(n)?((0,o.openBlock)(),(0,o.createElementBlock)('div',se,[(0,o.createVNode)(U)])):(0,o.createCommentVNode)('v-if',!0)])):(0,o.createCommentVNode)('v-if',!0)]))}}),re=(0,N.A)(oe,[['__scopeId','data-v-22797ed4']]);$(async()=>{await waitGlobalInitialized('Mvu'),(0,o.createApp)(re).use(e()).mount('#app')});
+        //# sourceMappingURL=index.js.map</script><style>.char-layout[data-v-1faf526a]{display:flex;flex-direction:column;gap:12px}.section-head[data-v-1faf526a]{font-size:.95rem;border-bottom:3px solid var(--c-celadon);display:inline-block;margin-bottom:8px;font-weight:bold}.title-grid[data-v-1faf526a]{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:12px}.title-box[data-v-1faf526a]{border:1.5px solid var(--c-granite);padding:7px;background:#fff;box-shadow:2px 2px 0 var(--c-ash-grey)}.title-name[data-v-1faf526a]{background:var(--c-granite);color:var(--c-celadon);display:inline-block;padding:2px 4px;font-size:.72rem;font-weight:bold;margin-bottom:3px}.title-effect[data-v-1faf526a]{font-size:.78rem;margin-bottom:3px}.title-quote[data-v-1faf526a]{font-size:.7rem;color:var(--c-grey-olive);font-style:italic}.attire-list[data-v-1faf526a]{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:7px}.attire-item[data-v-1faf526a]{border:1px solid var(--c-grey-olive);padding:6px;font-size:.82rem;background:#fff}.attire-slot[data-v-1faf526a]{color:var(--c-grey-olive);font-size:.72rem;display:block}@media (max-width:600px){.title-grid[data-v-1faf526a],.attire-list[data-v-1faf526a]{grid-template-columns:1fr}}
+        .dependency-strip[data-v-a9be40f6]{display:flex;align-items:center;justify-content:center;gap:8px;padding:6px 10px;background:#fff;border-bottom:2px dashed var(--c-granite)}.dependency-label[data-v-a9be40f6],.dependency-value[data-v-a9be40f6]{font-weight:bold;font-size:.9rem}.dependency-track[data-v-a9be40f6]{flex:1;max-width:360px;height:10px;border:1.5px solid var(--c-granite);background:var(--c-mint-cream);position:relative;overflow:hidden}.dependency-fill[data-v-a9be40f6]{position:absolute;left:0;top:0;bottom:0;background:var(--c-celadon);border-right:1.5px solid var(--c-granite);transition:width .25s ease}.dependency-controls[data-v-a9be40f6]{display:flex;gap:4px}.dependency-button[data-v-a9be40f6]{width:24px;height:22px;padding:0;border:1.5px solid var(--c-granite);background:var(--c-mint-cream);color:var(--c-granite);font-family:inherit;font-weight:bold;line-height:1;cursor:pointer;box-shadow:2px 2px 0px rgba(60,73,63,.16)}.dependency-button[data-v-a9be40f6]:active:not(:disabled){transform:translate(1px,1px);box-shadow:1px 1px 0px rgba(60,73,63,.16)}.dependency-button[data-v-a9be40f6]:disabled{opacity:.5;cursor:not-allowed;box-shadow:none}.dependency-button[data-v-a9be40f6]:focus-visible{outline:2px dashed var(--c-granite);outline-offset:2px}
+        .inventory-grid[data-v-e7bef0ea]{display:flex;flex-direction:column;gap:8px}.item-row[data-v-e7bef0ea]{display:flex;align-items:center;border:1.5px solid var(--c-granite);padding:8px;background:#fff;transition:transform .2s}.item-row[data-v-e7bef0ea]:hover{transform:translateX(5px);background:var(--c-mint-cream)}.item-icon[data-v-e7bef0ea]{width:28px;height:28px;background:var(--c-celadon);border:1.5px solid var(--c-granite);display:flex;align-items:center;justify-content:center;margin-right:10px;font-weight:bold;font-size:.7rem}.item-detail[data-v-e7bef0ea]{flex:1}.item-name[data-v-e7bef0ea]{font-weight:bold;display:block}.item-desc[data-v-e7bef0ea]{font-size:.76rem;color:var(--c-grey-olive)}.item-count[data-v-e7bef0ea]{background:var(--c-granite);color:#fff;padding:2px 5px;font-size:.72rem;border-radius:3px}.empty-state[data-v-e7bef0ea]{text-align:center;color:var(--c-grey-olive);padding:18px;font-style:italic;font-size:.85rem}
+        .tabs[data-v-5a789b20]{display:flex;background-color:var(--c-grey-olive);border-bottom:3px solid var(--c-granite)}.tab-button[data-v-5a789b20]{flex:1;padding:8px;border:none;background:rgba(0,0,0,0);color:var(--c-mint-cream);font-size:.92rem;font-weight:bold;font-family:var(--font-archive);cursor:pointer;transition:all .2s;text-transform:uppercase;border-right:1.5px solid var(--c-granite)}.tab-button[data-v-5a789b20]:last-child{border-right:none}.tab-button[data-v-5a789b20]:hover{background-color:var(--c-ash-grey);color:var(--c-granite)}.tab-button.active[data-v-5a789b20]{background-color:var(--c-mint-cream);color:var(--c-granite);position:relative;top:1px;padding-bottom:10px}
+        .world-section[data-v-93bfdc64]{border-bottom:3px solid var(--c-granite);padding:10px;background-color:var(--c-mint-cream)}.meta-row[data-v-93bfdc64]{display:flex;justify-content:space-between;margin-bottom:6px;font-weight:bold;font-size:.9rem;border-bottom:1.5px dashed var(--c-grey-olive);padding-bottom:6px;flex-wrap:wrap;gap:6px}.event-list[data-v-93bfdc64]{display:flex;gap:8px;overflow-x:auto}.event-badge[data-v-93bfdc64]{background:#fff;border:1.5px solid var(--c-granite);padding:6px 8px;min-width:130px;flex:1;position:relative}.event-badge[data-v-93bfdc64]::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background-color:var(--c-celadon)}.event-title[data-v-93bfdc64]{display:block;font-weight:bold;margin-bottom:2px;padding-left:6px}.event-desc[data-v-93bfdc64]{display:block;font-size:.75rem;color:var(--c-grey-olive);padding-left:6px}@media (max-width:600px){.meta-row[data-v-93bfdc64]{flex-direction:column;gap:5px}.event-list[data-v-93bfdc64]{flex-direction:column}.event-badge[data-v-93bfdc64]{min-width:auto}}
+        .card[data-v-22797ed4]{width:100%;max-width:720px;background-color:var(--c-mint-cream);border:3px solid var(--c-granite);box-shadow:5px 5px 0px rgba(60,73,63,.16);display:flex;flex-direction:column;font-family:var(--font-archive);color:var(--c-granite);font-size:13px;line-height:1.35;margin:0 auto}.content-area[data-v-22797ed4]{padding:12px;min-height:0}.tab-pane[data-v-22797ed4]{display:none;animation:fadeEffect-22797ed4 .4s}.tab-pane.active[data-v-22797ed4]{display:block}@keyframes fadeEffect-22797ed4{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+        *{box-sizing:border-box;margin:0;padding:0}:root{--c-granite:#3c493f;--c-grey-olive:#7e8d85;--c-ash-grey:#b3bfb8;--c-mint-cream:#f0f7f4;--c-celadon:#a2e3c4;--font-archive:'Courier New','Microsoft YaHei',monospace}
+
+
+        /*# sourceMappingURL=main.css.map*/</style></head><body><div id="app"></div></body>
+        ```
+      来源:
+        用户输入: false
+        AI输出: true
+      作用于:
+        仅格式显示: true
+        仅格式提示词: false
+
+  酒馆助手:
+    脚本库:
+      - 名称: mvu
+        id: 22d70d1f-d0be-4061-911e-d0c57ab55053
+        启用: true
+        类型: 脚本
+        内容: import
+          'https://testingcf.jsdelivr.net/gh/MagicalAstrogy/MagVarUpdate/artifact/bundle.js';
+        按钮:
+          启用: true
+          按钮列表:
+            - 名称: 重新处理变量
+              可见: false
+            - 名称: 重新读取初始变量
+              可见: false
+            - 名称: 快照楼层
+              可见: false
+            - 名称: 重演楼层
+              可见: false
+            - 名称: 重试额外模型解析
+              可见: false
+            - 名称: 清除旧楼层变量
+              可见: false
+
+      - 名称: 变量结构
+        id: f65ab164-4268-4366-8228-16af904c2251
+        启用: true
+        类型: 脚本
+        内容: |
+          import { registerMvuSchema } from 'https://testingcf.jsdelivr.net/gh/StageDog/tavern_resource/dist/util/mvu_zod.js';
+
+          export const Schema = z.object({
+            世界: z.object({
+              当前时间: z.string(),
+              当前地点: z.string(),
+              近期事务: z.record(z.string().describe('事务名'), z.string().describe('事务描述')),
+            }),
+
+            白娅: z
+              .object({
+                依存度: z.coerce.number().transform(v => _.clamp(v, 0, 100)),
+                着装: z.record(z.enum(['上装', '下装', '内衣', '袜子', '鞋子', '饰品']), z.string().describe('服装描述')),
+                称号: z.record(
+                  z.string().describe('称号名'),
+                  z.object({
+                    效果: z.string(),
+                    自我评价: z.string(),
+                  }),
+                ),
+              })
+              .transform(data => {
+                data.称号 = _(data.称号)
+                  .entries()
+                  .takeRight(Math.ceil(data.依存度 / 10))
+                  .fromPairs()
+                  .value();
+                return data;
+              }),
+
+            主角: z.object({
+              物品栏: z
+                .record(
+                  z.string().describe('物品名'),
+                  z.object({
+                    描述: z.string(),
+                    数量: z.coerce.number(),
+                  }),
+                )
+                .transform(data => _.pickBy(data, ({ 数量 }) => 数量 > 0)),
+            }),
+          });
+
+          $(() => {
+            registerMvuSchema(Schema);
+          });
+
+            eventOn('mag_variable_update_ended', variables => {
+              _.unset(variables, 'schema');
+              _.unset(variables, 'display_data');
+              _.unset(variables, 'delta_data');
+            });
+
+      - 名称: 立即事件
+        id: 0f03773b-812a-4a78-85d1-d7d7fbe70240
+        启用: true
+        类型: 脚本
+        内容: |-
+          $(async () => {
+            injectPrompts([
+              {
+                id: '冲动啊，请平息吧',
+                position: 'none',
+                depth: 0,
+                role: 'system',
+                content: '【【冲动啊，请平息吧】】',
+                filter: () => {
+                  return _.get(getAllVariables(), 'stat_data.白娅.依存度') === 0;
+                },
+                should_scan: true,
+              },
+              {
+                id: '理智啊，请不要冻结',
+                position: 'none',
+                depth: 0,
+                role: 'system',
+                content: '【【理智啊，请不要冻结】】',
+                filter: () => {
+                  return _.get(getAllVariables(), 'stat_data.白娅.依存度') === 100;
+                },
+                should_scan: true,
+              },
+            ]);
+          });
+
+    变量: {}

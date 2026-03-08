@@ -1,0 +1,407 @@
+﻿:root {
+    --tileset-url: url('https://pub-0f03753252fb439e966a538d805f20ef.r2.dev/docs/1746769798811.png');
+    --tile-size: 16px;
+    --tile-step: calc(var(--tile-size) + 1px);
+
+    --bg-color-dark: #0f0c0a;
+    --bg-color-medium: #241b15;
+    --bg-color-light: #3b2c22;
+    --text-color-normal: #d8cfc0;
+    --text-color-bright: #ffffff;
+    --text-secondary: #a09080;
+    --primary-color: #d4af37;
+    --accent-color: #ffd700;
+    --border-color: #504030;
+    --border-color-medium: #706050;
+    --border-color-bright: var(--primary-color);
+    --highlight-bg: rgba(212, 175, 55, 0.2);
+    --panel-border-radius: 3px;
+    --button-border-radius: 2px;
+    --spacing-unit: 1em;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg-color-dark);
+    color: var(--text-color-normal);
+    font-family: "Noto Sans SC", system-ui, sans-serif;
+}
+
+.tilemap-app {
+    display: flex;
+    flex-direction: column;
+    gap: calc(var(--spacing-unit) * 0.8);
+    padding: calc(var(--spacing-unit) * 0.8);
+    min-height: 100vh;
+}
+
+.map-controls-area {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.4);
+    padding: calc(var(--spacing-unit) * 0.6) var(--spacing-unit);
+    border-radius: var(--button-border-radius);
+    border: 1px solid var(--border-color);
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+.map-scale-info strong {
+    color: var(--primary-color);
+}
+
+.map-main-area {
+    display: flex;
+    flex-grow: 1;
+    gap: var(--spacing-unit);
+    overflow: hidden;
+    align-items: stretch;
+    min-height: 0;
+}
+
+.dynamic-tile-grid-map-container {
+    flex-grow: 1;
+    overflow: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #0a0806;
+    padding: calc(var(--spacing-unit) * 0.5);
+    border: 1px solid var(--border-color);
+    border-radius: var(--panel-border-radius);
+    box-shadow: inset 0 0 15px rgba(0, 0, 0, 0.7);
+    min-height: 0;
+}
+
+.dynamic-tile-grid-map {
+    display: grid;
+    border: 1px solid #000;
+    image-rendering: pixelated;
+    -ms-interpolation-mode: nearest-neighbor;
+    width: fit-content;
+    height: fit-content;
+    position: relative;
+    transform-origin: center center;
+    transition: transform 0.15s ease-out;
+    background-color: #000;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.map-tile {
+    width: var(--tile-size);
+    height: var(--tile-size);
+    background-image: var(--tileset-url);
+    background-repeat: no-repeat;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    transition: border-color 0.1s, box-shadow 0.1s;
+}
+
+.map-tile:hover {
+    border-color: var(--primary-color);
+    z-index: 2;
+    box-shadow: 0 0 8px var(--primary-color), inset 0 0 5px rgba(212, 175, 55, 0.3);
+}
+
+.custom-button {
+    padding: 0.6em 1.2em;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: var(--button-border-radius);
+    background: linear-gradient(to bottom, var(--bg-color-light) 0%, var(--bg-color-medium) 100%);
+    color: var(--text-color-normal);
+    border: 1px solid var(--border-color-medium);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.1), 0 2px 4px rgba(0, 0, 0, 0.6);
+}
+
+.custom-button:hover {
+    background: linear-gradient(to bottom, var(--highlight-bg) 0%, rgba(212, 175, 55, 0.15) 100%);
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.custom-button.small-button {
+    padding: 0.5em 0.9em;
+    font-size: 0.9em;
+}
+
+/* === Tile Definitions === */
+.tile-player-avatar  { background-position: calc(var(--tile-step) * -28) calc(var(--tile-step) *  -1); }
+.tile-npc-figure     { background-position: calc(var(--tile-step) * -25) calc(var(--tile-step) *  -0); }
+.tile-monster-figure { background-position: calc(var(--tile-step) * -26) calc(var(--tile-step) * -2); }
+.tile-grass-dark     { background-position: calc(var(--tile-step) *  0) calc(var(--tile-step) *  0); }
+.tile-path-brown     { background-position: calc(var(--tile-step) * -5) calc(var(--tile-step) *  -2); }
+.tile-rock-small     { background-position: calc(var(--tile-step) * -5) calc(var(--tile-step) * -2); }
+.tile-building-roof-brown { background-position: calc(var(--tile-step) * -6) calc(var(--tile-step) * -20); }
+.tile-shop-awning    { background-position: calc(var(--tile-step) * -7) calc(var(--tile-step) * -20); }
+.tile-palace-interior-wall { background-position: calc(var(--tile-step) * -10) calc(var(--tile-step) * -17); }
+.tile-palace-stone-floor   { background-position: calc(var(--tile-step) * -37) calc(var(--tile-step) * -12); }
+.tile-palace-decoration    { background-position: calc(var(--tile-step) * -5) calc(var(--tile-step) * -15); }
+.tile-dungeon-wall-brick { background-position: calc(var(--tile-step) * -16) calc(var(--tile-step) * 0); }
+.tile-dungeon-floor-stone{ background-position: calc(var(--tile-step) * -4) calc(var(--tile-step) * 0); }
+.tile-dungeon-cell-door  { background-position: calc(var(--tile-step) * -11) calc(var(--tile-step) * -3); }
+.tile-chest-wooden       { background-position: calc(var(--tile-step) * -4) calc(var(--tile-step) * -14); }
+.tile-treasure-box     { background-position: calc(var(--tile-step) * -8) calc(var(--tile-step) * -6); }
+.tile-stalagmite         { background-position: calc(var(--tile-step) * -17) calc(var(--tile-step) * -3); }
+.tile-forest-floor-dirt{ background-position: calc(var(--tile-step) * -6) calc(var(--tile-step) *  0); }
+.tile-forest-tree-trunk{ background-position: calc(var(--tile-step) * -3) calc(var(--tile-step) * -1); }
+.tile-forest-bush      { background-position: calc(var(--tile-step) * -0) calc(var(--tile-step) * -2); }
+.tile-forest-dense-tree{ background-position: calc(var(--tile-step) * -2) calc(var(--tile-step) * -1); }
+.tile-water-surface    { background-position: calc(var(--tile-step) * -14) calc(var(--tile-step) * -2); }
+.tile-scifi-wall-panel { background-position: calc(var(--tile-step) * -19) calc(var(--tile-step) * -7); }
+.tile-scifi-floor-metal{ background-position: calc(var(--tile-step) * -48) calc(var(--tile-step) * -11); }
+.tile-scifi-door       { background-position: calc(var(--tile-step) * -1) calc(var(--tile-step) * -9); }
+.tile-scifi-console    { background-position: calc(var(--tile-step) * -3) calc(var(--tile-step) * -10); }
+.tile-force-field      { background-position: calc(var(--tile-step) * -48) calc(var(--tile-step) * -21); }
+.tile-unknown { background-image: none !important; background-color: rgba(128,0,128,0.6) !important; border: 1px dashed #ffeb3b !important; color: white; font-size: calc(var(--tile-size) * 0.6); font-weight: bold; }
+.tile-unknown::before { content: '?'; }
+.tile-mountain-peak    { background-position: calc(var(--tile-step) * -23) calc(var(--tile-step) * -1); }
+.tile-grass-light      { background-position: calc(var(--tile-step) * -7) calc(var(--tile-step) * 0); }
+.tile-location-other   { background-position: calc(var(--tile-step) * -20) calc(var(--tile-step) * -4); }
+.tile-mountain-range { background-position: calc(var(--tile-step) * -22) calc(var(--tile-step) * 0); }
+.tile-water-deep { background-position: calc(var(--tile-step) * -8) calc(var(--tile-step) * -5); }
+.tile-nation-player { background-position: calc(var(--tile-step) * -17) calc(var(--tile-step) * -8); }
+.tile-nation-other { background-position: calc(var(--tile-step) * -17) calc(var(--tile-step) * -9); }
+.tile-landmass { background-position: calc(var(--tile-step) * -1) calc(var(--tile-step) * 0); }
+.tile-plains-generic   { background-position: calc(var(--tile-step) * -1) calc(var(--tile-step) * 0); }
+.tile-mountain-green   { background-position: calc(var(--tile-step) * -3) calc(var(--tile-step) * -2); }
+.tile-location-city    { background-position: calc(var(--tile-step) * -7) calc(var(--tile-step) * -19); }
+.tile-location-capital { background-position: calc(var(--tile-step) * -2) calc(var(--tile-step) * -19); }
+.tile-location-player  { background-position: calc(var(--tile-step) * -6) calc(var(--tile-step) * -19); }
+.tile-space-empty      { background-image: none; background-color: #050510; }
+.tile-star-yellow      { background-position: calc(var(--tile-step) * -43) calc(var(--tile-step) * -12); }
+.tile-planet-player    { background-position: calc(var(--tile-step) * -38) calc(var(--tile-step) * -2); }
+.tile-planet-other     { background-position: calc(var(--tile-step) * -39) calc(var(--tile-step) * -13); }
+.tile-nebula-hazard    { background-position: calc(var(--tile-step) * -35) calc(var(--tile-step) * -21); }
+.tile-nav-beacon       { background-position: calc(var(--tile-step) * -41) calc(var(--tile-step) * -21); }
+.tile-interior-wall { background-position: calc(var(--tile-step) * -13) calc(var(--tile-step) * -16); }
+.tile-interior-floor { background-position: calc(var(--tile-step) * -11) calc(var(--tile-step) * -2); }
+.tile-interior-door { background-position: calc(var(--tile-step) * -10) calc(var(--tile-step) * -9); }
+.tile-bar-counter { background-position: calc(var(--tile-step) * -13) calc(var(--tile-step) * -10); }
+.tile-interior-stairs { background-position: calc(var(--tile-step) * -2) calc(var(--tile-step) * -6); }
+.tile-fireplace { background-position: calc(var(--tile-step) * -5) calc(var(--tile-step) * -16); }
+.tile-table-and-chairs { background-position: calc(var(--tile-step) * -12) calc(var(--tile-step) * -9); }
+.tile-interior-furniture-generic { background-position: calc(var(--tile-step) * 0) calc(var(--tile-step) * -8); }
+.tile-interior-container-generic { background-position: calc(var(--tile-step) * -5) calc(var(--tile-step) * -6); }
+.tile-outdoor-ground-paved { background-position: calc(var(--tile-step) * -11) calc(var(--tile-step) * -1); }
+.tile-market-stall { background-position: calc(var(--tile-step) * -14) calc(var(--tile-step) * -11); }
+.tile-outdoor-feature-stone { background-position: calc(var(--tile-step) * -17) calc(var(--tile-step) * -14); }
+.tile-building-exterior-generic { background-position: calc(var(--tile-step) * -1) calc(var(--tile-step) * -21); }
+.tile-building-exterior-grand { background-position: calc(var(--tile-step) * -5) calc(var(--tile-step) * -5); }
+.tile-outdoor-grass-manicured { background-position: calc(var(--tile-step) * -6) calc(var(--tile-step) * -0); }
+.tile-outdoor-path-gravel { background-position: calc(var(--tile-step) * -19) calc(var(--tile-step) * -1); }
+.tile-outdoor-feature-garden { background-position: calc(var(--tile-step) * -7) calc(var(--tile-step) * -2); }
+.tile-outdoor-tree-large { background-position: calc(var(--tile-step) * -1) calc(var(--tile-step) * -1); }
+.tile-building-entrance-grand { background-position: calc(var(--tile-step) * -13) calc(var(--tile-step) * -11); }
+.tile-training-dummy     { background-position: calc(var(--tile-step) * -26) calc(var(--tile-step) * -2); }
+.tile-weapon-rack        { background-position: calc(var(--tile-step) * -15) calc(var(--tile-step) * -1); }
+.tile-watchtower-small   { background-position: calc(var(--tile-step) * -2) calc(var(--tile-step) * -19); }
+.tile-altar-stone        { background-position: calc(var(--tile-step) * -21) calc(var(--tile-step) * -11); }
+.tile-statue-holy        { background-position: calc(var(--tile-step) * -27) calc(var(--tile-step) * -12); }
+.tile-priest-figure      { background-position: calc(var(--tile-step) * -25) calc(var(--tile-step) *  0); }
+.tile-temple-door-grand  { background-position: calc(var(--tile-step) * 0) calc(var(--tile-step) * -9); }
+.tile-forge-active       { background-position: calc(var(--tile-step) * -7) calc(var(--tile-step) * -14); }
+.tile-anvil-metal        { background-position: calc(var(--tile-step) * -3) calc(var(--tile-step) * -11); }
+.tile-weapon-display-rack { background-position: calc(var(--tile-step) * -14) calc(var(--tile-step) * -11); }
+.tile-sand-dune          { background-position: calc(var(--tile-step) * -19) calc(var(--tile-step) * 1); }
+.tile-palm-tree          { background-position: calc(var(--tile-step) * -3) calc(var(--tile-step) * -1); }
+.tile-ruin-debris-small  { background-position: calc(var(--tile-step) * -32) calc(var(--tile-step) * -12); }
+.tile-snow-drift         { background-position: calc(var(--tile-step) * -36) calc(var(--tile-step) * -11); }
+.tile-cave-entrance-ice  { background-position: calc(var(--tile-step) * -6) calc(var(--tile-step) * -9); }
+.tile-swamp-water        { background-position: calc(var(--tile-step) * -2) calc(var(--tile-step) * 0); }
+.tile-volcanic-rock-ground { background-position: calc(var(--tile-step) * -12) calc(var(--tile-step) * -6); }
+.tile-lava-pool          { background-position: calc(var(--tile-step) * -36) calc(var(--tile-step) * -21); }
+.tile-smoke-vent         { background-position: calc(var(--tile-step) * -17) calc(var(--tile-step) * -12); }
+.tile-sand-beach         { background-position: calc(var(--tile-step) * -30) calc(var(--tile-step) * 12); }
+.tile-coconut-tree       { background-position: calc(var(--tile-step) * -3) calc(var(--tile-step) * -1); }
+.tile-ruin-shipwreck-part{ background-position: calc(var(--tile-step) * 0) calc(var(--tile-step) * -15); }
+.tile-ship-docked        { background-position: calc(var(--tile-step) * -11) calc(var(--tile-step) * -19); }
+.tile-crates-stacked     { background-position: calc(var(--tile-step) * -4) calc(var(--tile-step) * -14); }
+.tile-warehouse-door     { background-position: calc(var(--tile-step) * -11) calc(var(--tile-step) * -3); }
+.tile-crane-wooden       { background-position: calc(var(--tile-step) * -12) calc(var(--tile-step) * -13); }
+.tile-lighthouse-small   { background-position: calc(var(--tile-step) * -2) calc(var(--tile-step) * -19); }
+.tile-horse-standing     { background-position: calc(var(--tile-step) * -28) calc(var(--tile-step) * -7); }
+.tile-cart-parked        { background-position: calc(var(--tile-step) * -15) calc(var(--tile-step) * -13); }
+.tile-bridge-plank       { background-position: calc(var(--tile-step) * -15) calc(var(--tile-step) * -5); }
+.tile-bridge-stone       { background-position: calc(var(--tile-step) * -4) calc(var(--tile-step) * 0); }
+.tile-bridge-tower       { background-position: calc(var(--tile-step) * -6) calc(var(--tile-step) * -20); }
+.tile-portal-active      { background-position: calc(var(--tile-step) * -48) calc(var(--tile-step) * -21); }
+.tile-portal-inactive    { background-position: calc(var(--tile-step) * -48) calc(var(--tile-step) * -20); }
+.tile-ruin-floor-broken  { background-position: calc(var(--tile-step) * -18) calc(var(--tile-step) *  -1); }
+.tile-ruin-wall-collapsed{ background-position: calc(var(--tile-step) * -2) calc(var(--tile-step) * -11); }
+.tile-ruin-altar-broken  { background-position: calc(var(--tile-step) * -16) calc(var(--tile-step) * -12); }
+.tile-bookshelf-tall     { background-position: calc(var(--tile-step) * -6) calc(var(--tile-step) * -5); }
+.tile-scholar-figure     { background-position: calc(var(--tile-step) * -25) calc(var(--tile-step) *  0); }
+.tile-scroll-ancient     { background-position: calc(var(--tile-step) * -45) calc(var(--tile-step) * -5); }
+.tile-grimoire-heavy     { background-position: calc(var(--tile-step) * -4) calc(var(--tile-step) * -14); }
+.tile-lectern-ornate     { background-position: calc(var(--tile-step) * -43) calc(var(--tile-step) * -4); }
+.tile-astrolabe-device   { background-position: calc(var(--tile-step) * -10) calc(var(--tile-step) * -3); }
+
+.tile-info-panel {
+    flex-shrink: 0;
+    width: 320px;
+    overflow-y: auto;
+    background-color: rgba(10, 8, 5, 0.6);
+    padding: var(--spacing-unit);
+    border-left: 1px solid var(--border-color-bright);
+    box-shadow: inset 3px 0 8px rgba(0, 0, 0, 0.5);
+    border-radius: var(--panel-border-radius);
+    min-height: 0;
+}
+
+.tile-info-panel h4 {
+    color: var(--primary-color);
+    margin-top: 0;
+    margin-bottom: 0.8em;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.4em;
+    font-size: 1.1em;
+}
+
+#tile-info-content .tile-name {
+    font-size: 1.1em;
+    font-weight: 700;
+    color: var(--primary-color);
+    display: block;
+    margin-bottom: 0.4em;
+}
+
+#tile-info-content .tile-description {
+    font-style: italic;
+    color: var(--text-secondary);
+}
+
+.map-legend-filters {
+    margin-top: var(--spacing-unit);
+    flex-shrink: 0;
+}
+
+.map-legend {
+    font-size: 0.9em;
+    color: var(--text-color-normal);
+    padding: calc(var(--spacing-unit) * 0.7);
+    background-color: rgba(10, 8, 5, 0.6);
+    border-radius: var(--button-border-radius);
+    border: 1px solid var(--border-color);
+    box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.4);
+}
+
+.map-legend ul {
+    list-style: none;
+    padding-left: 0;
+    margin-top: 0.6em;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.7em 1.3em;
+}
+
+.map-legend li {
+    margin-bottom: 0.4em;
+    display: flex;
+    align-items: center;
+}
+
+.map-legend .legend-tile-example {
+    display: inline-block;
+    width: var(--tile-size);
+    height: var(--tile-size);
+    margin-right: 0.6em;
+    vertical-align: middle;
+    border: 1px solid var(--border-color-medium);
+    background-image: var(--tileset-url);
+    background-repeat: no-repeat;
+    image-rendering: pixelated;
+    -ms-interpolation-mode: nearest-neighbor;
+    box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.5), 0 1px 1px rgba(0, 0, 0, 0.3);
+}
+
+#tile-interaction-panel {
+    position: fixed;
+    display: none;
+    background-color: rgba(36, 27, 21, 0.97);
+    border: 2px outset var(--primary-color);
+    border-radius: var(--panel-border-radius);
+    padding: 1.2em;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7), inset 0 0 12px rgba(0, 0, 0, 0.4), 0 0 15px var(--primary-color);
+    min-width: 280px;
+    max-width: 350px;
+    z-index: 150;
+    color: var(--text-color-normal);
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out, transform 0.2s ease-in-out;
+    transform: scale(0.95) translateY(10px);
+    pointer-events: none;
+}
+
+#tile-interaction-panel.visible {
+    display: block;
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    pointer-events: auto;
+}
+
+#tile-interaction-panel .close-btn {
+    position: absolute;
+    top: 10px;
+    right: 12px;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.4em;
+    line-height: 1;
+    cursor: pointer;
+}
+
+#tile-interaction-panel .panel-info {
+    margin-bottom: 1em;
+    padding-bottom: 0.8em;
+    border-bottom: 1px dashed var(--border-color);
+    font-size: 0.95em;
+    line-height: 1.5;
+    padding-right: 30px;
+}
+
+#tile-interaction-panel .panel-info strong {
+    color: var(--primary-color);
+    font-size: 1.1em;
+}
+
+#tile-interaction-panel .panel-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.7em;
+}
+
+#tile-interaction-panel .panel-actions button {
+    background: linear-gradient(to bottom, var(--bg-color-light) 0%, var(--bg-color-medium) 100%);
+    color: var(--text-color-normal);
+    border: 1px solid var(--border-color-medium);
+    padding: 0.7em 1em;
+    cursor: pointer;
+    border-radius: var(--button-border-radius);
+    text-align: left;
+}
+
+@media (max-width: 1024px) {
+    .map-main-area {
+        flex-direction: column;
+    }
+
+    .tile-info-panel {
+        width: 100%;
+        max-height: 200px;
+        border-left: none;
+        border-top: 1px solid var(--border-color-bright);
+        margin-top: var(--spacing-unit);
+    }
+}

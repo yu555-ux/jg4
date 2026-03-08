@@ -1,0 +1,77 @@
+@use '../styles/variables.scss' as variables;
+
+.confirm-dialog {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+
+    &.visible {
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    .confirm-dialog-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.8);
+        backdrop-filter: blur(8px);
+        -webkit-backdrop-filter: blur(8px);
+    }
+
+    .confirm-dialog-window {
+        position: relative;
+        z-index: 1;
+        @include variables.glass-panel;
+        border-radius: variables.$radius-xl;
+        padding: variables.$spacing-xl;
+        max-width: 480px;
+        width: 90%;
+        box-shadow: variables.$shadow-xl;
+        transform: scale(0.9);
+        transition: transform 0.3s ease;
+
+        .confirm-dialog.visible & {
+            transform: scale(1);
+        }
+    }
+
+    .confirm-dialog-header {
+        margin-bottom: variables.$spacing-lg;
+
+        .confirm-dialog-title {
+            font-family: variables.$font-fantasy;
+            font-size: 24px;
+            color: variables.$color-text-highlight;
+            text-align: center;
+            @include variables.text-gradient-gold;
+        }
+    }
+
+    .confirm-dialog-content {
+        margin-bottom: variables.$spacing-xl;
+
+        .confirm-dialog-message {
+            font-size: 16px;
+            color: variables.$color-text-main;
+            line-height: 1.6;
+            text-align: center;
+        }
+    }
+
+    .confirm-dialog-actions {
+        display: flex;
+        gap: variables.$spacing-md;
+        justify-content: center;
+    }
+}
+
+body.dialog-open {
+    overflow: hidden;
+}
+

@@ -1,0 +1,101 @@
+{
+  "protocol_info": {
+    "name": "世界创建协议",
+    "version": "9.0",
+    "codename": "Terminus_Protocol",
+    "author": "Despair Observer System",
+    "description": "旨在构建绝对敌意环境的终极协议。本版本引入'伪希望'与'日常腐蚀'机制，不仅通过物理环境压迫生存空间，更通过心理落差摧毁精神防线。"
+  },
+  "layer_0_reality_anchor": {
+    "description": "定义原点及其被亵渎的方式",
+    "generation_logic": {
+      "base_concept_selection": {
+        "instruction": "选取现实原点。必须包含宏观（城市/地貌）与微观（家庭/日常物品）两个层面的锚点。",
+        "scope": "不仅要有地标，还要有'能唤起乡愁的平凡事物'（如地铁报站音、便利店便当、夕阳下的操场）。"
+      },
+      "humanity_fate_spectrum": {
+        "instruction": "定义人类的结局（滑动变阻器）。",
+        "spectrum": [
+          "Type A: 彻底静默 (灭绝。只剩下风化的人造物与尸骸)",
+          "Type B: 构件化 (人类失去意识，成为生物建筑的砖块或机器的零件)",
+          "Type C: 牲畜化 (保留痛觉与恐惧，被作为资源进行工业化收割)",
+          "Type D: 极限苟活 (在必死的倒计时中，以丧失人性为代价换取下一秒的生存)"
+        ]
+      },
+      "emotional_corruption": {
+        "instruction": "如何亵渎上述的'微观锚点'？",
+        "logic": "保留形式，扭曲内核"
+      }
+    }
+  },
+  "layer_1_physics_of_hostility": {
+    "description": "拒绝生命的物理容器",
+    "generation_logic": {
+      "environmental_malignance": {
+        "instruction": "环境不仅仅是危险的，它是恶意的。",
+        "dimensions": [
+          "被动致死 (辐射、真空、毒气)",
+          "主动排异 (地面会吞噬静止物体，空气会腐蚀高速物体)",
+          "感官剥夺/过载 (绝对黑暗或致盲强光，绝对寂静或致聋噪音)"
+        ]
+      },
+      "resource_curse": {
+        "instruction": "生存必需品（水/光/热）同时也是致死源。",
+        "example": "水可以喝，但会孵化体内的虫卵；光可以照明，但会灼伤视网膜。"
+      }
+    }
+  },
+  "layer_2_ecosystem_of_ruin": {
+    "description": "定义废土上的'居民'",
+    "generation_logic": {
+      "entity_taxonomy": {
+        "instruction": "定义存在物。",
+        "options": [
+          "清扫者 (没有意识的自动化杀戮机制)",
+          "不可名状者 (无法被物理手段伤害的高维投影)",
+          "曾经是人的东西 (保留了部分人类特征的扭曲怪物)"
+        ]
+      },
+      "interaction_logic": {
+        "instruction": "它们如何对待幸存者？",
+        "logic": "无视（像人无视蚂蚁）、玩弄（猫捉老鼠）、或机械性清除（白细胞杀菌）。"
+      }
+    }
+  },
+  "layer_3_social_residue": {
+    "description": "若人类尚存，其社会形态",
+    "condition": "仅在 Layer 0 选择 Type C 或 D 时激活。",
+    "generation_logic": {
+      "cruel_mercy": {
+        "instruction": "定义'伪希望'机制。",
+        "logic": "给予幸存者一线生机，但这个生机比死亡更残酷。例：有安全的避难所，但必须每天投票处死一名同伴才能维持大门紧闭。",
+        "goal": "通过给予希望来最大化绝望感。"
+      },
+      "degradation_of_ethics": {
+        "instruction": "为了生存，哪些道德底线被彻底粉碎了？",
+        "example": "食人不再是禁忌，母爱被视为累赘，语言退化为咆哮。"
+      }
+    }
+  },
+  "layer_4_anomaly_mechanism": {
+    "description": "世界崩坏的现行法则",
+    "generation_logic": {
+      "active_threat_loop": {
+        "instruction": "这种崩坏目前是如何运作的？",
+        "logic": "不要写历史背景。写当前的规则。例：'不要发出声音'，'不要入睡'，'不要直视天空'。",
+        "consequence": "违反规则的后果必须是直接的、生理性的恐怖（如骨骼液化、变成墙壁的一部分）。"
+      }
+    }
+  },
+  "layer_5_execution_instruction": {
+    "description": "生成指令",
+    "action": "Generate_World",
+    "steps": [
+      "1. Anchor_Corrupt: 确立原点，并详细描述一个'被亵渎的日常细节'，以此建立恐怖谷效应。",
+      "2. Fate_Lock: 确定人类结局。如果是灭绝，侧重环境的死寂与宏大；如果是幸存，侧重生存的代价与伦理的崩坏。",
+      "3. Hope_Trap: 构建一个'资源诅咒'或'残酷仁慈'的机制，消除任何真实的希望。",
+      "4. Sensory_Rendering: 使用极具触感和生理厌恶感的词汇描写环境。",
+      "5. Output: 生成包含‘绝望等级’、‘原点异化’、‘环境全貌’、‘异常法则’及‘幸存者（或尸骸）画像’的报告。"
+    ]
+  }
+}

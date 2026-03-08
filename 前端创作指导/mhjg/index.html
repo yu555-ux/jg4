@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>诸天便携旅店 - 神秘旅店经营游戏</title>
+    <meta
+      name="description"
+      content="一款奇幻旅店经营游戏，你将在跨维度旅人的世界中经营一家神秘的旅店。"
+    />
+
+    <!-- Font Awesome 图标库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <!-- 默认全局字体 -->
+    <link href="https://fontsapi.zeoseven.com/116/main/result.css" onload="this.rel='stylesheet'" rel="preload" as="style" crossorigin />
+    <noscript><link rel="stylesheet" href="https://fontsapi.zeoseven.com/116/main/result.css" /></noscript>
+
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700;900&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap');
+      @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap');
+
+      :root {
+        --color-background: #0f172a;
+        --on-background: #e2e8f0;
+        --color-accent: #fbbf24;
+        --font-primary: 'Noto Serif SC', serif;
+        --font-accent: 'ZCOOL KuaiLe', cursive;
+        --font-calligraphy: 'Ma Shan Zheng', cursive;
+        --font-serif-sc: 'Noto Serif SC', serif;
+        --font-sans-modern: 'Outfit', sans-serif;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        width: 100%;
+        min-height: 100%;
+        margin: 0;
+        padding: 0;
+        height: auto;
+        overscroll-behavior: contain;
+      }
+
+      body {
+        background-color: #0f172a;
+        color: #e2e8f0;
+        font-family: "Kingnammm Maiyuan 2", var(--font-sans-modern);
+        font-weight: normal;
+        overflow-x: hidden;
+        overflow-y: auto;
+      }
+
+      #app {
+        width: 100%;
+        min-height: 100%;
+        position: relative;
+      }
+
+      .loading {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        font-size: 1.2em;
+        color: #fbbf24;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="app">
+      <div class="loading">正在加载旅店游戏...</div>
+    </div>
+  </body>
+</html>

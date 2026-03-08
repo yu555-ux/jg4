@@ -1,0 +1,174 @@
+@import '../styles/variables.scss';
+
+.glass-btn {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    min-width: 240px;
+    max-width: 400px;
+    padding: $spacing-md $spacing-xl;
+    border-radius: $radius-xl;
+    border: 1px solid;
+    font-family: $font-body;
+    font-size: 18px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    outline: none;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    box-shadow: $shadow-md;
+
+    &:focus {
+        outline: 2px solid rgba(251, 191, 36, 0.5);
+        outline-offset: 2px;
+    }
+
+    &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        filter: grayscale(100%);
+    }
+
+    .glass-btn-shine {
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            90deg,
+            transparent 0%,
+            rgba(255, 255, 255, 0.1) 50%,
+            transparent 100%
+        );
+        transform: translateX(-100%);
+        transition: transform 1.5s ease;
+    }
+
+    &:hover:not(:disabled) .glass-btn-shine {
+        transform: translateX(100%);
+    }
+
+    .glass-btn-label {
+        position: relative;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: $spacing-sm;
+    }
+
+    // Primary variant (Gold)
+    &.glass-btn-primary {
+        background: linear-gradient(
+            135deg,
+            rgba(251, 191, 36, 0.2) 0%,
+            rgba(217, 119, 6, 0.2) 100%
+        );
+        border-color: rgba(251, 191, 36, 0.3);
+        color: rgba(251, 191, 36, 0.9);
+
+        &:hover:not(:disabled) {
+            background: linear-gradient(
+                135deg,
+                rgba(251, 191, 36, 0.3) 0%,
+                rgba(217, 119, 6, 0.3) 100%
+            );
+            border-color: rgba(251, 191, 36, 0.6);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: $shadow-lg, 0 0 30px rgba(251, 191, 36, 0.4);
+        }
+
+        &:active:not(:disabled) {
+            transform: translateY(-2px) scale(0.95);
+        }
+    }
+
+    // Secondary variant (Purple)
+    &.glass-btn-secondary {
+        background: linear-gradient(
+            135deg,
+            rgba(139, 92, 246, 0.2) 0%,
+            rgba(109, 40, 217, 0.2) 100%
+        );
+        border-color: rgba(139, 92, 246, 0.3);
+        color: rgba(139, 92, 246, 0.9);
+
+        &:hover:not(:disabled) {
+            background: linear-gradient(
+                135deg,
+                rgba(139, 92, 246, 0.3) 0%,
+                rgba(109, 40, 217, 0.3) 100%
+            );
+            border-color: rgba(139, 92, 246, 0.6);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: $shadow-lg, 0 0 30px rgba(139, 92, 246, 0.4);
+        }
+
+        &:active:not(:disabled) {
+            transform: translateY(-2px) scale(0.95);
+        }
+    }
+
+    // Neutral variant (Gray)
+    &.glass-btn-neutral {
+        background: linear-gradient(
+            135deg,
+            rgba(51, 65, 85, 0.2) 0%,
+            rgba(30, 41, 59, 0.2) 100%
+        );
+        border-color: rgba(100, 116, 139, 0.3);
+        color: $color-text-main;
+
+        &:hover:not(:disabled) {
+            background: linear-gradient(
+                135deg,
+                rgba(51, 65, 85, 0.3) 0%,
+                rgba(30, 41, 59, 0.3) 100%
+            );
+            border-color: rgba(148, 163, 184, 0.5);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: $shadow-lg;
+        }
+
+        &:active:not(:disabled) {
+            transform: translateY(-2px) scale(0.95);
+        }
+    }
+
+    // Danger variant (Red)
+    &.glass-btn-danger {
+        background: linear-gradient(
+            135deg,
+            rgba(127, 29, 29, 0.2) 0%,
+            rgba(69, 10, 10, 0.2) 100%
+        );
+        border-color: rgba(239, 68, 68, 0.3);
+        color: rgba(239, 68, 68, 0.9);
+
+        &:hover:not(:disabled) {
+            background: linear-gradient(
+                135deg,
+                rgba(127, 29, 29, 0.3) 0%,
+                rgba(69, 10, 10, 0.3) 100%
+            );
+            border-color: rgba(239, 68, 68, 0.5);
+            transform: translateY(-4px) scale(1.05);
+            box-shadow: $shadow-lg;
+        }
+
+        &:active:not(:disabled) {
+            transform: translateY(-2px) scale(0.95);
+        }
+    }
+
+    &.splash-btn-exit {
+        margin-top: $spacing-lg;
+        opacity: 0.8;
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+}
+
