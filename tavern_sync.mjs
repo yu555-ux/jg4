@@ -65713,7 +65713,12 @@ const Script = strictObject({
     id: coerce_string().prefault((uuid_random_default())),
     enabled: schemas_boolean(),
     type: literal('script'),
+<<<<<<< HEAD
     content: coerce_string(),
+=======
+    content: coerce_string().optional().describe('内嵌的脚本内容'),
+    file: coerce_string().optional().describe('外链的脚本文件路径'),
+>>>>>>> 5df9c1cb4c82b29727ec6b2114f822fb829e2164
     info: coerce_string().prefault(''),
     button: object({
         enabled: schemas_boolean().prefault(true),
@@ -65721,6 +65726,25 @@ const Script = strictObject({
     })
         .prefault({}),
     data: record(schemas_string(), any()).prefault({}),
+<<<<<<< HEAD
+=======
+})
+    .superRefine((data, context) => {
+    if (data.content === undefined && data.file === undefined) {
+        ['content', 'file'].forEach(key => context.addIssue({
+            code: 'custom',
+            path: [key],
+            message: '必须填写 `content` 或 `file`',
+        }));
+    }
+    if (data.content !== undefined && data.file !== undefined) {
+        ['content', 'file'].forEach(key => context.addIssue({
+            code: 'custom',
+            path: [key],
+            message: '不能同时填写 `content` 和 `file`',
+        }));
+    }
+>>>>>>> 5df9c1cb4c82b29727ec6b2114f822fb829e2164
 });
 const ScriptFolder = strictObject({
     name: coerce_string(),
@@ -66374,11 +66398,20 @@ const extensions_zh_zh_to_en_map = {
     文件夹: 'folder',
     名称: 'name',
     内容: 'content',
+<<<<<<< HEAD
+=======
+    文件: 'file',
+>>>>>>> 5df9c1cb4c82b29727ec6b2114f822fb829e2164
     介绍: 'info',
     按钮: 'button',
     按钮列表: 'buttons',
     数据: 'data',
     可见: 'visible',
+<<<<<<< HEAD
+=======
+    图标: 'icon',
+    颜色: 'color',
+>>>>>>> 5df9c1cb4c82b29727ec6b2114f822fb829e2164
 };
 const extensions_zh_ScriptButton = strictObject({
     名称: coerce_string(),
@@ -66389,7 +66422,12 @@ const extensions_zh_Script = strictObject({
     id: coerce_string().prefault((uuid_random_default())),
     启用: schemas_boolean(),
     类型: literal('脚本'),
+<<<<<<< HEAD
     内容: coerce_string(),
+=======
+    内容: coerce_string().optional().describe('内嵌的脚本内容'),
+    文件: coerce_string().optional().describe('外链的脚本文件路径'),
+>>>>>>> 5df9c1cb4c82b29727ec6b2114f822fb829e2164
     介绍: coerce_string().prefault(''),
     按钮: object({
         启用: schemas_boolean().prefault(true),
@@ -66397,6 +66435,25 @@ const extensions_zh_Script = strictObject({
     })
         .prefault({}),
     数据: record(schemas_string(), any()).prefault({}),
+<<<<<<< HEAD
+=======
+})
+    .superRefine((data, context) => {
+    if (data.内容 === undefined && data.文件 === undefined) {
+        ['内容', '文件'].forEach(key => context.addIssue({
+            code: 'custom',
+            path: [key],
+            message: '必须填写`内容`或`文件`',
+        }));
+    }
+    if (data.内容 !== undefined && data.文件 !== undefined) {
+        ['内容', '文件'].forEach(key => context.addIssue({
+            code: 'custom',
+            path: [key],
+            message: '不能同时填写`内容`和`文件`',
+        }));
+    }
+>>>>>>> 5df9c1cb4c82b29727ec6b2114f822fb829e2164
 });
 const extensions_zh_ScriptFolder = strictObject({
     名称: coerce_string(),
@@ -66827,7 +66884,11 @@ class Character_syncer extends Syncer_interface {
                 : local_data.first_messages.map((entry, index) => ({ name: `!!!第一条消息${index}`, ...entry }));
             tavern_data.first_messages.forEach((entry, index) => {
                 lodash_default().set(entry, 'content', replace_user_name(entry.content ?? ''));
+<<<<<<< HEAD
                 if (entry.content === '') {
+=======
+                if (entry.content === '' || entry.content.split('\n').length <= 3) {
+>>>>>>> 5df9c1cb4c82b29727ec6b2114f822fb829e2164
                     return;
                 }
                 const handle_file = (entry, file) => {
@@ -66894,7 +66955,11 @@ class Character_syncer extends Syncer_interface {
             }
             tavern_data.entries.forEach(entry => {
                 lodash_default().set(entry, 'content', replace_user_name(entry.content ?? ''));
+<<<<<<< HEAD
                 if (entry.content === '') {
+=======
+                if (entry.content === '' || entry.content.split('\n').length <= 3) {
+>>>>>>> 5df9c1cb4c82b29727ec6b2114f822fb829e2164
                     return;
                 }
                 const handle_file = (entry, file) => {
@@ -66938,7 +67003,11 @@ class Character_syncer extends Syncer_interface {
                     []);
             tavern_data.extensions?.regex_scripts.forEach(entry => {
                 lodash_default().set(entry, 'content', replace_user_name(entry.content ?? ''));
+<<<<<<< HEAD
                 if (entry.content === '') {
+=======
+                if (entry.content === '' || entry.content.split('\n').length <= 3) {
+>>>>>>> 5df9c1cb4c82b29727ec6b2114f822fb829e2164
                     return;
                 }
                 const handle_file = (entry, file) => {
@@ -66979,8 +67048,77 @@ class Character_syncer extends Syncer_interface {
                     // 移动它们到 content、file 之后
                     .forEach(key => {
                     const data = lodash_default().get(entry, key);
+<<<<<<< HEAD
                     lodash_default().unset(entry, key);
                     lodash_default().set(entry, key, data);
+=======
+                    if (data !== undefined) {
+                        lodash_default().unset(entry, key);
+                        lodash_default().set(entry, key, data);
+                    }
+                });
+            });
+        }
+        // 脚本
+        {
+            const states = local_data === null
+                ? []
+                : (local_data.extensions?.tavern_helper?.scripts.flatMap(script => {
+                    const scripts = script.type === 'folder' ? script.scripts : [script];
+                    return scripts.map(script => ({ ...script, name: `!!!脚本${script.name}` }));
+                }) ?? []);
+            tavern_data.extensions?.tavern_helper?.scripts
+                .flatMap(script => (script.type === 'folder' ? script.scripts : script))
+                .forEach(entry => {
+                lodash_default().set(entry, 'content', replace_user_name(entry.content ?? ''));
+                if (entry.content === '' || entry.content.split('\n').length <= 3) {
+                    return;
+                }
+                const handle_file = (entry, file) => {
+                    let file_to_write = '';
+                    let file_to_set = '';
+                    const glob_files = glob_file(this.dir, file);
+                    if (glob_files.length === 0) {
+                        file_to_write = file.replace(/\.[^\\/.]+$|$/, '.js');
+                        file_to_set = file.replace(/\.[^\\/.]+$/, '');
+                    }
+                    else if (glob_files.length === 1) {
+                        file_to_write = glob_files[0];
+                        file_to_set = __WEBPACK_EXTERNAL_MODULE_node_path_02319fef_relative__(this.dir, glob_files[0]).replace(/\.[^\\/.]+$/, '');
+                    }
+                    else {
+                        file_to_write = file;
+                        file_to_set = file;
+                    }
+                    files.push({
+                        name: `!!!脚本${entry.name}`,
+                        path: file_to_write,
+                        content: entry.content ?? '',
+                    });
+                    lodash_default().unset(entry, 'content');
+                    lodash_default().set(entry, 'file', file_to_set);
+                };
+                const state = states.find(state => state.name === `!!!脚本${entry.name}`);
+                if (state === undefined && should_split) {
+                    handle_file(entry, __WEBPACK_EXTERNAL_MODULE_node_path_02319fef_join__(language === 'zh' ? '脚本' : 'script', sanitize_filename(entry.name) + '.js'));
+                }
+                else if (state?.file !== undefined) {
+                    handle_file(entry, state.file);
+                }
+            });
+            tavern_data.extensions?.tavern_helper.scripts
+                .flatMap(script => (script.type === 'folder' ? script.scripts : script))
+                .forEach(entry => {
+                ['info', 'button', 'data']
+                    .filter(key => lodash_default().has(entry, key))
+                    // 移动它们到 content、file 之后
+                    .forEach(key => {
+                    const data = lodash_default().get(entry, key);
+                    if (data !== undefined) {
+                        lodash_default().unset(entry, key);
+                        lodash_default().set(entry, key, data);
+                    }
+>>>>>>> 5df9c1cb4c82b29727ec6b2114f822fb829e2164
                 });
             });
         }
@@ -67140,6 +67278,31 @@ class Character_syncer extends Syncer_interface {
                 lodash_default().unset(entry, 'content');
             });
         }
+<<<<<<< HEAD
+=======
+        // 脚本
+        {
+            local_data.extensions?.tavern_helper?.scripts
+                .flatMap(script => (script.type === 'folder' ? script.scripts : script))
+                .forEach((entry, index) => {
+                if (entry.file === undefined) {
+                    return;
+                }
+                const paths = glob_file(this.dir, entry.file);
+                if (paths.length === 0) {
+                    error_data.未能找到以下外链正则.push(`第 '${index}' 脚本 '${entry.name}': '${entry.file}'`);
+                    return;
+                }
+                if (paths.length > 1) {
+                    error_data.通过补全文件后缀找到了多个文件.push({ [`第 '${index}' 脚本 '${entry.name}'`]: paths });
+                    return;
+                }
+                const content = extract_file_content(paths[0]);
+                lodash_default().set(entry, 'content', trim_yaml_endline(content));
+                lodash_default().unset(entry, 'file');
+            });
+        }
+>>>>>>> 5df9c1cb4c82b29727ec6b2114f822fb829e2164
         return {
             result_data: local_data,
             error_data: lodash_default().pickBy(error_data, value => value.length > 0),
@@ -67887,12 +68050,21 @@ class Preset_syncer extends Syncer_interface {
             if (duplicated_names.length > 0) {
                 return { result_data: {}, error_data: { 以下条目存在同名条目: duplicated_names }, files: [] };
             }
+<<<<<<< HEAD
             const convert_prompts = (prompts, { used }) => prompts.forEach(prompt => {
                 if (lodash_default().has(prompt, 'id')) {
                     return;
                 }
                 lodash_default().set(prompt, 'content', replace_user_name(prompt.content ?? ''));
                 if (prompt.content === '') {
+=======
+            const convert_prompts = (prompts, { used }) => prompts.forEach(entry => {
+                if (lodash_default().has(entry, 'id')) {
+                    return;
+                }
+                lodash_default().set(entry, 'content', replace_user_name(entry.content ?? ''));
+                if (entry.content === '' || entry.content.split('\n').length <= 3) {
+>>>>>>> 5df9c1cb4c82b29727ec6b2114f822fb829e2164
                     return;
                 }
                 const handle_file = (prompt, file) => {
@@ -67915,6 +68087,7 @@ class Preset_syncer extends Syncer_interface {
                     lodash_default().unset(prompt, 'content');
                     lodash_default().set(prompt, 'file', file_to_set);
                 };
+<<<<<<< HEAD
                 const state = states.find(state => state.name === prompt.name);
                 if (state === undefined && should_split) {
                     const file = __WEBPACK_EXTERNAL_MODULE_node_path_02319fef_join__(used ? (language === 'zh' ? '条目' : 'prompts') : language === 'zh' ? '未使用条目' : 'unused_prompts', sanitize_filename(prompt.name) + detect_extension(prompt.content));
@@ -67923,6 +68096,16 @@ class Preset_syncer extends Syncer_interface {
                 }
                 if (state?.file !== undefined) {
                     handle_file(prompt, state.file);
+=======
+                const state = states.find(state => state.name === entry.name);
+                if (state === undefined && should_split) {
+                    const file = __WEBPACK_EXTERNAL_MODULE_node_path_02319fef_join__(used ? (language === 'zh' ? '条目' : 'prompts') : language === 'zh' ? '未使用条目' : 'unused_prompts', sanitize_filename(entry.name) + detect_extension(entry.content));
+                    handle_file(entry, file);
+                    return;
+                }
+                if (state?.file !== undefined) {
+                    handle_file(entry, state.file);
+>>>>>>> 5df9c1cb4c82b29727ec6b2114f822fb829e2164
                     return;
                 }
             });
@@ -67937,7 +68120,11 @@ class Preset_syncer extends Syncer_interface {
                     []);
             tavern_data.extensions?.regex_scripts.forEach(entry => {
                 lodash_default().set(entry, 'content', replace_user_name(entry.content ?? ''));
+<<<<<<< HEAD
                 if (entry.content === '') {
+=======
+                if (entry.content === '' || entry.content.split('\n').length <= 3) {
+>>>>>>> 5df9c1cb4c82b29727ec6b2114f822fb829e2164
                     return;
                 }
                 const handle_file = (entry, file) => {
@@ -67978,8 +68165,77 @@ class Preset_syncer extends Syncer_interface {
                     // 移动它们到 content、file 之后
                     .forEach(key => {
                     const data = lodash_default().get(entry, key);
+<<<<<<< HEAD
                     lodash_default().unset(entry, key);
                     lodash_default().set(entry, key, data);
+=======
+                    if (data !== undefined) {
+                        lodash_default().unset(entry, key);
+                        lodash_default().set(entry, key, data);
+                    }
+                });
+            });
+        }
+        // 脚本
+        {
+            const states = local_data === null
+                ? []
+                : (local_data.extensions?.tavern_helper?.scripts.flatMap(script => {
+                    const scripts = script.type === 'folder' ? script.scripts : [script];
+                    return scripts.map(script => ({ ...script, name: `!!!脚本${script.name}` }));
+                }) ?? []);
+            tavern_data.extensions?.tavern_helper?.scripts
+                .flatMap(script => (script.type === 'folder' ? script.scripts : script))
+                .forEach(entry => {
+                lodash_default().set(entry, 'content', replace_user_name(entry.content ?? ''));
+                if (entry.content === '' || entry.content.split('\n').length <= 3) {
+                    return;
+                }
+                const handle_file = (entry, file) => {
+                    let file_to_write = '';
+                    let file_to_set = '';
+                    const glob_files = glob_file(this.dir, file);
+                    if (glob_files.length === 0) {
+                        file_to_write = file.replace(/\.[^\\/.]+$|$/, '.js');
+                        file_to_set = file.replace(/\.[^\\/.]+$/, '');
+                    }
+                    else if (glob_files.length === 1) {
+                        file_to_write = glob_files[0];
+                        file_to_set = __WEBPACK_EXTERNAL_MODULE_node_path_02319fef_relative__(this.dir, glob_files[0]).replace(/\.[^\\/.]+$/, '');
+                    }
+                    else {
+                        file_to_write = file;
+                        file_to_set = file;
+                    }
+                    files.push({
+                        name: `!!!脚本${entry.name}`,
+                        path: file_to_write,
+                        content: entry.content ?? '',
+                    });
+                    lodash_default().unset(entry, 'content');
+                    lodash_default().set(entry, 'file', file_to_set);
+                };
+                const state = states.find(state => state.name === `!!!脚本${entry.name}`);
+                if (state === undefined && should_split) {
+                    handle_file(entry, __WEBPACK_EXTERNAL_MODULE_node_path_02319fef_join__(language === 'zh' ? '脚本' : 'script', sanitize_filename(entry.name) + '.js'));
+                }
+                else if (state?.file !== undefined) {
+                    handle_file(entry, state.file);
+                }
+            });
+            tavern_data.extensions?.tavern_helper.scripts
+                .flatMap(script => (script.type === 'folder' ? script.scripts : script))
+                .forEach(entry => {
+                ['info', 'button', 'data']
+                    .filter(key => lodash_default().has(entry, key))
+                    // 移动它们到 content、file 之后
+                    .forEach(key => {
+                    const data = lodash_default().get(entry, key);
+                    if (data !== undefined) {
+                        lodash_default().unset(entry, key);
+                        lodash_default().set(entry, key, data);
+                    }
+>>>>>>> 5df9c1cb4c82b29727ec6b2114f822fb829e2164
                 });
             });
         }
@@ -68109,6 +68365,31 @@ class Preset_syncer extends Syncer_interface {
                 lodash_default().unset(entry, 'content');
             });
         }
+<<<<<<< HEAD
+=======
+        // 脚本
+        {
+            local_data.extensions?.tavern_helper?.scripts
+                .flatMap(script => (script.type === 'folder' ? script.scripts : script))
+                .forEach((entry, index) => {
+                if (entry.file === undefined) {
+                    return;
+                }
+                const paths = glob_file(this.dir, entry.file);
+                if (paths.length === 0) {
+                    error_data.未能找到以下外链正则.push(`第 '${index}' 脚本 '${entry.name}': '${entry.file}'`);
+                    return;
+                }
+                if (paths.length > 1) {
+                    error_data.通过补全文件后缀找到了多个文件.push({ [`第 '${index}' 脚本 '${entry.name}'`]: paths });
+                    return;
+                }
+                const content = extract_file_content(paths[0]);
+                lodash_default().set(entry, 'content', trim_yaml_endline(content));
+                lodash_default().unset(entry, 'file');
+            });
+        }
+>>>>>>> 5df9c1cb4c82b29727ec6b2114f822fb829e2164
         return {
             result_data: local_data,
             error_data: lodash_default().pickBy(error_data, value => value.length > 0),
@@ -68188,6 +68469,12 @@ class Worldbook_syncer extends Syncer_interface {
         }
         tavern_data.entries.forEach(entry => {
             lodash_default().set(entry, 'content', replace_user_name(entry.content ?? ''));
+<<<<<<< HEAD
+=======
+            if (entry.content === '' || entry.content.split('\n').length <= 3) {
+                return;
+            }
+>>>>>>> 5df9c1cb4c82b29727ec6b2114f822fb829e2164
             const handle_file = (entry, file) => {
                 let file_to_write = '';
                 let file_to_set = '';

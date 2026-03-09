@@ -13,7 +13,11 @@
     "defaults and partially supports es6-module"
   ],
   "devDependencies": {
+<<<<<<< HEAD
     "@eslint/js": "^9.39.3",
+=======
+    "@eslint/js": "^9.39.4",
+>>>>>>> 5df9c1cb4c82b29727ec6b2114f822fb829e2164
     "@tailwindcss/postcss": "^4.2.1",
     "@types/jquery": "^3.5.34",
     "@types/jqueryui": "^1.12.24",
@@ -27,7 +31,11 @@
     "autoprefixer": "^10.4.27",
     "chokidar": "^4.0.3",
     "css-loader": "^7.1.4",
+<<<<<<< HEAD
     "eslint": "^9.39.3",
+=======
+    "eslint": "^9.39.4",
+>>>>>>> 5df9c1cb4c82b29727ec6b2114f822fb829e2164
     "eslint-config-prettier": "^10.1.8",
     "eslint-import-resolver-typescript": "^4.4.4",
     "eslint-plugin-better-tailwindcss": "^3.8.0",
@@ -44,7 +52,11 @@
     "html-webpack-plugin": "^5.6.6",
     "javascript-obfuscator": "^4.2.2",
     "mini-css-extract-plugin": "^2.10.0",
+<<<<<<< HEAD
     "postcss": "^8.5.6",
+=======
+    "postcss": "^8.5.8",
+>>>>>>> 5df9c1cb4c82b29727ec6b2114f822fb829e2164
     "postcss-cli": "^11.0.1",
     "postcss-load-config": "^6.0.1",
     "postcss-loader": "^8.2.1",
@@ -58,7 +70,11 @@
     "socket.io": "^4.8.3",
     "style-loader": "^4.0.0",
     "tailwindcss": "^4.2.1",
+<<<<<<< HEAD
     "terser-webpack-plugin": "^5.3.16",
+=======
+    "terser-webpack-plugin": "^5.3.17",
+>>>>>>> 5df9c1cb4c82b29727ec6b2114f822fb829e2164
     "ts-loader": "^9.5.4",
     "ts-node": "^10.9.2",
     "tsconfig-paths-webpack-plugin": "^4.2.0",
@@ -71,7 +87,11 @@
     "vue-eslint-parser": "^10.4.0",
     "vue-loader": "^17.4.2",
     "vue-style-loader": "^4.1.3",
+<<<<<<< HEAD
     "webpack": "^5.105.3",
+=======
+    "webpack": "^5.105.4",
+>>>>>>> 5df9c1cb4c82b29727ec6b2114f822fb829e2164
     "webpack-cli": "^6.0.1",
     "webpack-obfuscator": "^3.6.0",
     "yaml-loader": "^0.9.0"
@@ -84,7 +104,11 @@
     "@vueuse/shared": "^13.9.0",
     "async-wait-until": "^2.0.31",
     "compare-versions": "^6.1.1",
+<<<<<<< HEAD
     "dedent": "^1.7.1",
+=======
+    "dedent": "^1.7.2",
+>>>>>>> 5df9c1cb4c82b29727ec6b2114f822fb829e2164
     "gsap": "^3.14.2",
     "jquery": "^3.7.1",
     "jqueryui": "^1.11.1",
@@ -92,7 +116,10 @@
     "jsonrepair": "^3.13.2",
     "klona": "^2.0.6",
     "lodash": "^4.17.23",
+<<<<<<< HEAD
     "lucide-react": "^0.575.0",
+=======
+>>>>>>> 5df9c1cb4c82b29727ec6b2114f822fb829e2164
     "pinia": "^3.0.4",
     "pixi.js": "^8.16.0",
     "react": "^19.2.4",
