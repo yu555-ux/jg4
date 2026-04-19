@@ -1,5 +1,6 @@
 # yaml-language-server: $schema=https://testingcf.jsdelivr.net/gh/StageDog/tavern_sync/dist/schema/character.zh.json
 头像: 头像
+<<<<<<< HEAD
 版本: ""
 作者: 青空莉想做舞台少女的狗
 备注: ""
@@ -11,6 +12,42 @@
 角色描述: ""
 
 锚点: {}
+=======
+版本: 1.0.0
+作者: 青空莉想做舞台少女的狗
+备注: '青空莉导航站: https://stagedog.github.io/'
+
+第一条消息:
+  - 文件: 第一条消息/0
+  - 文件: 第一条消息/1
+
+角色描述: ''
+
+锚点:
+  - &分隔符
+    启用: false
+    激活策略:
+      类型: 向量化
+    插入位置:
+      类型: 角色定义之前
+      顺序: 14720
+    激活概率: 100
+    内容: ''
+  - &立即事件
+    启用: true
+    插入位置:
+      类型: 指定深度
+      角色: 系统
+      深度: 0
+      顺序: 14720
+    激活概率: 100
+    特殊效果:
+      黏性: 5
+      冷却: 9999
+    递归:
+      不可被其他条目激活: true
+      不可激活其他条目: true
+>>>>>>> 5427fc4312cb5983ca9885b5f500c6082deaadf5
 
 世界书名称: 与角色卡名称相同
 条目:
@@ -27,7 +64,11 @@
     递归:
       不可被其他条目激活: true
       不可激活其他条目: true
+<<<<<<< HEAD
     文件: 世界书\文风
+=======
+    文件: 世界书/文风
+>>>>>>> 5427fc4312cb5983ca9885b5f500c6082deaadf5
 
   - 名称: 交错频道
     启用: true
@@ -42,6 +83,7 @@
     递归:
       不可被其他条目激活: true
       不可激活其他条目: true
+<<<<<<< HEAD
     文件: 世界书\交错频道
 
   - 名称: ===变量开始===
@@ -58,17 +100,34 @@
     内容: ""
 
   - 名称: "[initvar]变量初始化勿开"
+=======
+    文件: 世界书/交错频道
+
+  - 文件夹: 变量
+    条目:
+      - 名称: ===变量开始===
+        <<: *分隔符
+
+      - 名称: '[initvar]变量初始化勿开'
+>>>>>>> 5427fc4312cb5983ca9885b5f500c6082deaadf5
     启用: false
     激活策略:
       类型: 蓝灯
     插入位置:
       类型: 角色定义之前
       顺序: 14720
+<<<<<<< HEAD
     激活概率: 100
     递归:
       不可被其他条目激活: true
       不可激活其他条目: true
     文件: 世界书\变量\initvar
+=======
+        递归:
+          不可被其他条目激活: true
+          不可激活其他条目: true
+        文件: 世界书/变量/initvar
+>>>>>>> 5427fc4312cb5983ca9885b5f500c6082deaadf5
 
   - 名称: 变量列表
     启用: true
@@ -79,6 +138,7 @@
       角色: 系统
       深度: 0
       顺序: 14720
+<<<<<<< HEAD
     激活概率: 100
     递归:
       不可被其他条目激活: true
@@ -86,6 +146,14 @@
     文件: 世界书\变量\变量列表
 
   - 名称: "[mvu_update]变量更新规则"
+=======
+        递归:
+          不可被其他条目激活: true
+          不可激活其他条目: true
+        文件: 世界书/变量/变量列表
+
+      - 名称: '[mvu_update]变量更新规则'
+>>>>>>> 5427fc4312cb5983ca9885b5f500c6082deaadf5
     启用: true
     激活策略:
       类型: 蓝灯
@@ -94,6 +162,7 @@
       角色: 系统
       深度: 0
       顺序: 14720
+<<<<<<< HEAD
     激活概率: 100
     递归:
       不可被其他条目激活: true
@@ -101,6 +170,14 @@
     文件: 世界书\变量\变量更新规则
 
   - 名称: "[mvu_update]变量输出格式"
+=======
+        递归:
+          不可被其他条目激活: true
+          不可激活其他条目: true
+        文件: 世界书/变量/变量更新规则
+
+      - 名称: '[mvu_update]变量输出格式'
+>>>>>>> 5427fc4312cb5983ca9885b5f500c6082deaadf5
     启用: true
     激活策略:
       类型: 蓝灯
@@ -109,6 +186,7 @@
       角色: 系统
       深度: 0
       顺序: 14720
+<<<<<<< HEAD
     激活概率: 100
     递归:
       不可被其他条目激活: true
@@ -140,6 +218,20 @@
       不可被其他条目激活: false
       不可激活其他条目: false
     内容: ""
+=======
+        递归:
+          不可被其他条目激活: true
+          不可激活其他条目: true
+        文件: 世界书/变量/变量输出格式
+
+      - 名称: ===变量结束===
+        <<: *分隔符
+
+  - 文件夹: 角色
+    条目:
+      - 名称: ===角色开始===
+        <<: *分隔符
+>>>>>>> 5427fc4312cb5983ca9885b5f500c6082deaadf5
 
   - 名称: 角色详情
     启用: true
@@ -148,11 +240,18 @@
     插入位置:
       类型: 角色定义之后
       顺序: 14720
+<<<<<<< HEAD
     激活概率: 100
     递归:
       不可被其他条目激活: true
       不可激活其他条目: true
     文件: 世界书\角色\角色详情
+=======
+        递归:
+          不可被其他条目激活: true
+          不可激活其他条目: true
+        文件: 世界书/角色/角色详情
+>>>>>>> 5427fc4312cb5983ca9885b5f500c6082deaadf5
 
   - 名称: 角色阶段
     启用: true
@@ -163,6 +262,7 @@
       角色: 系统
       深度: 0
       顺序: 14720
+<<<<<<< HEAD
     激活概率: 100
     递归:
       不可被其他条目激活: false
@@ -197,10 +297,25 @@
 
   - 名称: 冲动啊，请平息吧
     启用: true
+=======
+        文件: 世界书/角色/角色阶段
+
+      - 名称: ===角色结束===
+        <<: *分隔符
+
+  - 文件夹: 立即事件
+    条目:
+      - 名称: ===立即事件开始===
+        <<: *分隔符
+
+      - 名称: 冲动啊，请平息吧
+        <<: *立即事件
+>>>>>>> 5427fc4312cb5983ca9885b5f500c6082deaadf5
     激活策略:
       类型: 绿灯
       关键字:
         - 【【冲动啊，请平息吧】】
+<<<<<<< HEAD
     插入位置:
       类型: 指定深度
       角色: 系统
@@ -217,10 +332,17 @@
 
   - 名称: 理性啊，请不要冻结
     启用: true
+=======
+        文件: 世界书/立即事件/冲动啊，请平息吧
+
+      - 名称: 理性啊，请不要冻结
+        <<: *立即事件
+>>>>>>> 5427fc4312cb5983ca9885b5f500c6082deaadf5
     激活策略:
       类型: 绿灯
       关键字:
         - 【【理性啊，请不要冻结】】
+<<<<<<< HEAD
     插入位置:
       类型: 指定深度
       角色: 系统
@@ -255,18 +377,42 @@
       启用: true
       查找表达式: /<update(?:variable)?>(?:(?!.*<\/update(?:variable)?>).*$|.*<\/update(?:variable)?>)/gsi
       内容: ""
+=======
+        文件: 世界书/立即事件/理性啊，请不要冻结
+
+      - 名称: ===立即事件结束===
+        <<: *分隔符
+
+扩展字段:
+  正则:
+    - 正则名称: '[不发送]去除变量更新'
+      id: 2d2018ae-c085-4916-af05-6830110a8293
+      启用: true
+      查找表达式: /<update(?:variable)?>(?:(?!.*<\/update(?:variable)?>).*$|.*<\/update(?:variable)?>)/gsi
+      内容: ''
+>>>>>>> 5427fc4312cb5983ca9885b5f500c6082deaadf5
       来源:
         用户输入: true
         AI输出: true
       作用于:
         仅格式显示: false
         仅格式提示词: true
+<<<<<<< HEAD
 
     - 正则名称: "[折叠]变量更新中"
+=======
+      最大深度: 3
+
+    - 正则名称: '[折叠]变量更新中'
+>>>>>>> 5427fc4312cb5983ca9885b5f500c6082deaadf5
       id: ea96523f-a1cc-4634-b9d2-f28531adca6c
       启用: true
       查找表达式: /<update(?:variable)?>(?!.*<\/update(?:variable)?>)\s*(.*)\s*$/gsi
       内容: |-
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5427fc4312cb5983ca9885b5f500c6082deaadf5
         <details>
         <summary>变量更新中{{random::.::..::...}}</summary>
         $1
@@ -278,11 +424,19 @@
         仅格式显示: true
         仅格式提示词: false
 
+<<<<<<< HEAD
     - 正则名称: "[折叠]完整变量更新"
+=======
+    - 正则名称: '[折叠]完整变量更新'
+>>>>>>> 5427fc4312cb5983ca9885b5f500c6082deaadf5
       id: 06dec31f-c0a9-456c-8b88-1f9176a73039
       启用: true
       查找表达式: /<update(?:variable)?>\s*(.*)\s*<\/update(?:variable)?>/gsi
       内容: |-
+<<<<<<< HEAD
+=======
+
+>>>>>>> 5427fc4312cb5983ca9885b5f500c6082deaadf5
         <details>
         <summary>变量更新情况</summary>
         $1
@@ -294,6 +448,7 @@
         仅格式显示: true
         仅格式提示词: false
 
+<<<<<<< HEAD
     - 正则名称: "[不发送]界面占位符"
       id: 8bc36f21-d97b-420f-87e1-dacb7484f92a
       启用: true
@@ -309,6 +464,11 @@
     - 正则名称: "[界面]美化状态栏"
       id: 65bd44f0-0098-4d54-a07d-9deced287d96
       启用: true
+=======
+    - 正则名称: '[界面]美化状态栏'
+      id: 65bd44f0-0098-4d54-a07d-9deced287d96
+      启用: false
+>>>>>>> 5427fc4312cb5983ca9885b5f500c6082deaadf5
       查找表达式: <StatusPlaceHolderImpl/>
       内容: |-
         <style>
@@ -331,6 +491,7 @@
         仅格式显示: true
         仅格式提示词: false
 
+<<<<<<< HEAD
     - 正则名称: "[界面]前端界面状态栏"
       id: b50d0bed-ff40-4a25-9ada-14feb4283324
       启用: false
@@ -348,6 +509,19 @@
 
 
         /*# sourceMappingURL=main.css.map*/</style></head><body><div id="app"></div></body>
+=======
+    - 正则名称: '[界面]前端界面状态栏'
+      id: b50d0bed-ff40-4a25-9ada-14feb4283324
+      启用: true
+      查找表达式: <StatusPlaceHolderImpl/>
+      内容: |-
+        ```
+        <body>
+        <script>
+        $('body').load('https://testingcf.jsdelivr.net/gh/StageDog/tavern_helper_template/dist/角色卡示例/界面/状态栏/index.html')
+        </script>
+        </body>
+>>>>>>> 5427fc4312cb5983ca9885b5f500c6082deaadf5
         ```
       来源:
         用户输入: false
@@ -362,6 +536,7 @@
         id: 22d70d1f-d0be-4061-911e-d0c57ab55053
         启用: true
         类型: 脚本
+<<<<<<< HEAD
         内容: import
           'https://testingcf.jsdelivr.net/gh/MagicalAstrogy/MagVarUpdate/artifact/bundle.js';
         按钮:
@@ -379,11 +554,16 @@
               可见: false
             - 名称: 清除旧楼层变量
               可见: false
+=======
+        内容: |-
+          import 'https://testingcf.jsdelivr.net/gh/MagicalAstrogy/MagVarUpdate/artifact/bundle.js';
+>>>>>>> 5427fc4312cb5983ca9885b5f500c6082deaadf5
 
       - 名称: 变量结构
         id: f65ab164-4268-4366-8228-16af904c2251
         启用: true
         类型: 脚本
+<<<<<<< HEAD
         内容: |
           import { registerMvuSchema } from 'https://testingcf.jsdelivr.net/gh/StageDog/tavern_resource/dist/util/mvu_zod.js';
 
@@ -437,12 +617,17 @@
               _.unset(variables, 'display_data');
               _.unset(variables, 'delta_data');
             });
+=======
+        内容: |-
+          import 'https://testingcf.jsdelivr.net/gh/StageDog/tavern_helper_template/dist/角色卡示例/脚本/变量结构/index.js';
+>>>>>>> 5427fc4312cb5983ca9885b5f500c6082deaadf5
 
       - 名称: 立即事件
         id: 0f03773b-812a-4a78-85d1-d7d7fbe70240
         启用: true
         类型: 脚本
         内容: |-
+<<<<<<< HEAD
           $(async () => {
             injectPrompts([
               {
@@ -471,3 +656,17 @@
           });
 
     变量: {}
+=======
+          import 'https://testingcf.jsdelivr.net/gh/StageDog/tavern_helper_template/dist/角色卡示例/脚本/立即事件/index.js';
+
+      - 名称: 自动更新角色卡
+        id: 176b0b3c-b410-4373-8c81-8636a94a0839
+        启用: true
+        类型: 脚本
+        内容: |-
+          import 'https://testingcf.jsdelivr.net/gh/StageDog/tavern_resource/dist/酒馆助手/自动更新角色卡/index.js';
+        数据:
+          角色卡名称: 呕吐内心的少女
+          角色卡链接: https://testingcf.jsdelivr.net/gh/StageDog/tavern_helper_template/示例/角色卡示例/角色卡示例.png
+          更新日志链接: https://testingcf.jsdelivr.net/gh/StageDog/tavern_helper_template/示例/角色卡示例/更新日志.md
+>>>>>>> 5427fc4312cb5983ca9885b5f500c6082deaadf5
